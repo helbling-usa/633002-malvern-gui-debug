@@ -43,21 +43,21 @@ class motor_2axes():
         self.mydll1 =CDLL(TIM_LIB_PATH)
         #/*	Load the *.t.zip with setup data generated with EasyMotion Studio or EasySetUp */
         config_file = b"./config/"+motor_type + b".t.zip"
-        print('config file = ', config_file)
+        print('\tconfig file = ', config_file)
         # self.idxSetup = self.mydll1.TS_LoadSetup(b"./config/LEFS25.t.zip")
         self.idxSetup = self.mydll1.TS_LoadSetup(config_file)
         if (self.idxSetup < 0):
-            print('cannot load setup')
+            print('\tcannot load setup')
             return False
         else:
-            print("setup loaded sucessfully")
+            print("\tsetup loaded sucessfully")
 
         # print("---------initialize the motor  -------------------")
         print("connecting to com porst:",self.CHANNEL_NAME)
         if self.InitCommunicationChannel() == False:
-            print("Commumication error!", self.mydll1.TS_GetLastErrorText())
+            print("\tCommumication error!", self.mydll1.TS_GetLastErrorText())
         else:
-            print("Communication established")
+            print("\tCommunication established")
 
         # self.set_position()
         # # print("------------set int var ------------------------------")
@@ -84,26 +84,26 @@ class motor_2axes():
             # print('cannot load setup 1')
             return False
         else:
-            print("setup 1 loaded sucessfully")
+            print("\tsetup 1 loaded sucessfully")
 
         #/*	Setup the axis based on the setup data previously loaded */
         tt = self.mydll1.TS_SetupAxis(self.AXIS_ID_01, idxSetup1)
         if tt<=0:
-            print("Failed to setup axis 1")
+            print("\tFailed to setup axis 1")
             return False
         # print('\tsetup axis 1:', tt)
 
         #	Select the destination axis of the TML commands 
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_01)
         if tt<=0:
-            print("Failed to select axis 1")
+            print("\tFailed to select axis 1")
             return False
         # print('\tselect dest. axis 1:', tt)
 
         #/*	Execute the initialization of the drive (ENDINIT) */
         tt = self.mydll1.TS_DriveInitialisation()
         if tt<=0:
-            print("Failed to initialzie drive 1")
+            print("\tFailed to initialzie drive 1")
             return False
         # print('\tinit successful 1:', tt)
 
@@ -117,26 +117,26 @@ class motor_2axes():
             # print('cannot load setup 2')
             return False
         else:
-            print("setup 2 loaded sucessfully")
+            print("\tsetup 2 loaded sucessfully")
 
         #/*	Setup the axis based on the setup data previously loaded */
         tt = self.mydll1.TS_SetupAxis(self.AXIS_ID_02, idxSetup2)
         if tt<=0:
-            print("Failed to setup axis 2")
+            print("\tFailed to setup axis 2")
             return False
         # print('\tsetup axis 2:', tt)
 
         #	Select the destination axis of the TML commands 
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_02)
         if tt<=0:
-            print("Failed to select axis 2")
+            print("\tFailed to select axis 2")
             return False        
         # print('\tselect dest. axis 2:', tt)
 
         #/*	Execute the initialization of the drive (ENDINIT) */
         tt = self.mydll1.TS_DriveInitialisation()
         if tt<=0:
-            print("Failed to initialzie drive 2")
+            print("\tFailed to initialzie drive 2")
             return False
         # print('\tinit successful 2:', tt)
 
@@ -145,13 +145,13 @@ class motor_2axes():
         # /*	Setup the Broadcast based on the file previously loaded */
         tt= self.mydll1.TS_SetupBroadcast(idxSetup2)
         if tt<=0:
-            print("Failed to setup broadcase")
+            print("\tFailed to setup broadcase")
             return False
         # print("setup broadcase:", tt)
         # /*	Select all the axes as the destination of the TML commands */
         tt = self.mydll1.TS_SelectBroadcast()
         if tt<=0:
-            print("Failed tos select broadcase")
+            print("\tFailed tos select broadcase")
             return False
         # print("\t broadcast select all axes:", tt)		
                 
@@ -159,7 +159,7 @@ class motor_2axes():
         #/*	Enable the power stage of the drive (AXISON) */ 
         tt = self.mydll1.TS_Power(POWER_ON)
         if tt<=0:
-            print("Failed to power on  drives")
+            print("\tFailed to power on  drives")
             return False
         # print('\tPower On successful 1:', tt)
 
@@ -174,28 +174,28 @@ class motor_2axes():
 
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_01)
         if (tt<=0):
-            print("can't select axis 1")
+            print("\tcan't select axis 1")
             return False
         else:
             while ( (p.value & (1<<15)) == 0):
                 tt = y(REG_SRL,  byref(p))
                 if tt<=0:
-                    print("problem reading axis 1")
+                    print("\tproblem reading axis 1")
                     return False
 
         p = c_int()
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_02)
         if (tt<=0):
-            print("can't select axis 2")
+            print("\tcan't select axis 2")
             return False
         else:
             while ( (p.value & (1<<15)) == 0):
                 tt = y(REG_SRL,  byref(p))
                 if tt<=0:
-                    print("problem reading axis 2")
+                    print("\tproblem reading axis 2")
                     return False
 
-        print('All axes are  initialzed and ready...')
+        print('\tAll axes are  initialzed and ready...')
         return True
 
 
@@ -207,7 +207,7 @@ class motor_2axes():
         p = c_int()
         tt = y(byref(p))
         # print("tt-->", tt)        
-        print('firmware version: {:X}'.format(p.value))
+        print('\tfirmware version: {:X}'.format(p.value))
 
 
     def set_position(self):
@@ -230,10 +230,10 @@ class motor_2axes():
         tt = x(rel_pos, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
         
         if (tt==True):
-            print("moving to relative position is done")
+            print("\tmoving to relative position is done")
         # /*	Wait until the positioning is ended */
         if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
-            print("error in set event on motion complete")
+            print("\terror in set event on motion complete")
 
 
     def move_absolute_position(self, abs_pos, speed, acceleration):
@@ -245,10 +245,10 @@ class motor_2axes():
         tt = x(abs_pos, speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
         
         if (tt==True):
-            print("moving to absolute position is done")
+            print("\tmoving to absolute position is done")
         # /*	Wait until the positioning is ended */
         if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
-            print("error in set event on motion complete")
+            print("\terror in set event on motion complete")
     
     def read_actual_position(self):
         # print("------------Read actual position ------------------------------")
@@ -290,7 +290,7 @@ class motor_2axes():
         p = c_int()
         tt = y(b"POSOKLIM",  byref(p))
         # print("tt-->", tt)        
-        print('POSOKLIM = {} '.format(p.value))
+        print('\tPOSOKLIM = {} '.format(p.value))
 
     def set_speed(self, speed,acceleration):
         # speed = 300.
@@ -302,7 +302,7 @@ class motor_2axes():
         # tt = x(100., .01,1,0)
         tt = x(speed, acceleration,1,0)
         if tt<=0:
-            print("Failed to set the speed")
+            print("\tFailed to set the speed")
             return False
         else:
             return True
@@ -310,10 +310,10 @@ class motor_2axes():
     def select_axis(self, axisid):
         tt = self.mydll1.TS_SelectAxis(axisid)
         if (tt<=0):
-            print("can't select axis 1")
+            print("\tcan't select axis 1")
             return False
         else:
-            print('starting mixing motor')
+            print('\tstarting mixing motor')
         
     def close_port(self):
         self.mydll1.TS_CloseChannel(-1)
@@ -333,7 +333,7 @@ if __name__ == "__main__":
 
     #/*	Setup and initialize the axis */	
     if (motor.InitAxis()==False):
-        print("Failed to start up the drive")
+        print("\tFailed to start up the drive")
 
 
     motor.select_axis(AXIS_ID_02)

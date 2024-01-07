@@ -1,6 +1,6 @@
 import GUI
 from tkinter import * 
-import config.motor_1 as Motor1
+# import config.motor_1 as Motor1
 # import config.motor_Linear as Motor_VG
 from config.motor_2axes import motor_2axes as Motors
 import config.Pump as P
@@ -45,7 +45,7 @@ class run_GUI(GUI.GUI):
         
         logging.info("Initializing hardware -------------------------------------")
         self.PortAssignment()
-        self.InitMixerMotor()
+        # self.InitMixerMotor()
         self.Init__motors_all_axes()            
         self.Init_Pumps_Valves()
         self.InitLabjack()
@@ -57,7 +57,7 @@ class run_GUI(GUI.GUI):
         self.scalefactor = 1
         self.microstep = False         
         self.pump_scale_factor(1)
-        logging.info('mircostep off')
+        logging.info('\tmircostep off')
         self.set_step_mode(False)
         self.BS= 1        
         
@@ -119,8 +119,8 @@ class run_GUI(GUI.GUI):
 
     def Init_Pumps_Valves(self):        
         # # #------ init. Pump 1
-        logging.info(" Initializing Pumps/Valves.....")
-        self.pump1 = P.Pump("COM9")
+        logging.info("Initializing Pumps/Valves.....")
+        self.pump1 = P.Pump("COM6")
         logging.info("\tPumps initialized")
         self.pump1.pump_Zinit(1)
         
@@ -319,13 +319,22 @@ class run_GUI(GUI.GUI):
         #assign port numbers to the hardware
         # logging.info('ports:', ports)
         self.TEC_PORT = ports['TEC']
-        self.PUMP1_PORT = ports['PUMP1']
+        self.PUMP1_PORT = ports['PUMP']
         self.TECHNOSOFT_PORT = ports['TECHNOSOFT']
         # self.GANTRY_VER_AXIS_ID = 255
         self.GANTRY_VER_AXIS_ID = int(ports['GANTRY_VER_AXIS_ID'])        
-        logging.info('\tTEC port:'+ self.TEC_PORT)
-        logging.info('\tTechnosoft port:'+self.TECHNOSOFT_PORT )
-        logging.info('\tpump1:'+ self.PUMP1_PORT)
+        self.MIXER_AXIS_ID = int(ports['MIXER_AXIS_ID'])        
+
+        # self.AXIS_ID_01 = self.MIXER_AXIS_ID
+        # self.AXIS_ID_02 = self.GANTRY_VER_AXIS_ID
+
+        self.AXIS_ID_01 = 24
+        self.AXIS_ID_02 = 1
+        
+        logging.info('\tTEC:'+ self.TEC_PORT)
+        logging.info('\tTechnosoft:'+self.TECHNOSOFT_PORT )
+        logging.info('\tPump:'+ self.PUMP1_PORT)
+        logging.info('\tMixer Axis ID:'+ str(self.MIXER_AXIS_ID))
         logging.info('\tGantry Vertical Axis ID:'+ str(self.GANTRY_VER_AXIS_ID))
         logging.info("\tPort Assignment done")
         # # Display port numbers on the GUI (config tab)
@@ -333,6 +342,7 @@ class run_GUI(GUI.GUI):
         self.Lpump1port.config(text=self.PUMP1_PORT)
         self.Ltechnosoftport.config(text=self.TECHNOSOFT_PORT)
         self.Lver_gant_axis_id.config(text=self.GANTRY_VER_AXIS_ID)
+        self.Lmixer_axis_id.config(text=self.MIXER_AXIS_ID)
         self.Lpump1_id.config(text="1")
         self.Lvalv3_id.config(text="2")
         self.Lvalv5_id.config(text="3")
@@ -343,8 +353,7 @@ class run_GUI(GUI.GUI):
         self.Lvalv7_id.config(text="8")
         self.Lvalv8_id.config(text="9")
 
-        self.AXIS_ID_01 = 24
-        self.AXIS_ID_02 = 1
+        
 
 
     def gantry_vertical_set_rel_click(self):
@@ -385,7 +394,8 @@ class run_GUI(GUI.GUI):
         #                                       self.GANTRY_VER_AXIS_ID, b"LEFS25") 
 
 
-        com_port = b"COM7"
+        # com_port = b"COM7"
+        com_port = self.TECHNOSOFT_PORT.encode()        
         primary_axis =  b"Mixer"
         self.motors = Motors(com_port, self.AXIS_ID_01, self.AXIS_ID_02, primary_axis)   
         #/*	Setup and initialize the axis */	
@@ -538,7 +548,7 @@ class run_GUI(GUI.GUI):
 
 
     def p1_b_dispenseUntillbubble(self):
-        logging.info(' dispense until bubble: to be completed later')
+        logging.info('dispense until bubble: to be completed later')
         # self.pump1.set_speed(1,1000)
         # time.sleep(1)
         # self.pump1.set_pos_absolute(1, 0)
@@ -546,80 +556,101 @@ class run_GUI(GUI.GUI):
         self.pump1.set_speed(1,100)
         time.sleep(1)
         
-        self.pump1.set_pos_absolute(1, 10000)
+        self.pump1.set_pos_absolute(1, 0)
 
         input0 = (self.labjack.getAIN(0))
         while (input0>2.5):
-            input0 = (self.labjack.getAIN(0))
-            print('----------------',input, 'position:', self.pump1.get_plunger_position(1))
+            # input0 = (self.labjack.getAIN(0))
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            
+            # print('----------------',input0, 'position:', self.pump1.get_plunger_position(1))
+            logging.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
             time.sleep(1)
         self.pump1.stop(1)
+        self.pump1.set_speed(1,1000)
 
 
 
 
 
     def p1_b_pickupUntillbubble(self):
-        logging.info("child: pickup until bubble")
-        # send pump1 to 0 position
-        # self.pump1.set_pos_absolute(1, 0)
-        prev_speed = self.pump1.get_peakspeed(1)
-        print("==========>",prev_speed)
-        # change to high speed for retraction
-        if (self.microstep == False):
-            logging.info('micro step is off')
-            self.pump1.set_speed(1,1000)
-        else:
-            logging.info('micro step is on')
-            self.pump1.set_speed(1,1000*8)
-        print("1-----------------")
-        time.sleep(.5)
-        a =self.pump1.get_peakspeed(1)
-        print("2-----------------")
-        time.sleep(.5)
-        logging.info('setting peak speed to:{} and send pluger to home'.format( a))
+        logging.info("pickup until bubble")
+        self.pump1.set_speed(1,100)
+        time.sleep(1)
+        
+        self.pump1.set_pos_absolute(1, 20000)
 
-        self.pump1.set_pos_absolute(1, 0)
-        # time.sleep(5)
-
-        cur_pos = 24000
-        logging.info('going to 0 pos')
-        while (cur_pos > 0):
-            # logging.info('cur pos:', cur_pos)
-            cur_pos = self.pump1.get_plunger_position(1)            
-            time.sleep(1)
-
-
-        # change to low speed for forward motion
-        if (self.microstep == False):
-            logging.info('micro step is off')
-            self.pump1.set_speed(1,48)
-        else:
-            logging.info('micro step is on')
-            self.pump1.set_speed(1,48*8)
-
-        logging.info('going to final pos')
-        self.pump1.set_pos_absolute(1, 10000)
-
-        # continue until a bubble detected or reaching end of travel
         input0 = (self.labjack.getAIN(0))
         while (input0>2.5):
-            input0 = (self.labjack.getAIN(0))
-            logging.info('        selcted BS {}  , reading: {}'.format(self.BS,self.labjack.getAIN(self.BS-1)))
-            logging.info('bubble sensor output:{}'.format( input0))
+            # input0 = (self.labjack.getAIN(0))
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            logging.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
+            # print('----------------',input0, 'position:', self.pump1.get_plunger_position(1))
             time.sleep(1)
-            logging.info('cur pos =={}'.format( cur_pos))
-            cur_pos = self.pump1.get_plunger_position(1)            
-
         self.pump1.stop(1)
-        time.sleep(.25)
-        self.pump1.set_speed(1, prev_speed)
+        self.pump1.set_speed(1,1000)
+        # # send pump1 to 0 position
+        # # self.pump1.set_pos_absolute(1, 0)
+        # prev_speed = self.pump1.get_peakspeed(1)
+        # print("==========>",prev_speed)
+        # # change to high speed for retraction
+        # if (self.microstep == False):
+        #     logging.info('micro step is off')
+        #     self.pump1.set_speed(1,1000)
+        # else:
+        #     logging.info('micro step is on')
+        #     self.pump1.set_speed(1,1000*8)
+        # print("1-----------------")
+        # time.sleep(.5)
+        # a =self.pump1.get_peakspeed(1)
+        # print("2-----------------")
+        # time.sleep(.5)
+        # logging.info('setting peak speed to:{} and send pluger to home'.format( a))
+
+        # self.pump1.set_pos_absolute(1, 0)
+        # # time.sleep(5)
+
+        # cur_pos = 24000
+        # logging.info('going to 0 pos')
+        # while (cur_pos > 0):
+        #     # logging.info('cur pos:', cur_pos)
+        #     cur_pos = self.pump1.get_plunger_position(1)            
+        #     time.sleep(1)
+
+
+        # # change to low speed for forward motion
+        # if (self.microstep == False):
+        #     logging.info('micro step is off')
+        #     self.pump1.set_speed(1,48)
+        # else:
+        #     logging.info('micro step is on')
+        #     self.pump1.set_speed(1,48*8)
+
+        # logging.info('going to final pos')
+        # self.pump1.set_pos_absolute(1, 10000)
+
+        # # continue until a bubble detected or reaching end of travel
+        # input0 = (self.labjack.getAIN(0))
+        # while (input0>2.5):
+        #     input0 = (self.labjack.getAIN(0))
+        #     logging.info('        selcted BS {}  , reading: {}'.format(self.BS,self.labjack.getAIN(self.BS-1)))
+        #     logging.info('bubble sensor output:{}'.format( input0))
+        #     time.sleep(1)
+        #     logging.info('cur pos =={}'.format( cur_pos))
+        #     cur_pos = self.pump1.get_plunger_position(1)            
+
+        # self.pump1.stop(1)
+        # time.sleep(.25)
+        # self.pump1.set_speed(1, prev_speed)
+
+
+
 
 
     def p1_b_top_spd_click(self):
-        logging.info("p1_top speed")
+        # logging.info("p1_top speed")
         s =   self.ent_top_spd.get()
-        logging.info(s)
+        logging.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
             max_spd = int(s)
             self.pump1.set_speed(1,max_spd)
@@ -1045,11 +1076,11 @@ class run_GUI(GUI.GUI):
             self.microstep = True
             pass
         else:
-            logging.info("invalid scale factor")
+            logging.info("\tinvalid scale factor")
             self.scalefactor = 1
 
         self.scalefactor = STEP_RANGE / VOLUME
-        logging.info('scale factor:{}'.format( self.scalefactor))
+        logging.info('\tscale factor:{}'.format( self.scalefactor))
 
 
 

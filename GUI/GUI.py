@@ -81,6 +81,11 @@ class GUI():
             self.Lver_gant_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
             self.Lver_gant_axis_id.pack()
             self.Lver_gant_axis_id.place(x = XX1+XX2,y = Y1+6*dY1)
+            Label(self.tab3, text = "Mixer Axis ID:",font=self.Font3 , bg=self.Color1,
+                  fg='black').place(x = XX1,y = Y1+7*dY1)  
+            self.Lmixer_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
+            self.Lmixer_axis_id.pack()
+            self.Lmixer_axis_id.place(x = XX1+XX2,y = Y1+7*dY1)
 
             XX3 = 500 # first col. of labels
             XX4 = 200 # second col of labels
