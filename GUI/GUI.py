@@ -5,6 +5,26 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import time
 import sys
+import logging
+
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+
+file_handler = logging.FileHandler('error.log')
+file_handler.setLevel(logging.ERROR)
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
+
+
 
 class GUI():
 
@@ -882,7 +902,8 @@ class GUI():
             screen_height = root.winfo_screenheight()
             position_top = int(screen_height/2 -window_height/2)
             position_right = int(screen_width / 2 - window_width/2)
-            print('H:', screen_height, 'x W:', screen_width )
+            # logger.debug('H:', screen_height, 'x W:', screen_width )
+            logger.debug('H:{}x W{}:'.format( screen_height, screen_width ))
             root.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
             def disable_event():
                   pass
@@ -908,7 +929,7 @@ class GUI():
 
 
       def checkExitButton(self):
-            print("exit button pressed ...")
+            logger.debug("exit button pressed ...")
             self.timer.cancel()
             # self.root.destroy()
             sys.exit(0)
@@ -917,12 +938,13 @@ class GUI():
       def checkComboCfg1(self, event):
             # def option_selected(event):
             s = self.comboCfg1.get()
-            print('parent :', s)
+            logger.debug('parent :', s)
+            logger.debug('parent :{}'.format( s))
             ss=s.partition(')')
             # index = self.comboCfg1.get(0, "end") 
             index = ss[0]
             return index
-            # print("INDEX = ", index)
+            # logger.debug("INDEX = ", index)
 
 
 
@@ -936,141 +958,141 @@ class GUI():
       #--------------------------------------------------------------------------
       def checkComboCfg2(self, event):
             # def option_selected(event):
-            print(self.comboCfg1.get())
+            logger.debug(self.comboCfg1.get())
 
       # def p1_b_Zinit_click(self):
-      #      print("p1 Z initialized")
+      #      logger.debug("p1 Z initialized")
 
       # def p1_b_Yinit_click(self):
-      #      print("p1 Y initialized")
+      #      logger.debug("p1 Y initialized")
 
       def p2_b_Zinit_click(self):
-            print("p2 Z initialized")
+            logger.debug("p2 Z initialized")
 
       def p2_b_Yinit_click(self):
-            print("p2 Y initialized")
+            logger.debug("p2 Y initialized")
 
       def p1_b_abs_pos_click(self):
-            print("p1_abs pos")
+            logger.debug("p1_abs pos")
             s =   self.ent_abs_pos.get()
-            print(s)
+            logger.debug(s)
             # self.p1_cur_pos["text"]=  s
 
       def p1_b_pickup_pos_click(self):
-            print("parent: p1_pickup ")
+            logger.debug("parent: p1_pickup ")
             s =   self.ent_pickup_pos.get()
-            print(s)
+            logger.debug(s)
 
       def p1_b_dispense_pos_click(self):
-            print("parent: p1_dispense ")
+            logger.debug("parent: p1_dispense ")
             s =   self.ent_dispemse_pos.get()
-            print(s)
+            logger.debug(s)
 
 
       def p1_b_pickupUntillbubble(self):
-            print("paretn: pickup until bubble")
+            logger.debug("paretn: pickup until bubble")
 
       def p1_b_dispenseUntillbubble(self):
-            print("paretn: dispense until bubble")
+            logger.debug("paretn: dispense until bubble")
 
       def p1_b_teminateP1(self):
-            print('parent: termnate p1')
+            logger.debug('parent: termnate p1')
             
       def p1_b_teminateP2(self):
-            print('parent: termnate p2')
+            logger.debug('parent: termnate p2')
 
       def p1_b_top_spd_click(self):
-            print("p1_top speed")
+            logger.debug("p1_top speed")
             s =   self.ent_top_spd.get()
-            print(s)
+            logger.debug(s)
 
       def p2_b_abs_pos_click(self):
-            print("p2_abs pos")
+            logger.debug("p2_abs pos")
             s =   self.ent_abs_pos2.get()
-            print(s)
+            logger.debug(s)
 
       def p2_b_pickup_pos_click(self):
-            print("p2_pickup ")
+            logger.debug("p2_pickup ")
             s =   self.ent_pickup_pos2.get()
-            print(s)
+            logger.debug(s)
 
       def p2_b_dispense_pos_click(self):
-            print("p2_dispense ")
+            logger.debug("p2_dispense ")
             s =   self.ent_dispemse_pos2.get()
-            print(s)
+            logger.debug(s)
 
       def p2_b_top_spd_click(self):
-            print("p2_top speed")
+            logger.debug("p2_top speed")
             s =   self.ent_top_spd2.get()
-            print(s)
+            logger.debug(s)
 
       def tec_b_tmpset_click(self):
-            print("parent: TECt new tmp:")
+            logger.debug("parent: TECt new tmp:")
             s =   self.ent_tmp.get()
-            print(s)
+            logger.debug(s)
 
       def tec_b_start_click(self):
-            print("parent: TEC start")
+            logger.debug("parent: TEC start")
             pass
 
       def tec_b_stop_click(self):
-            print("parent: TEC stop")
+            logger.debug("parent: TEC stop")
             pass
 
       def checkCombo0(self,event):        
-            print("parent:", self.combo0.get())
+            logger.debug("parent:", self.combo0.get())
       
       def checkCombob1(self, event):
-            print("parent:", self.combob1.get())
+            logger.debug("parent:", self.combob1.get())
 
       def checkComboP1(self,event):
-            print('pump1 mode selected')
-            print(self.comboP1.get())
+            logger.debug('pump1 mode selected')
+            logger.debug(self.comboP1.get())
 
       def checkCombo1(self,event):
-            print('-->'+self.combo1.get())
+            logger.debug(self.combo1.get())
 
       def checkCombo3(self, event):
-            print('parent-->'+self.combo3.get())
+            logger.debug('parent-->{}'.format(self.combo3.get()))
 
       def checkCombo5(self, event):
-            print('parent-->'+self.combo5.get())
+            logger.debug('parent-->{}'.format(self.combo5.get()))
 
       def checkCombo9(self, event):
-            print('parent-->'+self.combo9.get())        
+            logger.debug('parent-->{}'.format(self.combo9.get())        )
 
       def checkCombo2(self, event):
-            print('-->'+self.combo2.get())  
+            logger.debug('-->'+self.combo2.get())  
 
       def checkCombo4(self,event):
-            print('-->'+self.combo4.get()) 
+            logger.debug('-->'+self.combo4.get()) 
 
       def checkCombo6(self,event):
-            print('-->'+self.combo6.get()) 
+            logger.debug('-->'+self.combo6.get()) 
 
       def checkCombo7(self,event):
-            print('-->'+self.combo7.get()) 
+            logger.debug('-->'+self.combo7.get()) 
 
       def checkCombo8(self,event):
-            print('-->'+self.combo8.get()) 
+            logger.debug('-->'+self.combo8.get()) 
       #--------------------- DEFINE CALLBACK FUNCTIONS FOR BUTTONS -----------------
       def m1_b_abs_pos_click(self):
-            print("parent: m1_new_spd")
+            logger.debug("parent: m1_new_spd")
             s =   self.ent_m1_spd_.get()
-            print(s)
+            logger.debug(s)
             # if (is_float(s) == True):
-            #     print('it\'s a number:', float(s))
+            #     logger.debug('it\'s a number:', float(s))
             # else:
-            #     print("nut a number")
+            #     logger.debug("nut a number")
 
       def checkCombo_mh(self):
-            print('parent-->'+self.combo_mh.get())
+            logger.debug('parent-->{}'.format(self.combo_mh.get()))
 
       def gantry_vertical_set_rel_click(self):
-            print('parent-->'+self.ent_gnt_ver_rel.get())
+            logger.debug('parent-->{}'.format(self.ent_gnt_ver_rel.get()))
 
       def gantry_vertical_set_abs_click(self):
-            print('parent-->'+self.ent_gnt_ver_abs.get())
+            logger.debug('parent-->{}'.format(self.ent_gnt_ver_abs.get()))
 
         
         

@@ -1,4 +1,20 @@
 from ctypes import *
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+
+file_handler = logging.FileHandler('error.log')
+file_handler.setLevel(logging.ERROR)
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 UPDATE_NONE			=-1
 UPDATE_ON_EVENT		=0
@@ -25,6 +41,7 @@ POWER_OFF =0
 
 class motor_mixer():
     def __init__(self, port, axis_id, motor_type,acceleration):
+        
         self.AXIS_ID = axis_id
         # self.speed = speed
         # self.acceleration = acceleration        
@@ -32,27 +49,27 @@ class motor_mixer():
         self.PORTNAME=port
         self.acceleration = acceleration
         # self.fd = self.mydll1.TS_OpenChannel(port,0, self.AXIS_ID, 115200)
-        # # print("motor 1 - openning COM7 port:", fd)
+        # # logger.info("motor 1 - openning COM7 port:", fd)
 
 
         #/*	Load the *.t.zip with setup data generated with EasyMotion Studio or EasySetUp */
         config_file = b"./config/"+motor_type + b".t.zip"
-        print('config file = ', config_file)
+        logger.info('config file = {}'.format( config_file))
 
         self.idxSetup = self.mydll1.TS_LoadSetup(config_file)
         if (self.idxSetup < 0):
-            print('cannot load setup')
+            logger.info('cannot load setup')
             return False
         else:
-            print("setup loaded sucessfully")
+            logger.info("setup loaded sucessfully")
 
-        # print("---------initialize the motor  -------------------")
-        print("connecting to com porst:",self.PORTNAME)
+        # logger.info("---------initialize the motor  -------------------")
+        logger.info("connecting to com port:",self.PORTNAME)
 
         if self.InitCommunicationChannel() == False:
-            print("Commumication error!", self.mydll1.TS_GetLastErrorText())
+            logger.info("Commumication error!", self.mydll1.TS_GetLastErrorText())
         else:
-            print("Communication established")
+            logger.info("Communication established")
 
 
 
@@ -60,18 +77,18 @@ class motor_mixer():
 
         #/*	Setup the axis based on the setup data previously loaded */
         tt = self.mydll1.TS_SetupAxis(self.AXIS_ID, self.idxSetup)
-        # print(' setup axis:', tt)
+        # logger.info(' setup axis:', tt)
 
         #	Select the destination axis of the TML commands 
         tt =self. mydll1.TS_SelectAxis(self.AXIS_ID)
-        # print(' select dest. axis:', tt)
+        # logger.info(' select dest. axis:', tt)
 
         #/*	Execute the initialization of the drive (ENDINIT) */
         tt = self.mydll1.TS_DriveInitialisation()
-        # print('init successful:', tt)
+        # logger.info('init successful:', tt)
 
         tt = self.mydll1.TS_Power(POWER_ON)
-        # print('Power On successful:', tt)
+        # logger.info('Power On successful:', tt)
 
         # motor 1 power on:
         y = self.mydll1.TS_ReadStatus
@@ -82,7 +99,7 @@ class motor_mixer():
         while ((p.value & (1<<15)) == 0):
             tt = y(REG_SRL,  byref(p))
     
-        # print('{:X} = {:b} '.format(p.value,p.value))
+        # logger.info('{:X} = {:b} '.format(p.value,p.value))
             return True
     
 
@@ -103,7 +120,7 @@ class motor_mixer():
         x.argtypes = [c_double,c_double, c_int, c_int]
         # tt = x(100., .01,1,0)
         tt = x(speed, self.acceleration,1,0)
-        # print(tt)
+        # logger.info(tt)
 
 
     def stop(self):
@@ -113,10 +130,10 @@ class motor_mixer():
         x.argtypes = [c_double,c_double, c_int, c_int]
 
         tt = x(speed, self.acceleration,1,0)
-        # print(tt)
+        # logger.info(tt)
 
 
         tt = self.mydll1.TS_Power(POWER_OFF)
-        # print('Power Off successful:', tt)
+        # logger.info('Power Off successful:', tt)
 
         self.mydll1.TS_CloseChannel(self.fd);
