@@ -31,7 +31,8 @@ BS14_THRESHOLD = 2.5  #Threshold value for bubble sensor 14
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+formatter = logging.Formatter('%(levelname)s:%(message)s')
+# formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
 
 file_handler = logging.FileHandler('error.log')
 file_handler.setLevel(logging.ERROR)
@@ -488,11 +489,11 @@ class run_GUI(GUI.GUI):
 
 
     def m1_b_abs_pos_click(self):
-        logger.info("child: m1_new_spd")
+        # logger.info("child: m1_new_spd")
         s =   self.ent_m1_spd_.get()
-        logger.info(s)
+        # logger.info(s)
         if (is_float(s) == True):
-            logger.info('it\'s a number:{}'.format( float(s)))
+            # logger.info('it\'s a number:{}'.format( float(s)))
             # m1_speed = float(s)
 
             self.motors.select_axis(self.AXIS_ID_01)

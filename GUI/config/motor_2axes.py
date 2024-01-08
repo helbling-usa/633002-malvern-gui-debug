@@ -331,7 +331,8 @@ class motor_2axes():
             logger.error("\tcan't select axis 1")
             return False
         else:
-            logger.info('\t\tstarting mixing motor')
+            # logger.info('\t\tstarting mixing motor')
+            return True
         
     def close_port(self):
         self.mydll1.TS_CloseChannel(-1)

@@ -37,7 +37,7 @@ class GUI():
             self.define_tab1()
             self.define_tab2()
             self.define_tab3()
-
+            root.iconbitmap("./Images/icon2ico")
 
       def define_tab1(self):
             self.setup_pump1()
