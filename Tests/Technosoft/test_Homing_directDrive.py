@@ -25,6 +25,7 @@ if __name__ == "__main__":
     if (motor.InitAxis()==False):
         print("Failed to start up the drive")
 
+    
 
     
     motor.homing()

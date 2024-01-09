@@ -729,7 +729,7 @@ class GUI():
             XX2 = 100
             XX3=50
             Label(self.tab2, text = "MIXING MOTOR",font=self.Font4 , bg=self.Color1,
-                  fg=self.Title_large).place(x = XX1+40,y = 40)  
+                  fg=self.Title_large).place(x = XX1+10,y = 40)  
             Label(self.tab2, text = "Current Spd",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             self.m1_cur_spd = Label(self.tab2, text = "----",font=self.Font1 )
@@ -740,10 +740,12 @@ class GUI():
             self.ent_m1_spd_ = Entry(self.tab2, width=8)
             self.ent_m1_spd_.pack()
             self.ent_m1_spd_.place(x = XX1 + XX2,y = Y1 + 2*dY1 ) 
-            self.b_m1_spd = Button(self.tab2,text="set", bg=self.Color2, 
-                                    fg=self.Color3, 
-                                    command=self.m1_b_abs_pos_click).place(x = XX1 + XX2+XX3+10,
+            self.b_m1_spd = Button(self.tab2,text="set", bg=self.Color2, fg=self.Color3, 
+                                   command=self.m1_b_SetSpeed).place(x = XX1 + XX2+XX3+10,
                                                                         y = Y1 + 2*dY1 - 2)
+            self.b_m1_spd = Button(self.tab2,text="STOP", bg="#fc9d9d", fg='black', 
+                                   font=self.Font5,command=self.m1_b_stop_click).place(x = XX1 + 50,
+                                                                                       y = Y1 + 3*dY1 - 2)
             
 
       def setup_GantryHorizontal(self):
@@ -803,6 +805,9 @@ class GUI():
             self.ent_gnt_ver_abs.place(x = XX1 + XX2+ delta,y = Y1 + 3*dY1)
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
                   command=self.gantry_vertical_set_abs_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 3*dY1 - 2)
+            
+            Button(self.tab2, bg="#fc9d9d", fg='black',text="Homing Routine", font=self.Font5,
+                  command=self.gantry_vertical_homing_click).place(x = XX1 -25+ delta,y = Y1 + 4*dY1 - 2)
             
 
 
@@ -1077,7 +1082,7 @@ class GUI():
       def checkCombo8(self,event):
             logger.debug('-->'+self.combo8.get()) 
       #--------------------- DEFINE CALLBACK FUNCTIONS FOR BUTTONS -----------------
-      def m1_b_abs_pos_click(self):
+      def m1_b_SetSpeed(self):
             logger.debug("parent: m1_new_spd")
             s =   self.ent_m1_spd_.get()
             logger.debug(s)
@@ -1085,6 +1090,11 @@ class GUI():
             #     logger.debug('it\'s a number:', float(s))
             # else:
             #     logger.debug("nut a number")
+
+
+      def m1_b_stop_click(self):
+            logger.debug("parent: m1_stop")
+            
 
       def checkCombo_mh(self):
             logger.debug('parent-->{}'.format(self.combo_mh.get()))
@@ -1094,7 +1104,9 @@ class GUI():
 
       def gantry_vertical_set_abs_click(self):
             logger.debug('parent-->{}'.format(self.ent_gnt_ver_abs.get()))
-
+      
+      def gantry_vertical_homing_click(self):
+            logger.debug('parent-->V homing')
         
         
 

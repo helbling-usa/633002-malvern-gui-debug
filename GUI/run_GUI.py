@@ -77,11 +77,8 @@ class run_GUI(GUI.GUI):
         # logger.info(self.mc.set_temp(35.3))
         # logger.info("----------------------------------------------")
 
-        # # # # #-------- set the motor1 speed to 0
-        # # # valid = self.motor1.set_speed(0)
-        # # # time.sleep(.25)
-        # # # if (valid == True):
-        # # #     self.m1_cur_spd.config(text="0")        
+        # #-------- set the motor1 speed to 0
+        self.m1_cur_spd.config(text="0")        
 
         # # # #------ init valve 1 to 'E' 
         # # # self.pump1.set_valve(1, 'E')
@@ -108,9 +105,12 @@ class run_GUI(GUI.GUI):
         #-------- read bubble sensor and update the GUI -------------------------
         self.read_BubbleSensors()
         self.updateGUI_BubbleSensorLEDs()
+
         #-------- repeat the timer ----------------------------------------------
         self.timer = threading.Timer(1.0, self.timerCallback_1)
         self.timer.start()
+
+        
 
 
     def updateGUI_TectController(self):
@@ -135,7 +135,7 @@ class run_GUI(GUI.GUI):
         logger.info("Initializing Pumps/Valves.....")
         self.pump1 = P.Pump("COM6")
         logger.info("\t\tPumps initialized")
-        self.pump1.pump_Zinit(1)
+        # self.pump1.pump_Zinit(1)
         
 
         
@@ -325,7 +325,7 @@ class run_GUI(GUI.GUI):
 
 
     def PortAssignment(self):
-        logger.info("Assigning Ports -------------------------------------------")
+        logger.info("Assigning Ports .....")
         # #---- extract port numbers for config.json
         with open('./config/config.json') as json_file:
             ports = json.load(json_file)
@@ -380,6 +380,11 @@ class run_GUI(GUI.GUI):
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             self.motors.move_relative_position(rel_pos, speed, acceleration)
+
+            # time.sleep(0.5)
+            # p= self.motors.read_actual_position()
+            # self.m3_cur_spd.config(text = p)
+
         else:
             logger.info("Not a number. Please enter an integer for VG rel. position")
 
@@ -397,9 +402,20 @@ class run_GUI(GUI.GUI):
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             self.motors.move_absolute_position(abs_pos, speed, acceleration)
+            # time.sleep(0.5)
+            # p= self.motors.read_actual_position()
+            # self.m3_cur_spd.config(text = p)            
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
         
+
+    def gantry_vertical_homing_click(self):
+        # logger.debug('child-->V homing')
+        self.motors.homing(self.AXIS_ID_02)
+        # print("u------------------------")
+        
+
+
 
     def Init__motors_all_axes(self):
         logger.info("Initializing motors .....")        
@@ -486,7 +502,16 @@ class run_GUI(GUI.GUI):
         logger.info('child:{}'.format( self.comboCfg1.get()))
 
 
-    def m1_b_abs_pos_click(self):
+
+    def m1_b_stop_click(self):
+        # logger.debug("child: m1_stop")
+        self.motors.select_axis(self.AXIS_ID_01)
+        speed =0
+        acceleration = 1
+        self.motors.set_speed(speed,acceleration)       
+        self.m1_cur_spd.config(text='0')
+
+    def m1_b_SetSpeed(self):
         # logger.info("child: m1_new_spd")
         s =   self.ent_m1_spd_.get()
         # logger.info(s)
@@ -497,7 +522,9 @@ class run_GUI(GUI.GUI):
             self.motors.select_axis(self.AXIS_ID_01)
             speed =float(s)
             acceleration = 1
-            self.motors.set_speed(speed,acceleration)       
+            self.motors.set_speed(speed,acceleration)    
+
+            self.m1_cur_spd.config(text=s)    
         else:
             logger.warning("Not a number. Plaese enter an integer for speed.")
             

@@ -22,17 +22,17 @@ if __name__ == "__main__":
 
 
 
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    m1.select_axis(AXIS_ID_01)
-    speed =3000
+    # print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    # m1.select_axis(AXIS_ID_01)
+    # speed =3000
     acceleration = 1
-    m1.set_speed(speed,acceleration)
-    time.sleep(3)
+    # m1.set_speed(speed,acceleration)
+    # time.sleep(3)
     
 
-    speed =0    
-    m1.set_speed(speed,acceleration)
-    time.sleep(3)
+    # speed =0    
+    # m1.set_speed(speed,acceleration)
+    # time.sleep(3)
 
     
     m1.select_axis(AXIS_ID_02)
@@ -51,17 +51,26 @@ if __name__ == "__main__":
 
 
     time.sleep(1)
-    speed = 30.0
-    rel_pos = 12000 # 5000/800 *6 = 0.0075*5000=3.25mm
+    speed = 3.0
+    rel_pos = -1000 # 5000/800 *6 = 0.0075*5000=3.25mm
     m1.move_relative_position(rel_pos, speed, acceleration)
-    time.sleep(3)
-    # print("----------set position-----------------")
-    tt = m1.read_actual_position()
-    print('position is:{}'.format(tt))
+    time.sleep(1)
+    
+    # rel_pos = -1000 # 5000/800 *6 = 0.0075*5000=3.25mm
+    # m1.move_relative_position(rel_pos, speed, acceleration)
+
+
+
+    # # print("----------set position-----------------")
+    # tt = m1.read_actual_position()
+    # print('position is:{}'.format(tt))
 
     
-    rel_pos = 2000 # 5000/800 *6 = 0.0075*5000=3.25mm
-    m1.move_relative_position(rel_pos, speed, acceleration)
+    # rel_pos = 3000 # 5000/800 *6 = 0.0075*5000=3.25mm
+    # m1.move_absolute_position(rel_pos, speed, acceleration)
+    # time.sleep(1)
+    # rel_pos = 0 # 5000/800 *6 = 0.0075*5000=3.25mm
+    # m1.move_absolute_position(rel_pos, speed, acceleration)
 
     # print("----------set position-----------------")
     tt = m1.read_actual_position()

@@ -10,6 +10,7 @@ FROM_REFERENCE	=1
 NO_ADDITIVE		=0
 ADDITIVE		=1
 WAIT_EVENT		=1
+NO_WAIT_EVENT	=0
 NO_STOP			=0
 STOP			=1
 NO_CHANGE_POS	=0
@@ -27,6 +28,7 @@ class motor_2axes():
     global NO_ADDITIVE
     global ADDITIVE
     global WAIT_EVENT
+    global NO_WAIT_EVENT
     global NO_STOP
     global REG_SRL
     global CHANNEL_TYPE
@@ -199,6 +201,102 @@ class motor_2axes():
         return True
 
 
+
+    def homing(self, AXIS_ID):
+        #print("----------MOVE Relative-----------------")
+        position = -1000000	#	/* position command [drive internal position units, encoder counts] */
+        home_position = 0	#	/* the homing position [drive internal position units, encoder counts] */
+        cap_position = 0		#	/* the position captures at HIGH-LOW transition of negative limit switch */
+        high_speed = 10	    	#	/* the homing travel speed [drive internal speed units, encoder counts/slow loop sampling]*/
+        low_speed = 1.0 		#	/* the homing brake speed [drive internal speed units, encoder counts/slow loop sampling] */
+        acceleration = 0.6
+        #/*Constants used for LSWType*/
+        LSW_NEGATIVE = -1
+        LSW_POSITIVE = 1
+        # /*Constants used for TransitionType*/
+        TRANSITION_HIGH_TO_LOW =-1
+        TRANSITION_DISABLE =0
+        TRANSITION_LOW_TO_HIGH =1        
+
+
+        
+        print("Homing started for axis id: {}".format( AXIS_ID))
+        tt = self.mydll1.TS_SelectAxis(AXIS_ID)
+        if tt<=0:
+            print("Failed to select axis id: {}".format(AXIS_ID))
+            return False        
+                
+        # #/*	Command a trapezoidal positioning to search the positive limit switch */
+        print("Searching for positive limit switch .....")
+        x = self.mydll1.TS_MoveRelative
+        x.restype = c_bool
+        x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
+        tt = x(position, low_speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
+        if tt<=0:
+            print("Error moving relative")
+            return False
+
+        ##/*	Wait for the LOW-HIGH transition on positive limit switch */
+        x = self.mydll1.TS_SetEventOnLimitSwitch
+        x.restype = c_bool
+        x.argtypes = [c_short, c_short, c_bool, c_bool]
+        EnableStop = True
+        tt = x(LSW_NEGATIVE, TRANSITION_LOW_TO_HIGH, WAIT_EVENT, EnableStop)
+        if tt<=0:
+            print("Error in set event on limit switch",tt)
+            return False
+            
+        # /*	Wait until the motor stops */
+        x = self.mydll1.TS_SetEventOnMotionComplete
+        x.restype = c_bool
+        x.argtypes = [c_bool, c_bool]        
+        if (x(WAIT_EVENT,NO_STOP) == False):
+            print("error in set event on motion complete")
+            error = self.mydll1.TS_GetLastErrorText()
+            print('---->',error)
+            self.mydll1.TS_ResetFault()
+            return False
+        
+        #/*	Read the captured position on imit switch transition */
+        y = self.mydll1.TS_GetLongVariable
+        y.restype = c_bool
+        y.argtypes = [c_char_p, POINTER(c_long)]
+        p = c_long()
+        tt = y(b"CAPPOS",  byref(p))
+        cap_position = p.value
+        print("The captured position is: {} [drive internal position units]\n".format( cap_position));
+
+        
+        #/*	Command an absolute positioning on the captured position */
+        x = self.mydll1.TS_MoveAbsolute
+        x.restype = c_bool
+        x.argtypes = [c_long,c_double, c_double,  c_short, c_short]
+        # abs_pos = -2000
+        tt = x(cap_position, low_speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
+        if (tt == False):
+            print("error in moving to absolute position")
+            return False
+
+        # /*	Wait until the positioning is ended */
+        if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
+            print("error in set event on motion complete")
+            return False
+        
+        # set that spot as home position
+        self.set_position(home_position)
+
+        print("The motor position is set to {} [position internal units]!\n\n".format( home_position));
+        print("Homing procedure done!\n")
+
+        self.move_absolute_position(1000 , low_speed, acceleration)
+        # m1.move_relative_position(1000 , speed, acceleration)
+        time.sleep(3)
+        return True
+
+
+
+
+
     def get_firmware_version(self):
         # print("---------get FM VER -------------------")
         y = self.mydll1.TS_GetFirmwareVersion
@@ -210,18 +308,24 @@ class motor_2axes():
         print('firmware version: {:X}'.format(p.value))
 
 
-    def set_position(self):
+    def set_position(self,position=0):
         # print("----------set position-----------------")
         x = self.mydll1.TS_SetPosition
         x.restype = c_bool
         x.argtypes = [c_long]
-        tt = x(0)
+        tt = x(position)
         # if (tt==True):
         #     print('position is set')
         return tt
 
 
     def move_relative_position(self, rel_pos, speed, acceleration):
+        LSW_NEGATIVE = -1
+        LSW_POSITIVE = 1
+        # /*Constants used for TransitionType*/
+        TRANSITION_HIGH_TO_LOW =-1
+        TRANSITION_DISABLE =0
+        TRANSITION_LOW_TO_HIGH =1  
         # print("----------MOVE Relative-----------------")
         x = self.mydll1.TS_MoveRelative
         x.restype = c_bool
@@ -232,9 +336,29 @@ class motor_2axes():
         if (tt==True):
             print("moving to relative position is done")
         # /*	Wait until the positioning is ended */
-        if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
+        if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
             print("error in set event on motion complete")
 
+
+        x = self.mydll1.TS_SetEventOnLimitSwitch
+        x.restype = c_bool
+        x.argtypes = [c_short, c_short, c_bool, c_bool]
+        EnableStop = True
+        tt = x(LSW_POSITIVE, TRANSITION_LOW_TO_HIGH, NO_WAIT_EVENT, EnableStop)
+
+        # y = self.mydll1.TS_CheckEvent
+        # y.restype = c_bool
+        # y.argtypes = [POINTER(c_bool)]
+        # p = c_bool()
+        # tt = y(byref(p))
+        # print('--------------------->>>> p.value:{}'.format(p.value))
+
+        # if (p.value == True):
+        #     print("------ PULLING BACK------")
+        #     x = self.mydll1.TS_MoveRelative
+        #     x.restype = c_bool
+        #     x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
+        #     tt = x(-1000, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
 
     def move_absolute_position(self, abs_pos, speed, acceleration):
         # print("----------MOVE Relative-----------------")
@@ -247,7 +371,7 @@ class motor_2axes():
         if (tt==True):
             print("moving to absolute position is done")
         # /*	Wait until the positioning is ended */
-        if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
+        if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
             print("error in set event on motion complete")
     
     def read_actual_position(self):

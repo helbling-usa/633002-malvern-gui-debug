@@ -217,7 +217,7 @@ class motor_Linear():
     def homing(self):
         #print("----------MOVE Relative-----------------")
         position = 1000000	#	/* position command [drive internal position units, encoder counts] */
-        home_position = 1000	#	/* the homing position [drive internal position units, encoder counts] */
+        home_position = -1000	#	/* the homing position [drive internal position units, encoder counts] */
         cap_position = 0		#	/* the position captures at HIGH-LOW transition of negative limit switch */
         high_speed = 10	    	#	/* the homing travel speed [drive internal speed units, encoder counts/slow loop sampling]*/
         low_speed = 1.0 		#	/* the homing brake speed [drive internal speed units, encoder counts/slow loop sampling] */
@@ -228,12 +228,10 @@ class motor_Linear():
         # /*Constants used for TransitionType*/
         TRANSITION_HIGH_TO_LOW =-1
         TRANSITION_DISABLE =0
-        TRANSITION_LOW_TO_HIGH =1
-        
+        TRANSITION_LOW_TO_HIGH =1        
 
-        # self.set_position()
-
-        # #/*	Command a trapezoidal positioning to search the negative limit switch */
+        # #/*	Command a trapezoidal positioning to search the positive limit switch */
+        print("Searching for positive limit switch .....")
         x = self.mydll1.TS_MoveRelative
         x.restype = c_bool
         x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
@@ -241,14 +239,6 @@ class motor_Linear():
         if tt<=0:
             print("Error moving relative")
             return False
-        
-
-        # speed = 1.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
-        # acceleration = 1.0#0.015;#/* acceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
-        # rel_pos = 10000
-        # self.move_relative_position(rel_pos, speed, acceleration)
-
-
 
         ##/*	Wait for the LOW-HIGH transition on positive limit switch */
         x = self.mydll1.TS_SetEventOnLimitSwitch
@@ -260,50 +250,33 @@ class motor_Linear():
             print("Error in set event on limit switch",tt)
             return False
             
-
-  
-
+        # /*	Wait until the motor stops */
         x = self.mydll1.TS_SetEventOnMotionComplete
         x.restype = c_bool
         x.argtypes = [c_bool, c_bool]        
-        
         if (x(WAIT_EVENT,NO_STOP) == False):
             print("error in set event on motion complete")
             error = self.mydll1.TS_GetLastErrorText()
             print('---->',error)
             self.mydll1.TS_ResetFault()
             return False
-        else:
-            print('no error with set event on motion')
+        
+        #/*	Read the captured position on imit switch transition */
+        y = self.mydll1.TS_GetLongVariable
+        y.restype = c_bool
+        y.argtypes = [c_char_p, POINTER(c_long)]
+        p = c_long()
+        tt = y(b"CAPPOS",  byref(p))
+        cap_position = p.value
+        print(" The captured position is: {} [drive internal position units]\n".format( cap_position));
 
-
-        # if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
-        #     print("error in set event on motion complete")
-        #     error = self.mydll1.TS_GetLastErrorText()
-        #     print('---->',error)
-        #     self.mydll1.TS_ResetFault()
-        #     return False
-        # else:
-        #     print('no error with set event on motion')
-
-
-        # #/*	Read the captured position on limit switch transition */
-        # y = self.mydll1.TS_GetLongVariable
-        # y.restype = c_bool
-        # y.argtypes = [c_char_p, POINTER(c_long)]
-        # p = c_long()
-        # tt = y(b"CAPPOS",  byref(p))
-        # print(" The captured position is: {} [drive internal position units]\n".format( p.value));
-
-        # set that spot as home position
-        self.set_position()
-
+        
         #/*	Command an absolute positioning on the captured position */
         x = self.mydll1.TS_MoveAbsolute
         x.restype = c_bool
         x.argtypes = [c_long,c_double, c_double,  c_short, c_short]
-        abs_pos = -2000
-        tt = x(abs_pos, low_speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
+        # abs_pos = -2000
+        tt = x(cap_position, low_speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
         if (tt == False):
             print("error in moving to absolute position")
             return False
@@ -313,6 +286,12 @@ class motor_Linear():
             print("error in set event on motion complete")
             return False
         
+        # set that spot as home position
+        self.set_position()
+
+        print(" The motor position is set to {} [position internal units]!\n\n".format( home_position));
+        print(" Homing procedure done!\n")
+
         return True
 
 
