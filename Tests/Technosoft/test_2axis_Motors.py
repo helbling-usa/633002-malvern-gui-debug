@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     time.sleep(1)
     speed = 30.0
-    rel_pos = -2000 # 5000/800 *6 = 0.0075*5000=3.25mm
+    rel_pos = 12000 # 5000/800 *6 = 0.0075*5000=3.25mm
     m1.move_relative_position(rel_pos, speed, acceleration)
     time.sleep(3)
     # print("----------set position-----------------")

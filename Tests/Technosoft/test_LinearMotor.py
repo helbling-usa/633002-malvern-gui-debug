@@ -9,7 +9,7 @@ if __name__ == "__main__":
     
     Larger_actutator= b"LEFS32"
     smaller_actuator= b"LEFS25"
-    motor = motor_Linear(b"COM6", AXIS_ID, smaller_actuator)
+    motor = motor_Linear(b"COM9", AXIS_ID, smaller_actuator)
     
 
     #/*	Setup and initialize the axis */	
@@ -23,8 +23,8 @@ if __name__ == "__main__":
     print("----------set position-----------------")
     motor.set_position()
 
-    print("------------set int var ------------------------------")
-    motor.set_POSOKLIM(1)
+    # print("------------set int var ------------------------------")
+    # motor.set_POSOKLIM(1)
 
     # # print("------------get int var ------------------------------")
     # motor.get_POSOKLIM()
@@ -32,10 +32,11 @@ if __name__ == "__main__":
 
 
     #print("----------MOVE Relative-----------------")
-    speed = 15.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
+    speed = 1#15.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
     acceleration = 1.0#0.015;#/* acceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
-    rel_pos = 10000
+    rel_pos = -12000
     motor.move_relative_position(rel_pos, speed, acceleration)
+    # motor.move_relative_position(rel_pos, speed, acceleration)
 
     # time.sleep(3)
     # speed = 30.0
@@ -47,13 +48,15 @@ if __name__ == "__main__":
     # motor.move_absolute_position(abs_pos, speed, acceleration)
 
 
-    # print("------------Read actual position ------------------------------")
+    print("------------Read actual position ------------------------------")
+
+    time.sleep(1)
     p = motor.read_actual_position()
     print('actual position = {} '.format(p))
 
     p = motor.read_target_position()
     print('Target position = {} '.format(p))
-    print("------------get int var ------------------------------")
-    motor.get_POSOKLIM()
+    # print("------------get int var ------------------------------")
+    # motor.get_POSOKLIM()
 
     motor.disable_motor()

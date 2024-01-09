@@ -130,7 +130,6 @@ class motor_Linear():
         deceleration = 1.5      #;	/* the decceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
         home_position = 1000    #;	/* the homing position [drive internal position units, encoder counts]  */
         
-
         # /*	Set the homing parameters on the drive */
         # /*	--------------------------------------------------------------------*/
         y = self.mydll1.TS_SetFixedVariable
@@ -180,9 +179,6 @@ class motor_Linear():
         if tt<=0:
             print("HOMEPOS error!")
             return False
-        
-
-
 
         # /*	--------------------------------------------------------------------*/
         # /*	Call the homing procedure stored in the non-volatile memory of the drive */
@@ -212,12 +208,6 @@ class motor_Linear():
             tt = y(REG_SRL,  byref(p))
             print('p.value:',p.value)
 
-        
-
-
-
-
-
 
         print("everything looks good so far!")
         return True       
@@ -243,15 +233,23 @@ class motor_Linear():
 
         # self.set_position()
 
-        #/*	Command a trapezoidal positioning to search the negative limit switch */
+        # #/*	Command a trapezoidal positioning to search the negative limit switch */
         x = self.mydll1.TS_MoveRelative
         x.restype = c_bool
         x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
-        tt = x(position, high_speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
+        tt = x(position, low_speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
         if tt<=0:
             print("Error moving relative")
             return False
         
+
+        # speed = 1.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
+        # acceleration = 1.0#0.015;#/* acceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
+        # rel_pos = 10000
+        # self.move_relative_position(rel_pos, speed, acceleration)
+
+
+
         ##/*	Wait for the LOW-HIGH transition on positive limit switch */
         x = self.mydll1.TS_SetEventOnLimitSwitch
         x.restype = c_bool
@@ -261,9 +259,15 @@ class motor_Linear():
         if tt<=0:
             print("Error in set event on limit switch",tt)
             return False
+            
 
-        #TS_SetEventOnMotionComplete
-        if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
+  
+
+        x = self.mydll1.TS_SetEventOnMotionComplete
+        x.restype = c_bool
+        x.argtypes = [c_bool, c_bool]        
+        
+        if (x(WAIT_EVENT,NO_STOP) == False):
             print("error in set event on motion complete")
             error = self.mydll1.TS_GetLastErrorText()
             print('---->',error)
@@ -271,6 +275,17 @@ class motor_Linear():
             return False
         else:
             print('no error with set event on motion')
+
+
+        # if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
+        #     print("error in set event on motion complete")
+        #     error = self.mydll1.TS_GetLastErrorText()
+        #     print('---->',error)
+        #     self.mydll1.TS_ResetFault()
+        #     return False
+        # else:
+        #     print('no error with set event on motion')
+
 
         # #/*	Read the captured position on limit switch transition */
         # y = self.mydll1.TS_GetLongVariable
@@ -330,19 +345,32 @@ class motor_Linear():
 
 
     def move_relative_position(self, rel_pos, speed, acceleration):
+        
         # print("----------MOVE Relative-----------------")
         x = self.mydll1.TS_MoveRelative
         x.restype = c_bool
         x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
 
-        tt = x(rel_pos, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
-        
+        tt = x(rel_pos, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)        
+        # tt=self.mydll1.TS_MoveRelative(rel_pos, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
         if (tt==True):
             print("moving to relative position is done")
         # /*	Wait until the positioning is ended */
         if (self.mydll1.TS_SetEventOnMotionComplete(WAIT_EVENT,NO_STOP) == False):
             print("error in set event on motion complete")
             return False
+
+        # x = self.mydll1.TS_SetEventOnTime
+        # x.restype = c_bool
+        # x.argtypes = [c_int, c_bool,c_bool]
+
+        # time = 12000
+        # tt = x(time, WAIT_EVENT,NO_STOP )
+        # if tt<=0:
+        #     print('------problem--------------')
+        #     return False
+
+
 
         return True
 

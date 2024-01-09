@@ -5,7 +5,8 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+# formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+formatter = logging.Formatter('%(levelname)s:%(message)s')
 
 file_handler = logging.FileHandler('error.log')
 file_handler.setLevel(logging.ERROR)

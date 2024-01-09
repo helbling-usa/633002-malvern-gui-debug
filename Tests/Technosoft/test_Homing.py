@@ -18,7 +18,7 @@ if __name__ == "__main__":
     
     Larger_actutator= b"LEFS32"
     smaller_actuator= b"LEFS25"
-    motor = motor_Linear(b"COM6", AXIS_ID, smaller_actuator)
+    motor = motor_Linear(b"COM9", AXIS_ID, smaller_actuator)
     
 
     #/*	Setup and initialize the axis */	

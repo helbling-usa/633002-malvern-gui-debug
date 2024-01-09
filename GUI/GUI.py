@@ -12,7 +12,8 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+# formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+formatter = logging.Formatter('%(levelname)s:%(message)s')
 
 file_handler = logging.FileHandler('error.log')
 file_handler.setLevel(logging.ERROR)
@@ -37,7 +38,7 @@ class GUI():
             self.define_tab1()
             self.define_tab2()
             self.define_tab3()
-            root.iconbitmap("./Images/icon2ico")
+            root.iconbitmap("./Images/icon2.ico")
 
       def define_tab1(self):
             self.setup_pump1()

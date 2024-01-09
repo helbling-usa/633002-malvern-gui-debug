@@ -1,7 +1,5 @@
 import GUI
 from tkinter import * 
-# import config.motor_1 as Motor1
-# import config.motor_Linear as Motor_VG
 from config.motor_2axes import motor_2axes as Motors
 import config.Pump as P
 import time
