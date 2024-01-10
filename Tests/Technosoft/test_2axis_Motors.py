@@ -38,13 +38,13 @@ if __name__ == "__main__":
     m1.select_axis(AXIS_ID_02)
 
         # print("---------get FM VER -------------------")
-    m1.get_firmware_version()
+    # m1.get_firmware_version()
 
-    # print("----------set position-----------------")
-    m1.set_position()
+    # # print("----------set position-----------------")
+    # m1.set_position()
 
-    # print("------------set int var ------------------------------")
-    m1.set_POSOKLIM(2)
+    # # print("------------set int var ------------------------------")
+    # m1.set_POSOKLIM(2)
 
     # # print("------------get int var ------------------------------")
     # m1.get_POSOKLIM()
@@ -52,9 +52,9 @@ if __name__ == "__main__":
 
     time.sleep(1)
     speed = 3.0
-    rel_pos = -1000 # 5000/800 *6 = 0.0075*5000=3.25mm
+    rel_pos = -2000 # 5000/800 *6 = 0.0075*5000=3.25mm
     m1.move_relative_position(rel_pos, speed, acceleration)
-    time.sleep(1)
+    # time.sleep(1)
     
     # rel_pos = -1000 # 5000/800 *6 = 0.0075*5000=3.25mm
     # m1.move_relative_position(rel_pos, speed, acceleration)
@@ -73,9 +73,9 @@ if __name__ == "__main__":
     # m1.move_absolute_position(rel_pos, speed, acceleration)
 
     # print("----------set position-----------------")
-    tt = m1.read_actual_position()
-    print('Now the position is:{}'.format(tt))
-    print('motion is completed-----------------------------------')
+    # tt = m1.read_actual_position()
+    # print('Now the position is:{}'.format(tt))
+    # print('motion is completed-----------------------------------')
     
     
     m1.close_port()

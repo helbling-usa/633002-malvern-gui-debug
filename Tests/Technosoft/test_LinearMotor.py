@@ -34,7 +34,7 @@ if __name__ == "__main__":
     #print("----------MOVE Relative-----------------")
     speed = 1#15.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
     acceleration = 1.0#0.015;#/* acceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
-    rel_pos = 8000
+    rel_pos = 1000
     motor.move_relative_position(rel_pos, speed, acceleration)
     # motor.move_relative_position(rel_pos, speed, acceleration)
 

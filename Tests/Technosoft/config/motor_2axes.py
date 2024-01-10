@@ -326,6 +326,16 @@ class motor_2axes():
         TRANSITION_HIGH_TO_LOW =-1
         TRANSITION_DISABLE =0
         TRANSITION_LOW_TO_HIGH =1  
+        
+        
+        xx = self.mydll1.TS_GetLongVariable
+        xx.restype = c_bool
+        xx.argtypes = [c_char_p, POINTER(c_long)]
+        pxx = c_long()
+        tt = xx(b"APOS",  byref(pxx))
+        final_pos = pxx.value + rel_pos
+        print("current pos:", pxx.value, " rel pos:", rel_pos, " final pos:", final_pos)
+        
         # print("----------MOVE Relative-----------------")
         x = self.mydll1.TS_MoveRelative
         x.restype = c_bool
@@ -346,10 +356,24 @@ class motor_2axes():
         EnableStop = True
         tt = x(LSW_POSITIVE, TRANSITION_LOW_TO_HIGH, NO_WAIT_EVENT, EnableStop)
 
-        # y = self.mydll1.TS_CheckEvent
-        # y.restype = c_bool
-        # y.argtypes = [POINTER(c_bool)]
-        # p = c_bool()
+
+        
+
+
+        y = self.mydll1.TS_CheckEvent
+        y.restype = c_bool
+        y.argtypes = [POINTER(c_bool)]
+        py = c_bool()
+
+        start = time.time()
+        while (py.value == False and pxx.value<final_pos and time.time()-start<5):
+            self.mydll1.TS_CheckEvent(byref(py))
+
+            xx(b"APOS",  byref(pxx))
+
+        if py.value == True:
+            print("==========++++++++++++++++++++++")
+
         # tt = y(byref(p))
         # print('--------------------->>>> p.value:{}'.format(p.value))
 
