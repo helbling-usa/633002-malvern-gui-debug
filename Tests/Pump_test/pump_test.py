@@ -41,7 +41,7 @@ def test_4way_valve(p1, axis):
         a = p1.set_valve(axis,i)  
         time.sleep(.5)
         a = p1.get_valve(axis)
-        print('5valve pos:', a)
+        print('valve pos:', a)
 
 
 def test_3way_valve(p1,axis):
@@ -86,7 +86,7 @@ def show_message():
     print("9) Test 6 way valve (axis 3)")
 
 if __name__ == "__main__":
-    p1 = P.Pump("COM9")
+    p1 = P.Pump("COM6")
     val = '-'
 
     while val != 'q':
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         elif val=='5':
             test_pump(p1)
         elif val=='6':
-            p1.config_valve(1, 4)
+            # p1.config_valve(1, 4)
             test_4way_valve(p1,1)
         elif val=='7':
             # p1.config_valve(2, 4)

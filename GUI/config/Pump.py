@@ -36,6 +36,7 @@ class Pump():
         # clear buffers
         self.ser.reset_output_buffer()
         self.ser.reset_input_buffer()
+        self.config_valve(1, 4)
         
         
     def pump_Zinit(self, axis):

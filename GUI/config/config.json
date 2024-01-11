@@ -3,5 +3,6 @@
     "TECHNOSOFT": "COM7",
     "PUMP": "COM6",
     "MIXER_AXIS_ID": "24",
-    "GANTRY_VER_AXIS_ID": "1"
+    "GANTRY_VER_AXIS_ID": "1",
+    "GANTRY_HOR_AXIS_ID": "1"
 }

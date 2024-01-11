@@ -238,11 +238,11 @@ class GUI():
                                     ,"BS9","BS10","BS11","BS12","BS13","BS14")
             self.combo0.current(0)
             self.combo0.place(x = XX1 + XX2,y = Y1 + 10*dY1)
-            self.combo0.bind("<<ComboboxSelected>>", self.checkCombo0)
+            self.combo0.bind("<<ComboboxSelected>>", self.checkCombob0)
             Label(self.tab1, text = "Pickup mode",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 11*dY1)  
-            self.b_pickupUntillbubble = Button(self.tab1,
-                                                text="   start   ", bg=self.Color2, fg=self.Color3,font=("Arial", 10),
+            self.b_pickupUntillbubble = Button(self.tab1, text="   start   ", bg=self.Color2, 
+                                               fg=self.Color3,font=("Arial", 10),
                                                 command=self.p1_b_pickupUntillbubble).place(x = XX1 + XX2,
                                                                                           y = Y1 + 11*dY1)
             Label(self.tab1, text = "Dispense mode",font=self.Font1 , bg=self.Color1,
@@ -324,7 +324,7 @@ class GUI():
             self.ent_top_spd2.place(x = XX1 + XX2,y = Y10 + 7.5*dY1, ) 
             self.b_top_spd2 = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                     command=self.p2_b_top_spd_click).place(x = XX1 + XX2 + XX3,
-                                                                              y = Y10 + 8*dY1 - 2)
+                                                                              y = Y10 + 7.5*dY1 - 2)
             
             Label(self.tab1, text = "Until Bubble Sensor",font=self.Font3 , bg=self.Color1,
                   fg=self.Title_mid).place(x = XX1+15 ,y = Y1 + 9*dY1)  
@@ -341,12 +341,19 @@ class GUI():
 
             Label(self.tab1, text = "Pickup mode",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 11*dY1)  
-
+            self.b_pickupUntillbubble_2 = Button(self.tab1, text="   start   ", bg=self.Color2, 
+                                               fg=self.Color3,font=("Arial", 10),
+                                                command=self.p2_b_pickupUntillbubble).place(x = XX1 + XX2,
+                                                                                          y = Y1 + 11*dY1)
+            self.b_dispenseUntillbubble = Button(self.tab1,text="   start   ", bg=self.Color2, 
+                                                fg=self.Color3,font=("Arial", 10),
+                                                command=self.p2_b_dispenseUntillbubble).place(x = XX1 + XX2,
+                                                                                                y = Y1 + 12*dY1)
             Label(self.tab1, text = "Dispense mode",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 12*dY1)          
             self.b_terminatedP2 = Button(self.tab1,text="     Terminate      ", 
                                           bg=self.Color2, fg=self.Color3,font=self.Font7,
-                                          command=self.p1_b_teminateP2).place(x = XX1+ 20, 
+                                          command=self.p2_b_teminateP2).place(x = XX1+ 20, 
                                                                               y = Y1 + 13*dY1)
             
 
@@ -753,22 +760,40 @@ class GUI():
             Y1 = 140
             XX2 = 100
             XX3=50
+            XX1 = 350
+            delta = 50
             #--------------------- COLUMN 2: Gantry Horizontal ---------------------------------------
             XX1 = 350
             Label(self.tab2, text = "GANTRY HORIZ.",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1-10,y = 40)  
-            Label(self.tab2, text = "Current Spd",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Pos",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
-            self.m2_cur_spd = Label(self.tab2, text = "----",
-                                    font=self.Font1 ).place(x =XX1 + XX2,y = Y1 + dY1)  
-            Label(self.tab2, text = "New Spd",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1 + 2*dY1)  
-            self.combo_mh = ttk.Combobox(self.tab2,  width=2, font=self.Font6)
-            self.combo_mh['values'] = (1,2,3,4,5,"Text")
-            self.combo_mh.current(3)
-            self.combo_mh.place(x = XX1 + XX2,y = Y1 + 2*dY1)
+            
+            self.m2_cur_spd = Label(self.tab2, text = "----",font=self.Font1 )
+            self.m2_cur_spd.pack()
+            self.m2_cur_spd.place(x =XX1 + XX2+ delta,y = Y1 + dY1)  
+
+            Label(self.tab2, text = "New Relative Pos.",font=self.Font1 , bg=self.Color1,
+                  fg='black').place(x = XX1,y = Y1 + 2*dY1)              
+            self.ent_gnt_hor_rel = Entry(self.tab2, width=5,font=self.Font1) 
+            self.ent_gnt_hor_rel.pack()
+            self.ent_gnt_hor_rel.place(x = XX1 + XX2+ delta,y = Y1 + 2*dY1)
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
-                  command=self.checkCombo_mh).place(x = XX1 + XX2+50,y = Y1 + 2*dY1 - 2)
+                  command=self.gantry_horizontal_set_rel_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 2*dY1 - 2)
+
+            Label(self.tab2, text = "New Absolute Pos.",font=self.Font1 , bg=self.Color1,
+                  fg='black').place(x = XX1,y = Y1 + 3*dY1)  
+            self.ent_gnt_hor_abs = Entry(self.tab2, width=5,font=self.Font1) 
+            self.ent_gnt_hor_abs.pack()
+            self.ent_gnt_hor_abs.place(x = XX1 + XX2+ delta,y = Y1 + 3*dY1)
+            Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
+                  command=self.gantry_horizontal_set_abs_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 3*dY1 - 2)
+                        
+            Button(self.tab2, bg="#fc9d9d", fg='black',text="Homing Routine", font=self.Font5,
+                  command=self.gantry_horizontal_homing_click).place(x = XX1 -25+ delta,y = Y1 + 4*dY1 - 2)
+
+
+
       
 
 
@@ -964,7 +989,7 @@ class GUI():
       #--------------------------------------------------------------------------
       def checkComboCfg2(self, event):
             # def option_selected(event):
-            logger.debug(self.comboCfg1.get())
+            logger.debug(self.comboCfg2.get())
 
       # def p1_b_Zinit_click(self):
       #      logger.debug("p1 Z initialized")
@@ -998,13 +1023,19 @@ class GUI():
       def p1_b_pickupUntillbubble(self):
             logger.debug("paretn: pickup until bubble")
 
+      def p2_b_pickupUntillbubble(self):
+            logger.debug("parent: p2 pickup until bubble")
+
       def p1_b_dispenseUntillbubble(self):
             logger.debug("paretn: dispense until bubble")
+
+      def p2_b_dispenseUntillbubble(self):
+            logger.debug("paretn: p2 dispense until bubble")
 
       def p1_b_teminateP1(self):
             logger.debug('parent: termnate p1')
             
-      def p1_b_teminateP2(self):
+      def p2_b_teminateP2(self):
             logger.debug('parent: termnate p2')
 
       def p1_b_top_spd_click(self):
@@ -1045,8 +1076,8 @@ class GUI():
             logger.debug("parent: TEC stop")
             pass
 
-      def checkCombo0(self,event):        
-            logger.debug("parent:", self.combo0.get())
+      def checkCombob0(self,event):        
+            logger.debug("parent:{}".format( self.combo0.get()))
       
       def checkCombob1(self, event):
             logger.debug("parent:", self.combob1.get())
@@ -1102,13 +1133,19 @@ class GUI():
       def gantry_vertical_set_rel_click(self):
             logger.debug('parent-->{}'.format(self.ent_gnt_ver_rel.get()))
 
+      def gantry_horizontal_set_rel_click(self):
+            logger.debug('parent-->{}'.format(self.ent_gnt_hor_rel.get()))
+
       def gantry_vertical_set_abs_click(self):
             logger.debug('parent-->{}'.format(self.ent_gnt_ver_abs.get()))
       
+      def gantry_horizontal_set_abs_click(self):
+            logger.debug('parent-->{}'.format(self.ent_gnt_hor_abs.get()))
       def gantry_vertical_homing_click(self):
             logger.debug('parent-->V homing')
         
-        
+      def gantry_horizontal_homing_click(self):
+            logger.debug('parent-->H homing')
 
 
 

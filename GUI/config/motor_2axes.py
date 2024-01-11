@@ -369,6 +369,7 @@ class motor_2axes():
         # /*	Wait until the positioning is ended */
         if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
             logger.error("\t\terror in set event on motion complete")
+            return -1
 
         x = self.mydll1.TS_SetEventOnLimitSwitch
         x.restype = c_bool
@@ -394,60 +395,26 @@ class motor_2axes():
             logger.warn("\t\tTHE LIMIT SWITCH IS ACTIVATED")        
             logger.warn("\t\tPLEASE RETURN THE LINEAR ACTUAOR WITHIN LIMITS")
             logger.warn("\t\t=================================================")
-    #     LSW_NEGATIVE = -1
-    #     LSW_POSITIVE = 1
-    #     # /*Constants used for TransitionType*/
-    #     TRANSITION_HIGH_TO_LOW =-1
-    #     TRANSITION_DISABLE =0
-    #     TRANSITION_LOW_TO_HIGH =1  
-    #     # print("----------MOVE Relative-----------------")
-    #     x = self.mydll1.TS_MoveRelative
-    #     x.restype = c_bool
-    #     x.argtypes = [c_long,c_double, c_double, c_bool, c_short, c_short]
+            return -2
+        return 1
 
-    #     tt = x(rel_pos, speed, acceleration,NO_ADDITIVE,UPDATE_IMMEDIATE,FROM_REFERENCE)
+
+
+    def move_absolute_position(self, abs_pos, speed, acceleration):
+        # print("----------MOVE Relative-----------------")
+        x = self.mydll1.TS_MoveAbsolute
+        x.restype = c_bool
+        x.argtypes = [c_long,c_double, c_double,  c_short, c_short]
+
+        tt = x(abs_pos, speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
         
-    #     if (tt==True):
-    #         logger.info("\t\tmoving to relative position is done")
-    #     # /*	Wait until the positioning is ended */
-    #     if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
-    #         logger.error("\t\tError in set event on motion complete")
+        if (tt==True):
+            logger.info("\t\tmoving to absolute position is done")
+        # /*	Wait until the positioning is ended */
+        if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
+            logger.error("\t\terror in set event on motion complete")
 
-
-    #     x = self.mydll1.TS_SetEventOnLimitSwitch
-    #     x.restype = c_bool
-    #     x.argtypes = [c_short, c_short, c_bool, c_bool]
-    #     EnableStop = True
-    #     tt = x(LSW_POSITIVE, TRANSITION_LOW_TO_HIGH, NO_WAIT_EVENT, EnableStop)
-
-
-    # def move_absolute_position(self, abs_pos, speed, acceleration):
-    #     LSW_NEGATIVE = -1
-    #     LSW_POSITIVE = 1
-    #     # /*Constants used for TransitionType*/
-    #     TRANSITION_HIGH_TO_LOW =-1
-    #     TRANSITION_DISABLE =0
-    #     TRANSITION_LOW_TO_HIGH =1 
-    #     # logger.info("\t\t----------MOVE Relative-----------------")
-    #     x = self.mydll1.TS_MoveAbsolute
-    #     x.restype = c_bool
-    #     x.argtypes = [c_long,c_double, c_double,  c_short, c_short]
-
-    #     tt = x(abs_pos, speed, acceleration,UPDATE_IMMEDIATE,FROM_REFERENCE)
-        
-    #     if (tt==True):
-    #         logger.info("\t\tmoving to absolute position is done")
-
-    #     # /*	Wait until the positioning is ended or limit switch is pressed */
-    #     if (self.mydll1.TS_SetEventOnMotionComplete(NO_WAIT_EVENT,STOP) == False):
-    #         logger.error("\t\terror in set event on motion complete")
-
-    #     x = self.mydll1.TS_SetEventOnLimitSwitch
-    #     x.restype = c_bool
-    #     x.argtypes = [c_short, c_short, c_bool, c_bool]
-    #     EnableStop = True
-    #     tt = x(LSW_POSITIVE, TRANSITION_LOW_TO_HIGH, NO_WAIT_EVENT, EnableStop)            
-                    
+            
 
     def read_actual_position(self):
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_02)

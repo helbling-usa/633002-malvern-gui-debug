@@ -1,5 +1,6 @@
 import GUI
 from tkinter import * 
+import tkinter.messagebox 
 from config.motor_2axes import motor_2axes as Motors
 import config.Pump as P
 import time
@@ -24,38 +25,36 @@ BS11_THRESHOLD = 2.5  #Threshold value for bubble sensor 11
 BS12_THRESHOLD = 2.5  #Threshold value for bubble sensor 12
 BS13_THRESHOLD = 2.5  #Threshold value for bubble sensor 13
 BS14_THRESHOLD = 2.5  #Threshold value for bubble sensor 14
-#---------------------------------------------------------------------------
 
+BUBBLE_DETECTION_SPEED = 50
+DEFAULT_PUMP_SPEEED = 1000
+#------------------ initialize logger -------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
 formatter = logging.Formatter('%(levelname)s:%(message)s')
 # formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
-
 file_handler = logging.FileHandler('error.log')
 file_handler.setLevel(logging.ERROR)
 file_handler.setFormatter(formatter)
-
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-
 logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
 
 
-class run_GUI(GUI.GUI):
 
+
+
+
+
+
+
+class run_GUI(GUI.GUI):
+    global BUBBLE_DETECTION_SPEED
+    global DEFAULT_PUMP_SPEEED
     def __init__(self,root):
         super().__init__( root)
-        # logger.basicConfig(level=logger.INFO)
-        # logger.basicConfig(
-        #     level=logger.DEBUG,
-        #     #format="%(asctime)s %(levelname)s %(message)s",
-        #     format="%(message)s",
-        #     datefmt="%Y-%m-%d %H:%M:%S",
-        #     #filename="basic.log"
-        # )
-        
+        self.root = root
         logger.info("Initializing hardware -------------------------------------")
         self.PortAssignment()
         # self.InitMixerMotor()
@@ -100,8 +99,13 @@ class run_GUI(GUI.GUI):
         # #------------------------------- update  of TEC controller parameters
         self.updateGUI_TectController()
         #-------- update Gantry vertical motor position on GUI ------------------
+        self.motors.select_axis(self.AXIS_ID_02)
         p= self.motors.read_actual_position()
         self.m3_cur_spd.config(text = p)
+        #-------- update Gantry horizontal motor position on GUI ------------------
+        self.motors.select_axis(self.AXIS_ID_03)
+        p= self.motors.read_actual_position()
+        self.m2_cur_spd.config(text = p)
         #-------- read bubble sensor and update the GUI -------------------------
         self.read_BubbleSensors()
         self.updateGUI_BubbleSensorLEDs()
@@ -119,9 +123,8 @@ class run_GUI(GUI.GUI):
         obj_temp = round(tec_dic['object temperature'][0], 1)
         target_temp = round(tec_dic['target object temperature'][0], 1)
         TEC_cur_status = tec_dic['loop status'][0]        
-        # logger.info('--->obj temp:{} , target temp:{}    status:{}'.format(obj_temp,  target_temp,TEC_cur_status))
-        # 1: ON, 0:OFF, 
-        if (TEC_cur_status== 1):            
+        # logger.info('--->obj temp:{} , target temp:{}    status:{}'.format(obj_temp,  target_temp,TEC_cur_status))        
+        if (TEC_cur_status== 1):    # 1: ON, 0:OFF, 
             self.t_status.config(text = "ON")                        
         else:
             self.t_status.config(text = "OFF")        
@@ -135,8 +138,10 @@ class run_GUI(GUI.GUI):
         logger.info("Initializing Pumps/Valves.....")
         self.pump1 = P.Pump("COM6")
         logger.info("\t\tPumps initialized")
-        # self.pump1.pump_Zinit(1)
-        
+        self.pump1.pump_Zinit(1)
+        time.sleep(3)
+        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
+        logger.info("\t\tPumps speed is set to {}".format(DEFAULT_PUMP_SPEEED))
 
         
 
@@ -335,14 +340,16 @@ class run_GUI(GUI.GUI):
         self.PUMP1_PORT = ports['PUMP']
         self.TECHNOSOFT_PORT = ports['TECHNOSOFT']
         # self.GANTRY_VER_AXIS_ID = 255
-        self.GANTRY_VER_AXIS_ID = int(ports['GANTRY_VER_AXIS_ID'])        
+        self.GANTRY_VER_AXIS_ID = int(ports['GANTRY_VER_AXIS_ID'])
+        self.GANTRY_HOR_AXIS_ID = int(ports['GANTRY_HOR_AXIS_ID'])
         self.MIXER_AXIS_ID = int(ports['MIXER_AXIS_ID'])        
 
-        # self.AXIS_ID_01 = self.MIXER_AXIS_ID
-        # self.AXIS_ID_02 = self.GANTRY_VER_AXIS_ID
+        self.AXIS_ID_01 = self.MIXER_AXIS_ID
+        self.AXIS_ID_02 = self.GANTRY_VER_AXIS_ID
+        self.AXIS_ID_03 = self.GANTRY_HOR_AXIS_ID
 
-        self.AXIS_ID_01 = 24
-        self.AXIS_ID_02 = 1
+        # self.AXIS_ID_01 = 24
+        # self.AXIS_ID_02 = 1
         
         logger.info('\t\tTEC:'+ self.TEC_PORT)
         logger.info('\t\tTechnosoft:'+self.TECHNOSOFT_PORT )
@@ -379,7 +386,14 @@ class run_GUI(GUI.GUI):
             rel_pos =int(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            self.motors.move_relative_position(rel_pos, speed, acceleration)
+            val = self.motors.move_relative_position(rel_pos, speed, acceleration)
+            if val == -2:
+                # top = Toplevel(self.root)
+                # top.geometry("200x300")
+                # top.title("Warning!!!")
+                # Label(top,text="!!!!!!!!!!!!!!!!!!!").place(x=1000,y=400)
+                tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
+                                "\nPlease move thea actuator within the limit") 
 
             # time.sleep(0.5)
             # p= self.motors.read_actual_position()
@@ -411,11 +425,64 @@ class run_GUI(GUI.GUI):
 
     def gantry_vertical_homing_click(self):
         # logger.debug('child-->V homing')
+        logger.debug('Homing Gantry Vertical')
         self.motors.homing(self.AXIS_ID_02)
-        # print("u------------------------")
         
+        
+    def gantry_horizontal_homing_click(self):
+        logger.debug('Homing Gantry Horizontal')
+        self.motors.homing(self.AXIS_ID_03)
 
 
+    def gantry_horizontal_set_rel_click(self):
+        # logger.debug('child-->{}'.format(self.ent_gnt_hor_rel.get()))
+        s = self.ent_gnt_hor_rel.get()
+        # logger.info('child-->'+s)
+        if (is_float(s) == True):
+            #logger.info("----------MOVE Relative-----------------")
+            speed = 15.0;	
+            acceleration = 1.0#
+            rel_pos =int(s)
+            self.motors.select_axis(self.AXIS_ID_03)
+            self.motors.set_POSOKLIM(1)
+            val = self.motors.move_relative_position(rel_pos, speed, acceleration)
+            if val == -2:
+                # top = Toplevel(self.root)
+                # top.geometry("200x300")
+                # top.title("Warning!!!")
+                # Label(top,text="!!!!!!!!!!!!!!!!!!!").place(x=1000,y=400)
+                tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
+                                "\nPlease move thea actuator within the limit") 
+
+            # time.sleep(0.5)
+            # p= self.motors.read_actual_position()
+            # self.m3_cur_spd.config(text = p)
+
+        else:
+            logger.info("Not a number. Please enter an integer for VG rel. position")
+
+
+
+
+    def gantry_horizontal_set_abs_click(self):
+        # logger.debug('child-->{}'.format(self.ent_gnt_hor_abs.get()))
+        s = self.ent_gnt_hor_abs.get()
+        # logger.info('child-->'+s)
+        if (is_float(s) == True):
+            #logger.info("----------MOVE Absolute-----------------")
+            speed = 15.0;	
+            acceleration = 1.0#
+            abs_pos =int(s)
+            self.motors.select_axis(self.AXIS_ID_03)
+            self.motors.set_POSOKLIM(1)
+            self.motors.move_absolute_position(abs_pos, speed, acceleration)
+            # time.sleep(0.5)
+            # p= self.motors.read_actual_position()
+            # self.m3_cur_spd.config(text = p)            
+        else:
+            logger.info("Not a number. Please enter an integer for VG abs. position")        
+                
+        
 
     def Init__motors_all_axes(self):
         logger.info("Initializing motors .....")        
@@ -494,15 +561,37 @@ class run_GUI(GUI.GUI):
             self.set_step_mode(True)
             
 
-
+    def p2_b_top_spd_click(self):        
+        s =   self.ent_top_spd2.get()
+        logger.debug("child: p2_top speed:{}".format(s))
+        # logger.debug(s)
 
 
     def checkComboCfg2(self, event):
         # def option_selected(event):
-        logger.info('child:{}'.format( self.comboCfg1.get()))
+        logger.info('child:{}'.format( self.comboCfg2.get()))
 
 
+    def p2_b_abs_pos_click(self):        
+        s =   self.ent_abs_pos2.get()
+        logger.debug("pump2: set abs. pos:{}".format(s))
+        # logger.debug(s)
 
+    def p2_b_pickup_pos_click(self):
+        s =   self.ent_pickup_pos2.get()
+        logger.debug("pump2: set pickup pos:{}".format(s))
+        # logger.debug(s)
+        
+
+
+    def p2_b_dispense_pos_click(self):
+        # logger.debug("child: p2_dispense ")
+        s =   self.ent_dispemse_pos2.get()
+        logger.debug("pump2: set dispense pos:{}".format(s))
+        # logger.debug(s)
+
+        
+                
     def m1_b_stop_click(self):
         # logger.debug("child: m1_stop")
         self.motors.select_axis(self.AXIS_ID_01)
@@ -551,6 +640,7 @@ class run_GUI(GUI.GUI):
         # logger.info(s)
         if (is_float(s) == True):
             val = int(s)
+            logger.debug("pump1: set abs. pos:{}".format(s))
             abs_pos = int(val * self.scalefactor)
             # logger.info('position is:{}'.format(abs_pos))
             self.pump1.set_pos_absolute(1, abs_pos)
@@ -562,73 +652,62 @@ class run_GUI(GUI.GUI):
 
 
     def p1_b_pickup_pos_click(self):
-        logger.info("child: p1_pickup ")
+        logger.info("P1_pickup ")
         s =   self.ent_pickup_pos.get()
         if (is_float(s) == True):
             val = int(s)
-            logger.info(int(s))
+            logger.debug("pump1: set pickup pos:{}".format(s))
+            # logger.info(int(s))
             rel_pos = int(val * self.scalefactor)            
             self.pump1.set_pickup(1, rel_pos)
 
 
     def p1_b_dispense_pos_click(self):
-        logger.info("child: p1_dispense ")
+        logger.info("P1_dispense ")
         s =   self.ent_dispemse_pos.get()
         if (is_float(s) == True):
             val = int(s)
-            logger.info(int(s))
+            logger.debug("pump2: set dispense pos:{}".format(s))
+            # logger.info(int(s))
             rel_pos = int(val * self.scalefactor)            
             self.pump1.set_dispense(1,rel_pos)
 
 
     def p1_b_teminateP1(self):
-        logger.info('child: termnate p1')
+        logger.info('Termnate pump1')
         self.pump1.stop(1)
 
 
 
     def p1_b_dispenseUntillbubble(self):
-        logger.info('dispense until bubble: to be completed later')
-        # self.pump1.set_speed(1,1000)
-        # time.sleep(1)
-        # self.pump1.set_pos_absolute(1, 0)
-        # time.sleep(3)
-        self.pump1.set_speed(1,100)
-        time.sleep(1)
-        
+        logger.info('Dispense until bubble')
+        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
+        time.sleep(1)        
         self.pump1.set_pos_absolute(1, 0)
-
         input0 = (self.labjack.getAIN(0))
         while (input0>2.5):
-            # input0 = (self.labjack.getAIN(0))
-            input0 = (self.labjack.getAIN(self.BS - 1))
-            
-            # print('----------------',input0, 'position:', self.pump1.get_plunger_position(1))
+            input0 = (self.labjack.getAIN(self.BS - 1))            
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
-            time.sleep(1)
+            time.sleep(.05)
         self.pump1.stop(1)
-        self.pump1.set_speed(1,1000)
-
-
+        logger.info('\t\tBubble detection terminated')
+        self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
 
 
 
     def p1_b_pickupUntillbubble(self):
-        logger.info("pickup until bubble")
-        self.pump1.set_speed(1,100)
-        time.sleep(1)
-        
+        logger.info("Pickup until bubble")
+        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
+        time.sleep(1)        
         self.pump1.set_pos_absolute(1, 20000)
-
         input0 = (self.labjack.getAIN(0))
         while (input0>2.5):
-            # input0 = (self.labjack.getAIN(0))
             input0 = (self.labjack.getAIN(self.BS - 1))
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
-            # print('----------------',input0, 'position:', self.pump1.get_plunger_position(1))
-            time.sleep(1)
+            time.sleep(.05)
         self.pump1.stop(1)
-        self.pump1.set_speed(1,1000)
+        logger.info('\t\tBubble detection terminated')
+        self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
         # # send pump1 to 0 position
         # # self.pump1.set_pos_absolute(1, 0)
         # prev_speed = self.pump1.get_peakspeed(1)
@@ -687,8 +766,19 @@ class run_GUI(GUI.GUI):
 
 
 
-    def p1_b_top_spd_click(self):
-        # logger.info("p1_top speed")
+    def p2_b_pickupUntillbubble(self):
+        logger.debug("child: p2 pickup until bubble")
+
+
+    def p2_b_dispenseUntillbubble(self):
+        logger.debug("child: p2 dispense until bubble")
+
+        
+    def p2_b_teminateP2(self):
+        logger.debug('child: termnate p2')
+
+
+    def p1_b_top_spd_click(self):        
         s =   self.ent_top_spd.get()
         logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
@@ -895,11 +985,11 @@ class run_GUI(GUI.GUI):
 
 
 
-    def checkCombo0(self,event):        
+    def checkCombob0(self,event):        
         s = self.combo0.get()        
         ss=s.partition('S')
         index = int(ss[2])
-        logger.info('bubble sensor number:{}'.format(index))
+        logger.info('pump 1: bubble sensor number:{}'.format(index))
         X3 = 1050
         Y1 = 100
         dY1 = 40
@@ -982,7 +1072,7 @@ class run_GUI(GUI.GUI):
         s = self.combob1.get()        
         ss=s.partition('S')
         index = int(ss[2])
-        logger.info('bubble sensor number:', index)
+        logger.info('pump 2: bubble sensor number:{}'.format( index))
         X3 = 1050
         Y1 = 100
         dY1 = 40
