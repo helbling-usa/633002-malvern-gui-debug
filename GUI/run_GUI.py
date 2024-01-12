@@ -687,13 +687,22 @@ class run_GUI(GUI.GUI):
         time.sleep(1)        
         self.pump1.set_pos_absolute(1, 0)
         input0 = (self.labjack.getAIN(0))
-        while (input0>2.5):
-            input0 = (self.labjack.getAIN(self.BS - 1))            
+        #check if the bubble semsor detect air or liquid
+        cur_state = self.air_or_liquid(input0)
+        prev_state = cur_state
+        while (cur_state == prev_state):
+            prev_state = cur_state
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            cur_state = self.air_or_liquid(input0)
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
             time.sleep(.05)
         self.pump1.stop(1)
         logger.info('\t\tBubble detection terminated')
         self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
+
+
+
+
 
 
 
@@ -703,68 +712,26 @@ class run_GUI(GUI.GUI):
         time.sleep(1)        
         self.pump1.set_pos_absolute(1, 20000)
         input0 = (self.labjack.getAIN(0))
-        while (input0>2.5):
+        #check if the bubble semsor detect air or liquid
+        cur_state = self.air_or_liquid(input0)
+        prev_state = cur_state
+        while (cur_state == prev_state):
+            prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
+            cur_state = self.air_or_liquid(input0)
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
             time.sleep(.05)
         self.pump1.stop(1)
         logger.info('\t\tBubble detection terminated')
         self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
-        # # send pump1 to 0 position
-        # # self.pump1.set_pos_absolute(1, 0)
-        # prev_speed = self.pump1.get_peakspeed(1)
-        # print("==========>",prev_speed)
-        # # change to high speed for retraction
-        # if (self.microstep == False):
-        #     logger.info('micro step is off')
-        #     self.pump1.set_speed(1,1000)
-        # else:
-        #     logger.info('micro step is on')
-        #     self.pump1.set_speed(1,1000*8)
-        # print("1-----------------")
-        # time.sleep(.5)
-        # a =self.pump1.get_peakspeed(1)
-        # print("2-----------------")
-        # time.sleep(.5)
-        # logger.info('setting peak speed to:{} and send pluger to home'.format( a))
-
-        # self.pump1.set_pos_absolute(1, 0)
-        # # time.sleep(5)
-
-        # cur_pos = 24000
-        # logger.info('going to 0 pos')
-        # while (cur_pos > 0):
-        #     # logger.info('cur pos:', cur_pos)
-        #     cur_pos = self.pump1.get_plunger_position(1)            
-        #     time.sleep(1)
 
 
-        # # change to low speed for forward motion
-        # if (self.microstep == False):
-        #     logger.info('micro step is off')
-        #     self.pump1.set_speed(1,48)
-        # else:
-        #     logger.info('micro step is on')
-        #     self.pump1.set_speed(1,48*8)
-
-        # logger.info('going to final pos')
-        # self.pump1.set_pos_absolute(1, 10000)
-
-        # # continue until a bubble detected or reaching end of travel
-        # input0 = (self.labjack.getAIN(0))
-        # while (input0>2.5):
-        #     input0 = (self.labjack.getAIN(0))
-        #     logger.info('        selcted BS {}  , reading: {}'.format(self.BS,self.labjack.getAIN(self.BS-1)))
-        #     logger.info('bubble sensor output:{}'.format( input0))
-        #     time.sleep(1)
-        #     logger.info('cur pos =={}'.format( cur_pos))
-        #     cur_pos = self.pump1.get_plunger_position(1)            
-
-        # self.pump1.stop(1)
-        # time.sleep(.25)
-        # self.pump1.set_speed(1, prev_speed)
-
-
+    def air_or_liquid(self, voltage):
+        if voltage > BS1_THRESHOLD:
+            return 'liquid'
+        else:
+            return 'air'
+        
 
 
 
