@@ -1,7 +1,7 @@
 import GUI
 from tkinter import * 
 import tkinter.messagebox 
-from config.motor_2axes import motor_2axes as Motors
+from config.motor_3axes import motor_3axes as Motors
 import config.Pump as P
 import time
 import u6
@@ -136,7 +136,9 @@ class run_GUI(GUI.GUI):
     def Init_Pumps_Valves(self):        
         # # #------ init. Pump 1
         logger.info("Initializing Pumps/Valves.....")
-        self.pump1 = P.Pump("COM6")
+        com_port = self.PUMP1_PORT
+        self.pump1 = P.Pump(com_port)
+        # self.pump1 = P.Pump("COM6")
         logger.info("\t\tPumps initialized")
         self.pump1.pump_Zinit(1)
         time.sleep(3)
@@ -384,7 +386,7 @@ class run_GUI(GUI.GUI):
             speed = 15.0;	
             acceleration = 1.0#
             rel_pos =int(s)
-            self.motors.select_axis(self.AXIS_ID_02)
+            self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
             val = self.motors.move_relative_position(rel_pos, speed, acceleration)
             if val == -2:
@@ -413,7 +415,7 @@ class run_GUI(GUI.GUI):
             speed = 15.0;	
             acceleration = 1.0#
             abs_pos =int(s)
-            self.motors.select_axis(self.AXIS_ID_02)
+            self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
             self.motors.move_absolute_position(abs_pos, speed, acceleration)
             # time.sleep(0.5)
@@ -473,7 +475,7 @@ class run_GUI(GUI.GUI):
             speed = 15.0;	
             acceleration = 1.0#
             abs_pos =int(s)
-            self.motors.select_axis(self.AXIS_ID_03)
+            self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             self.motors.move_absolute_position(abs_pos, speed, acceleration)
             # time.sleep(0.5)
@@ -493,7 +495,7 @@ class run_GUI(GUI.GUI):
         # com_port = b"COM7"
         com_port = self.TECHNOSOFT_PORT.encode()        
         primary_axis =  b"Mixer"
-        self.motors = Motors(com_port, self.AXIS_ID_01, self.AXIS_ID_02, primary_axis)   
+        self.motors = Motors(com_port, self.AXIS_ID_01, self.AXIS_ID_02, self.AXIS_ID_03 ,primary_axis)   
         #/*	Setup and initialize the axis */	
         if (self.motors.InitAxis()==False):
             logger.error("Failed to start up the Technosoft drive")    

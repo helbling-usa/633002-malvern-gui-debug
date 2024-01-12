@@ -40,7 +40,7 @@ TIM_LIB_PATH = "./config/TML_LIB.dll"
 
 
 
-class motor_2axes():
+class motor_3axes():
     global FROM_REFERENCE
     global NO_ADDITIVE
     global ADDITIVE
@@ -55,10 +55,11 @@ class motor_2axes():
     global TIM_LIB_PATH
 
 
-    def __init__(self, CHANNEL_NAME, AXIS_ID_01, AXIS_ID_02, motor_type) -> None:
+    def __init__(self, CHANNEL_NAME, AXIS_ID_01, AXIS_ID_02, AXIS_ID_03, motor_type) -> None:
         self.CHANNEL_NAME = CHANNEL_NAME
         self.AXIS_ID_01 = AXIS_ID_01 
         self.AXIS_ID_02 = AXIS_ID_02
+        self.AXIS_ID_03 = AXIS_ID_03
         self.mydll1 =CDLL(TIM_LIB_PATH)
         #/*	Load the *.t.zip with setup data generated with EasyMotion Studio or EasySetUp */
         config_file = b"./config/"+motor_type + b".t.zip"
@@ -87,6 +88,7 @@ class motor_2axes():
     def InitCommunicationChannel(self):
         # /*	Open the comunication channel: COM1, RS232, 1, 115200 */
         if (self.mydll1.TS_OpenChannel (self.CHANNEL_NAME, CHANNEL_TYPE, self.AXIS_ID_01, BAUDRATE) < 0):
+                logger.info("\t\tCan't initilaze com port (Technosoft)")
                 return False
 
         return True
@@ -159,10 +161,42 @@ class motor_2axes():
             return False
         # logger.info('\tinit successful 2:', tt)
 
+        #----------------------axis 3 -------------------------------------------
+        #/*	Load the *.t.zip with setup data generated with EasyMotion Studio or EasySetUp */
+        config_file3 = b".\config\LEFS35.t.zip"
+        # logger.info('config file path:', config_file3)
+        idxSetup3 = self.mydll1.TS_LoadSetup(config_file3)
+
+        if (idxSetup3 < 0):
+            # logger.info('cannot load setup 3')
+            return False
+        else:
+            logger.info("\t\tsetup 3 loaded sucessfully")
+
+        #/*	Setup the axis based on the setup data previously loaded */
+        tt = self.mydll1.TS_SetupAxis(self.AXIS_ID_03, idxSetup3)
+        if tt<=0:
+            logger.info("\t\tFailed to setup axis 3")
+            return False
+        # logger.info('\tsetup axis 3:', tt)
+
+        #	Select the destination axis of the TML commands 
+        tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_03)
+        if tt<=0:
+            logger.error("\tFailed to select axis 3")
+            return False        
+        # logger.info('\tselect dest. axis 2:', tt)
+
+        #/*	Execute the initialization of the drive (ENDINIT) */
+        tt = self.mydll1.TS_DriveInitialisation()
+        if tt<=0:
+            logger.error("\tFailed to initialzie drive 3")
+            return False
+        # logger.info('\tinit successful 3:', tt)
         #---------------- broadcasting ------------------------------------------
 
         # /*	Setup the Broadcast based on the file previously loaded */
-        tt= self.mydll1.TS_SetupBroadcast(idxSetup2)
+        tt= self.mydll1.TS_SetupBroadcast(idxSetup3)
         if tt<=0:
             logger.error("\tFailed to setup broadcase")
             return False
@@ -190,6 +224,7 @@ class motor_2axes():
         p = c_int()
         AxisOn_flag_1 = False
         AxisOn_flag_2 = False
+        AxisOn_flag_3 = False
 
         tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_01)
         if (tt<=0):
@@ -213,6 +248,21 @@ class motor_2axes():
                 if tt<=0:
                     logger.error("\tproblem reading axis 2")
                     return False
+
+
+        p = c_int()
+        tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_03)
+        if (tt<=0):
+            logger.error("\tcan't select axis 3")
+            return False
+        else:
+            while ( (p.value & (1<<15)) == 0):
+                tt = y(REG_SRL,  byref(p))
+                if tt<=0:
+                    logger.error("\tproblem reading axis 2")
+                    return False
+
+
 
         logger.info('\t\tAll axes are  initialzed and ready...')
         return True
@@ -415,10 +465,10 @@ class motor_2axes():
             
 
     def read_actual_position(self):
-        tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_02)
-        if tt<=0:
-            logger.error("\tFailed to select axis 2")
-            return False  
+        # tt = self.mydll1.TS_SelectAxis(AXIS_ID)
+        # if tt<=0:
+        #     logger.error("\tFailed to select axis 2")
+        #     return False  
         # logger.info("\t\t------------Read actual position ------------------------------")
         y = self.mydll1.TS_GetLongVariable
         y.restype = c_bool
@@ -430,10 +480,10 @@ class motor_2axes():
         return p.value
 
     def read_target_position(self):
-        tt = self.mydll1.TS_SelectAxis(self.AXIS_ID_02)
-        if tt<=0:
-            logger.error("\tFailed to select axis 2")
-            return False          
+        # tt = self.mydll1.TS_SelectAxis(AXIS_ID)
+        # if tt<=0:
+        #     logger.error("\tFailed to select axis 2")
+        #     return False          
         # logger.info("\t\t------------Read target position ------------------------------")
         y = self.mydll1.TS_GetLongVariable
         y.restype = c_bool
@@ -488,57 +538,4 @@ class motor_2axes():
         
     def close_port(self):
         self.mydll1.TS_CloseChannel(-1)
-
-
-if __name__ == "__main__":
-
-    # self.mydll1 =CDLL("./TML_LIB.dll")
-    # fd = self.mydll1.TS_OpenChannel(b"COM6",0, AXIS_ID_01, 115200)
-    # logger.info("\t\tresult:", fd)
-    AXIS_ID_01 = 24
-    AXIS_ID_02 = 1
-    com_port = b"COM7"
-    primary_axis =  b"Mixer"
-    motor = motor_2axes(com_port, AXIS_ID_01, AXIS_ID_02, primary_axis)
-
-
-    #/*	Setup and initialize the axis */	
-    if (motor.InitAxis()==False):
-        logger.info("\t\tFailed to start up the drive")
-
-
-    motor.select_axis(AXIS_ID_02)
-    # logger.info("\t\t---------get FM VER -------------------")
-    motor.get_firmware_version()
-
-    # logger.info("\t\t----------set position-----------------")
-    motor.set_position()
-
-    # logger.info("\t\t------------set int var ------------------------------")
-    motor.set_POSOKLIM(2)
-
-    # logger.info("\t\t------------get int var ------------------------------")
-    motor.get_POSOKLIM()
-
-    #logger.info("\t\t----------MOVE Relative-----------------")
-    speed = 15.0;		#/* jogging speed [drive internal speed units, encoder counts/slow loop sampling] */
-    acceleration = 1.0#0.015;#/* acceleration rate [drive internal acceleration units, encoder counts/slow loop sampling^2] */
-    rel_pos = -5000
-    motor.move_relative_position(rel_pos, speed, acceleration)
-
-    time.sleep(3)
-    speed = 30.0
-    rel_pos = 5000 # 5000/800 *6 = 0.0075*5000=3.25mm
-    motor.move_relative_position(rel_pos, speed, acceleration)
-
-
-
-
-
-    # logger.info("\t\t------------Read actual position ------------------------------")
-    motor.read_actual_position()
-
-    motor.read_target_position()
-
-
 
