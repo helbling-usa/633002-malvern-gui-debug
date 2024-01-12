@@ -163,7 +163,7 @@ class motor_3axes():
 
         #----------------------axis 3 -------------------------------------------
         #/*	Load the *.t.zip with setup data generated with EasyMotion Studio or EasySetUp */
-        config_file3 = b".\config\LEFS35.t.zip"
+        config_file3 = b".\config\LEFS32.t.zip"
         # logger.info('config file path:', config_file3)
         idxSetup3 = self.mydll1.TS_LoadSetup(config_file3)
 

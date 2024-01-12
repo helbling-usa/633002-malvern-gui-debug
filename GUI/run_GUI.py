@@ -99,11 +99,11 @@ class run_GUI(GUI.GUI):
         # #------------------------------- update  of TEC controller parameters
         self.updateGUI_TectController()
         #-------- update Gantry vertical motor position on GUI ------------------
-        self.motors.select_axis(self.AXIS_ID_02)
+        self.motors.select_axis(self.AXIS_ID_03)
         p= self.motors.read_actual_position()
         self.m3_cur_spd.config(text = p)
         #-------- update Gantry horizontal motor position on GUI ------------------
-        self.motors.select_axis(self.AXIS_ID_03)
+        self.motors.select_axis(self.AXIS_ID_02)
         p= self.motors.read_actual_position()
         self.m2_cur_spd.config(text = p)
         #-------- read bubble sensor and update the GUI -------------------------
@@ -347,8 +347,8 @@ class run_GUI(GUI.GUI):
         self.MIXER_AXIS_ID = int(ports['MIXER_AXIS_ID'])        
 
         self.AXIS_ID_01 = self.MIXER_AXIS_ID
-        self.AXIS_ID_02 = self.GANTRY_VER_AXIS_ID
-        self.AXIS_ID_03 = self.GANTRY_HOR_AXIS_ID
+        self.AXIS_ID_02 = self.GANTRY_HOR_AXIS_ID
+        self.AXIS_ID_03 = self.GANTRY_VER_AXIS_ID
 
         # self.AXIS_ID_01 = 24
         # self.AXIS_ID_02 = 1
@@ -428,12 +428,12 @@ class run_GUI(GUI.GUI):
     def gantry_vertical_homing_click(self):
         # logger.debug('child-->V homing')
         logger.debug('Homing Gantry Vertical')
-        self.motors.homing(self.AXIS_ID_02)
+        self.motors.homing(self.AXIS_ID_03)
         
         
     def gantry_horizontal_homing_click(self):
         logger.debug('Homing Gantry Horizontal')
-        self.motors.homing(self.AXIS_ID_03)
+        self.motors.homing(self.AXIS_ID_02)
 
 
     def gantry_horizontal_set_rel_click(self):
@@ -445,7 +445,7 @@ class run_GUI(GUI.GUI):
             speed = 15.0;	
             acceleration = 1.0#
             rel_pos =int(s)
-            self.motors.select_axis(self.AXIS_ID_03)
+            self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             val = self.motors.move_relative_position(rel_pos, speed, acceleration)
             if val == -2:
