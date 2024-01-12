@@ -112,3 +112,5 @@ ERROR:	can't select axis 1
 ERROR:	can't select axis 1
 ERROR:	can't select axis 1
 ERROR:Failed to start up the Technosoft drive
+2024-01-12 12:39:10,542:config.Pump:Error reading pump!!!
+2024-01-12 12:39:10,543:config.Pump:exception happened in pump!!

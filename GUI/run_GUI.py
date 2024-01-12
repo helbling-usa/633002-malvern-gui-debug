@@ -66,7 +66,7 @@ class run_GUI(GUI.GUI):
         logger.info("Hardware initialiation done")        
 
         #------------ Setting the inital states/values of the hardware ----------------------
-        self.scalefactor = 1
+        # self.scalefactor = 1
         self.microstep = False         
         self.pump_scale_factor(1)
         logger.info('\t\tmircostep off')
@@ -142,10 +142,31 @@ class run_GUI(GUI.GUI):
         logger.info("\t\tPumps initialized")
         self.pump1.pump_Zinit(1)
         time.sleep(3)
+
+        logger.info("\t\tSetting valves to default positions")
+
+        self.pump1.set_valve(1, 'E')
+        self.v1_cur_pos.config(text="Pump to Air (P1)")
+        self.combo1.current(0)
+
+        self.pump1.set_valve(2, 'B')
+        self.v3_cur_pos.config(text="Air to Pump (P4)")
+        self.combo3.current(3)
+
+        self.pump1.set_multiwayvalve(4,3)
+        self.v5_cur_pos.config(text="Titrant Cannula(P3)")
+        self.combo5.current(2)
+
+        self.pump1.set_multiwayvalve(3,1)        
+        self.v9_cur_pos.config(text="Air (P1)")
+        self.combo9.current(0)
+
+        self.comboCfg1.current(8)
+        self.pump_scale_factor(9)
+
         self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
         logger.info("\t\tPumps speed is set to {}".format(DEFAULT_PUMP_SPEEED))
-
-        
+        self.p1_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
 
 
     def InitLabjack(self):
@@ -548,11 +569,11 @@ class run_GUI(GUI.GUI):
     def checkComboCfg1(self, event):
         # def option_selected(event):
         s = self.comboCfg1.get()
-        logger.info('child :{}'.format( s))
+        logger.info('pump1 config: :{}'.format( s))
         ss=s.partition(')')
         # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
-        logger.info('int number:{}'.format( int(index)))        
+        # logger.info('int number:{}'.format( int(index)))        
         # logger.info("INDEX = ", index)
         self.pump_scale_factor(int(index))
         if (self.microstep == False):
@@ -757,6 +778,7 @@ class run_GUI(GUI.GUI):
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
 
+    #change pisition of pump Valve (Titrant line)
     def checkCombo1(self,event):
         s = self.combo1.get()
         # logger.info('child -->'+s)
@@ -805,7 +827,7 @@ class run_GUI(GUI.GUI):
 #                                     "Air to Pump (P4)")
 
 
-
+    #change the position of Loop Valve (Titrant line)
     def checkCombo3(self, event):
         # print('parent-->'+self.combo3.get())
         s = self.combo3.get()
@@ -852,7 +874,7 @@ class run_GUI(GUI.GUI):
 
 
 
-# ("Titrant Port (P1)","Reservois (P2)","Titrant Cannula(P3)")
+    #change the position of pipette Valve (Titrant line)
     def checkCombo5(self, event):
         # print('child-->'+self.combo5.get())
         s = self.combo5.get()
@@ -890,11 +912,7 @@ class run_GUI(GUI.GUI):
         self.v5_cur_pos.config(text=cur_valve)
 
 
-
-# ("Air (P1)", "MeOH (P2)", "Detergent (P3)", "DI Water (P4)", 
-#                                      "Waster (P5)","Cleaning Port (P6)")
-
-
+    #change the position of cleaning Valve (Titrant line)
     def checkCombo9(self, event):
         # print('child-->'+self.combo9.get())   
         s = self.combo9.get()
@@ -1138,7 +1156,7 @@ class run_GUI(GUI.GUI):
             self.microstep = False
         elif (N == 2):
             STEP_RANGE = 48000.
-            VOLUME = 1000.
+            VOLUME = 1000. * 8
             self.microstep = True
         elif (N == 3):
             STEP_RANGE = 48000.
@@ -1146,7 +1164,7 @@ class run_GUI(GUI.GUI):
             self.microstep = False
         elif (N == 4):
             STEP_RANGE = 48000.
-            VOLUME = 500.
+            VOLUME = 500. * 8
             self.microstep = True
         elif (N == 5):
             STEP_RANGE = 48000.
@@ -1154,7 +1172,7 @@ class run_GUI(GUI.GUI):
             self.microstep = False
         elif (N == 6):
             STEP_RANGE = 48000.
-            VOLUME = 250.
+            VOLUME = 250. * 8
             self.microstep = True
         elif (N == 7):
             STEP_RANGE = 24000.
@@ -1162,7 +1180,7 @@ class run_GUI(GUI.GUI):
             self.microstep = False
         elif (N == 8):
             STEP_RANGE = 24000.
-            VOLUME = 2500.
+            VOLUME = 2500. * 8
             self.microstep = True
         elif (N == 9):
             STEP_RANGE = 1
