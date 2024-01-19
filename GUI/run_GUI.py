@@ -10,14 +10,27 @@ import config.MeerstetterTEC as TEC
 import json
 import logging
 
-#------------------- Constants -----------------------------------------
-BS_THRESHOLD = 2.5                  # Threshold value for bubble sensor 1
+
+#------------------- CONSTANTS  -----------------------------------------
+BS_THRESHOLD                = 2.5   # Threshold value for bubble sensor 1
 BUBBLE_DETECTION_PUMP_SPEED = 50    # speed of pump during bubble detection
-DEFAULT_PUMP_SPEEED = 1000          # speed of pump at start up
-GANTRY_VER_SPEED = 15.0             # vertical gantry speed
-GANTRY_HOR_SPEED = 15.0             # horizontal gantry speed
-GANTRY_VER_ACCELERATION = 1         # vertical gantry acceleration
-GANTRY_HOR_ACCELERATION = 1         # horizontal gantry acceleration
+DEFAULT_PUMP_SPEEED         = 1000  # speed of pump at start up
+GANTRY_VER_SPEED            = 15.0  # vertical gantry speed
+GANTRY_HOR_SPEED            = 15.0  # horizontal gantry speed
+GANTRY_VER_ACCELERATION     = 1     # vertical gantry acceleration
+GANTRY_HOR_ACCELERATION     = 1     # horizontal gantry acceleration
+MIXING_ACCELERATION         = 1     # mixing motor acceleration
+
+# pumps/valves RS485 addresses
+TIRRANT_PUMP_ADDRESS        = 1     # Pump 1
+TITRANT_LOOP_ADDRESS        = 2     # pump 1 loop valve
+TITRANT_CLEANING_ADDRESS    = 3     # titrant line: cleaning valve
+TITRANT_PIPETTE_ADDRESS     = 4     # titrant line: pipette valve
+SAMPLE_PUMP_ADDRESS         = 5     # pump 2
+SAMPLE_LOOP_ADDRESS         = 6     # pump 2 loop valve
+TITRANT_PORT_ADDRESS        = 7     # sample line: titrant port valve
+DEGASSER_ADDRESS            = 8     # sample line: degasser valve
+SAMPLE_CLEANING_ADDRESS     = 9     # sample line: cleaning valve
 
 
 
@@ -80,14 +93,16 @@ class run_GUI(GUI.GUI):
         
 
     def timerCallback_1(self):  
+        global TIRRANT_PUMP_ADDRESS
+        global SAMPLE_PUMP_ADDRESS
         # logger.info('--->timer tick')
         #------------------------------- update pump 1 position
-        p1_cur_pos = self.pump1.get_plunger_position(1)            
+        p1_cur_pos = self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)            
         p1_cur_pos = int(p1_cur_pos / self.scalefactor_p1)
         self.p1_cur_pos.config(text = str(p1_cur_pos))
         # logger.info('cur pos:', p1_cur_pos)
         #------------------------------- update pump 2 position
-        p2_cur_pos = self.pump1.get_plunger_position(5)            
+        p2_cur_pos = self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)            
         p2_cur_pos = int(p2_cur_pos / self.scalefactor_p2)
         self.p2_cur_pos.config(text = str(p2_cur_pos))
 
@@ -366,6 +381,10 @@ class run_GUI(GUI.GUI):
 
 
     def PortAssignment(self):
+        global TIRRANT_PUMP_ADDRESS, TITRANT_LOOP_ADDRESS, TITRANT_CLEANING_ADDRESS
+        global TITRANT_PIPETTE_ADDRESS, SAMPLE_PUMP_ADDRESS ,SAMPLE_LOOP_ADDRESS 
+        global TITRANT_PORT_ADDRESS, DEGASSER_ADDRESS ,SAMPLE_CLEANING_ADDRESS
+
         logger.info("Assigning Ports .....")
         # #---- extract port numbers for config.json
         with open('./config/config.json') as json_file:
@@ -396,17 +415,20 @@ class run_GUI(GUI.GUI):
         self.Lver_gant_axis_id.config(text=self.GANTRY_VER_AXIS_ID)
         self.Lmixer_axis_id.config(text=self.MIXER_AXIS_ID)
         self.Lhor_gant_axis_id.config(text=self.GANTRY_HOR_AXIS_ID)
-        self.Lpump1_id.config(text="1")
-        self.Lvalv3_id.config(text="2")
-        self.Lvalv5_id.config(text="3")
-        self.Lvalv9_id.config(text="4")
-        self.Lpump2_id.config(text="5")
-        self.Lvalv4_id.config(text="6")
-        self.Lvalv6_id.config(text="7")
-        self.Lvalv7_id.config(text="8")
-        self.Lvalv8_id.config(text="9")
+        self.Lpump1_id.config(text=str(TIRRANT_PUMP_ADDRESS))
+        self.Lvalv3_id.config(text=str(TITRANT_LOOP_ADDRESS))
+        self.Lvalv5_id.config(text=str(TITRANT_PIPETTE_ADDRESS))
+        self.Lvalv9_id.config(text=str(TITRANT_CLEANING_ADDRESS))
+        self.Lpump2_id.config(text=str(SAMPLE_PUMP_ADDRESS))
+        self.Lvalv4_id.config(text=str(SAMPLE_LOOP_ADDRESS))
+        self.Lvalv6_id.config(text=str(TITRANT_PORT_ADDRESS))
+        self.Lvalv7_id.config(text=str(DEGASSER_ADDRESS))
+        self.Lvalv8_id.config(text=str(SAMPLE_CLEANING_ADDRESS))
 
         
+
+
+
 
 
     def gantry_vertical_set_rel_click(self):
@@ -556,13 +578,13 @@ class run_GUI(GUI.GUI):
             self.set_step_mode_p1(True)
             
 
-    def p2_b_top_spd_click(self):        
+    def p2_b_top_spd_click(self):    
+        global SAMPLE_PUMP_ADDRESS    
         s =   self.ent_top_spd2.get()        
         logger.info("pump2 top speed: {}".format(s))
         if (is_float(s) == True):
             max_spd = int(s)
-            self.pump1.set_speed(5,max_spd)
-             ####===============to be moved to the timer thread
+            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, max_spd)
             time.sleep(.25)
             self.p2_cur_spd.config(text = s)
 
@@ -590,7 +612,7 @@ class run_GUI(GUI.GUI):
 
 
     def p2_b_abs_pos_click(self):
-        # logger.info("child: p1_abs pos")
+        global SAMPLE_PUMP_ADDRESS
         s =   self.ent_abs_pos2.get()
         print("=========================")
         logger.info(s)
@@ -598,49 +620,43 @@ class run_GUI(GUI.GUI):
             val = int(s)
             logger.debug("pump2: set abs. pos:{}".format(s))
             abs_pos = int(val * self.scalefactor_p1)
-            # logger.info('position is:{}'.format(abs_pos))
-            self.pump1.set_pos_absolute(5, abs_pos)
-            ####===============to be moved to the timer thread
-            # time.sleep(.25)
-            # cur_plunger_pos = self.pump1.get_plunger_position(1)            
-            # self.p1_cur_pos.config(text = str(cur_plunger_pos))
-
+            self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, abs_pos)
 
 
     def p2_b_pickup_pos_click(self):
+        global SAMPLE_PUMP_ADDRESS
         logger.info("P2_pickup ")
         s =   self.ent_pickup_pos2.get()
         if (is_float(s) == True):
             val = int(s)
             logger.debug("pump2: set pickup pos:{}".format(s))
             rel_pos = int(val * self.scalefactor_p2)            
-            self.pump1.set_pickup(5, rel_pos)
-
-
+            self.pump1.set_pickup(SAMPLE_PUMP_ADDRESS, rel_pos)
 
 
     def p2_b_dispense_pos_click(self):
-        # logger.debug("child: p2_dispense ")
+        global SAMPLE_PUMP_ADDRESS
         s =   self.ent_dispemse_pos2.get()
         logger.info("P2_dispense ")
         if (is_float(s) == True):
             val = int(s)
             logger.debug("pump2: set dispense pos:{}".format(s))
-            # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p2)            
-            self.pump1.set_dispense(5,rel_pos)
+            self.pump1.set_dispense(SAMPLE_PUMP_ADDRESS, rel_pos)
 
 
                 
     def m1_b_stop_click(self):
-        # logger.debug("child: m1_stop")
+        global MIXING_ACCELERATION
         self.motors.select_axis(self.AXIS_ID_01)
         speed =0
-        acceleration = 1
+        acceleration = MIXING_ACCELERATION#1
         self.motors.set_speed(speed,acceleration)       
         self.m1_cur_spd.config(text='0')
 
+
     def m1_b_SetSpeed(self):
+        global MIXING_ACCELERATION
         # logger.info("child: m1_new_spd")
         s =   self.ent_m1_spd_.get()
         # logger.info(s)
@@ -650,48 +666,28 @@ class run_GUI(GUI.GUI):
 
             self.motors.select_axis(self.AXIS_ID_01)
             speed =float(s)
-            acceleration = 1
+            acceleration = MIXING_ACCELERATION#1
             self.motors.set_speed(speed,acceleration)    
 
             self.m1_cur_spd.config(text=s)    
         else:
             logger.warning("Not a number. Plaese enter an integer for speed.")
             
-    
-    # def p1_b_Zinit_click(self):
-    #      logger.info("child: p1 Z initialized")
-    #      self.pump1.pump_Zinit(1)
-
-    # def p1_b_Yinit_click(self):
-    #      logger.info("child: p1 Y initialized")
-    #      self.pump1.pump_Yinit(1)
-
-
-    # def p1_b_abs_pos_click(self):
-    #     logger.info("----> p1_abs pos")
-    #     s =   self.ent_abs_pos.get()
-    #     logger.info(s)
-    #     self.p1_cur_pos["text"]=  s
 
 
     def p1_b_abs_pos_click(self):
-        # logger.info("child: p1_abs pos")
+        global TIRRANT_PUMP_ADDRESS        
         s =   self.ent_abs_pos.get()
-        # logger.info(s)
         if (is_float(s) == True):
             val = int(s)
             logger.debug("pump1: set abs. pos:{}".format(s))
             abs_pos = int(val * self.scalefactor_p1)
-            # logger.info('position is:{}'.format(abs_pos))
-            self.pump1.set_pos_absolute(1, abs_pos)
-            ####===============to be moved to the timer thread
-            # time.sleep(.25)
-            # cur_plunger_pos = self.pump1.get_plunger_position(1)            
-            # self.p1_cur_pos.config(text = str(cur_plunger_pos))
+            self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, abs_pos)
 
 
 
     def p1_b_pickup_pos_click(self):
+        global TIRRANT_PUMP_ADDRESS
         logger.info("P1_pickup ")
         s =   self.ent_pickup_pos.get()
         if (is_float(s) == True):
@@ -699,10 +695,11 @@ class run_GUI(GUI.GUI):
             logger.debug("pump1: set pickup pos:{}".format(s))
             # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
-            self.pump1.set_pickup(1, rel_pos)
+            self.pump1.set_pickup(TIRRANT_PUMP_ADDRESS, rel_pos)
 
 
     def p1_b_dispense_pos_click(self):
+        global TIRRANT_PUMP_ADDRESS
         logger.info("P1_dispense ")
         s =   self.ent_dispemse_pos.get()
         if (is_float(s) == True):
@@ -710,20 +707,22 @@ class run_GUI(GUI.GUI):
             logger.debug("pump1: set dispense pos:{}".format(s))
             # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
-            self.pump1.set_dispense(1,rel_pos)
+            self.pump1.set_dispense(TIRRANT_PUMP_ADDRESS,rel_pos)
 
 
     def p1_b_teminateP1(self):
+        global TIRRANT_PUMP_ADDRESS
         logger.info('Termnate pump1')
-        self.pump1.stop(1)
+        self.pump1.stop(TIRRANT_PUMP_ADDRESS)
 
 
 
     def p1_b_dispenseUntillbubble(self):
+        global TIRRANT_PUMP_ADDRESS
         logger.info('Dispense until bubble')
-        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
+        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
-        self.pump1.set_pos_absolute(1, 0)
+        self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, 0)
         # input0 = (self.labjack.getAIN(0))
         input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
@@ -733,21 +732,21 @@ class run_GUI(GUI.GUI):
             prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)))
             time.sleep(.05)
-        self.pump1.stop(1)
+        self.pump1.stop(TIRRANT_PUMP_ADDRESS)
         logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
+        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, DEFAULT_PUMP_SPEEED)
 
 
 
 
     def p1_b_pickupUntillbubble(self):
+        global TIRRANT_PUMP_ADDRESS
         logger.info("Pump 1: Pickup until bubble")
-        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
+        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
-        self.pump1.set_pos_absolute(1, 20000)
-        # input0 = (self.labjack.getAIN(0))
+        self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, 20000)
         input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
         cur_state = self.air_or_liquid(input0)
@@ -756,11 +755,11 @@ class run_GUI(GUI.GUI):
             prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(1)))
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)))
             time.sleep(.05)
-        self.pump1.stop(1)
+        self.pump1.stop(TIRRANT_PUMP_ADDRESS)
         logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
+        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
 
 
 
@@ -775,11 +774,11 @@ class run_GUI(GUI.GUI):
 
 
     def p2_b_pickupUntillbubble(self):
-        # logger.debug("child: p2 pickup until bubble")
+        global SAMPLE_PUMP_ADDRESS
         logger.info("Pump 2: Pickup until bubble")
-        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
+        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
-        self.pump1.set_pos_absolute(5, 20000)
+        self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, 20000)
         # input0 = (self.labjack.getAIN(0))
         input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
@@ -789,22 +788,21 @@ class run_GUI(GUI.GUI):
             prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(5)))
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
             time.sleep(.05)
-        self.pump1.stop(5)
+        self.pump1.stop(SAMPLE_PUMP_ADDRESS)
         logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(5,DEFAULT_PUMP_SPEEED)
+        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
 
 
 
 
     def p2_b_dispenseUntillbubble(self):
-        # logger.debug("child: p2 dispense until bubble")
+        global SAMPLE_PUMP_ADDRESS
         logger.info('Pump 2: Dispense until bubble')
-        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
+        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
-        self.pump1.set_pos_absolute(5, 0)
-        # input0 = (self.labjack.getAIN(0))
+        self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, 0)
         input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
         cur_state = self.air_or_liquid(input0)
@@ -813,78 +811,38 @@ class run_GUI(GUI.GUI):
             prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(5)))
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
             time.sleep(.05)
-        self.pump1.stop(5)
+        self.pump1.stop(SAMPLE_PUMP_ADDRESS)
         logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(5,DEFAULT_PUMP_SPEEED)
+        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
 
 
 
 
         
     def p2_b_teminateP2(self):
-        # logger.debug('child: termnate p2')
+        global SAMPLE_PUMP_ADDRESS
         logger.info('Termnate pump2')
-        self.pump1.stop(5)
+        self.pump1.stop(SAMPLE_PUMP_ADDRESS)
 
 
-    def p1_b_top_spd_click(self):        
+    def p1_b_top_spd_click(self):   
+        global TIRRANT_PUMP_ADDRESS     
         s =   self.ent_top_spd.get()
         logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
             max_spd = int(s)
-            self.pump1.set_speed(1,max_spd)
-             ####===============to be moved to the timer thread
+            self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, max_spd)
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
 
 
-    #change pisition of pump Valve (Sample line)
-    def checkCombo2(self,event):
-        s = self.combo2.get()
-        # logger.info('child -->'+s)
-        
-        if (s == "Pump to  Line(P1)"):
-            # logger.info(" P1   --- E ")
-            new_valve_pos = 'E'
-        elif (s == "Line to Gas(P2)"):
-            # logger.info(" P2 ---- O")
-            new_valve_pos = 'O'
-        elif (s == "Gas to Air(P3)"):
-            # logger.info(" P3 --- I")
-            new_valve_pos = 'I'
-        elif (s == "Air to Pump(P4)"):
-            # logger.info(" P4 ---- B ")
-            new_valve_pos = 'B'
-        else:
-            logger.info(' invalid valve selection')
-            new_valve_pos = 'E'
-        self.pump1.set_valve(5, new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(5)
-        # logger.info("-----> ",s)
-        cur_valve = "----"
-        if (s=='e'):
-            cur_valve = "Pump to  Line(P1)"
-            # logger.info('EEEE')
-        elif(s=='o'):
-            cur_valve = "Line to Gas(P2)"
-            # logger.info('OOOO')
-        elif(s=="i"):
-            cur_valve = "Gas to Air(P3)"
-            # logger.info("IIII")
-        elif(s=="b"):
-            cur_valve = "Air to Pump(P4)"
-            # logger.info("BBBB")
-        else:
-            cur_valve = "error"
-
-        self.v2_cur_pos.config(text=cur_valve)
 
 
-    #change pisition of pump Valve (Titrant line)
+    #Pump Valve (Titrant line)
     def checkCombo1(self,event):
+        global TIRRANT_PUMP_ADDRESS
         s = self.combo1.get()
         # logger.info('child -->'+s)
         # ("Pump to Air (P1)","Air to Gas (P2)","Gas to Line (P3)",
@@ -904,9 +862,9 @@ class run_GUI(GUI.GUI):
         else:
             logger.info(' invalid valve selection')
             new_valve_pos = 'E'
-        self.pump1.set_valve(1, new_valve_pos)
+        self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, new_valve_pos)
         time.sleep(1)
-        s = self.pump1.get_valve(1)
+        s = self.pump1.get_valve(TIRRANT_PUMP_ADDRESS)
         # logger.info("-----> ",s)
         cur_valve = "----"
         if (s=='e'):
@@ -927,64 +885,42 @@ class run_GUI(GUI.GUI):
         self.v1_cur_pos.config(text=cur_valve)
 
 
-
-# ("Pump to Line (P1)","Line to Gas (P2)","Gas to Air (P3)",
-#                                     "Air to Pump (P4)")
-
-
-    #change the position of Loop Valve (Titrant line)
+    #Loop Valve (Titrant line)
     def checkCombo3(self, event):
-        # print('parent-->'+self.combo3.get())
+        global TITRANT_LOOP_ADDRESS
         s = self.combo3.get()
-        # logger.info('child -->'+s)
-
         if (s == "Gas to Line (P1)"):
-            # logger.info(" P1   --- E ")
             new_valve_pos = 'E'
         elif (s == "Line to Pump (P2)"):
-            # logger.info(" P2 ---- O")
             new_valve_pos = 'O'
         elif (s == "Pump to Air (P3)"):
-            # logger.info(" P3 --- I")
             new_valve_pos = 'I'
         elif (s == "Air to Pump (P4)"):
-            # logger.info(" P4 ---- B ")
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
             new_valve_pos = 'E'
-        self.pump1.set_valve(2, new_valve_pos)
+        self.pump1.set_valve(TITRANT_LOOP_ADDRESS, new_valve_pos)
         time.sleep(1)
-        s = self.pump1.get_valve(2)
-        # logger.info("----->{}".format(s))
-        # print(type(s))
+        s = self.pump1.get_valve(TITRANT_LOOP_ADDRESS)
         cur_valve = "----"
         if (s=='e'):
             cur_valve = "Gas to Line (P1)"
-            # logger.info('EEEE')
         elif(s=='o'):
             cur_valve = "Line to Pump (P2)"
-            # logger.info('OOOO')
         elif(s=="i"):
             cur_valve = "Pump to Air (P3)"
-            # logger.info("IIII")
         elif(s=="b"):
             cur_valve = "Air to Pump (P4)"
-            # logger.info("BBBB")
         else:
             cur_valve = "error"
-        # print('cur_valve:', cur_valve)
         self.v3_cur_pos.config(text=cur_valve)
 
 
-
-    #change the position of pipette Valve (Titrant line)
+    #Pipette Valve (Titrant line)
     def checkCombo5(self, event):
-        # print('child-->'+self.combo5.get())
+        global TITRANT_PIPETTE_ADDRESS
         s = self.combo5.get()
-        # logger.info('child -->'+s)
-        # ("Pump to Air (P1)","Air to Gas (P2)","Gas to Line (P3)",
-        #                          "Line to Pump (P4)")
         if (s == "Titrant Port (P1)"):
             vlv = 1
         elif (s == "Reservoirs (P2)"):
@@ -995,87 +931,253 @@ class run_GUI(GUI.GUI):
             logger.info(' invalid valve selection')
             vlv = 2
 
-        self.pump1.set_multiwayvalve(4,vlv)
+        self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,vlv)
         time.sleep(1)
-        s = self.pump1.get_valve(4)
-        # logger.info("----->{}".format(s))
-        # print(type(s))
+        s = self.pump1.get_valve(TITRANT_PIPETTE_ADDRESS)
         cur_valve = "----"
         if (s=='1'):
             cur_valve = "Titr. Port (P1)"
-            # logger.info('EEEE')
         elif(s=='2'):
             cur_valve = "Reservoirs (P2)"
-            # logger.info('OOOO')
         elif(s=='3'):
             cur_valve = "Titr. Cann.(P3)"
-            # logger.info("IIII")
         else:
             cur_valve = "error"
 
         self.v5_cur_pos.config(text=cur_valve)
 
 
-    #change the position of cleaning Valve (Titrant line)
+    #Cleaning Vlave (Titrant line)
     def checkCombo9(self, event):
-        # print('child-->'+self.combo9.get())   
+        global TITRANT_CLEANING_ADDRESS
         s = self.combo9.get()
-        # logger.info('child -->'+s)
-        # ("Pump to Air (P1)","Air to Gas (P2)","Gas to Line (P3)",
-        #                          "Line to Pump (P4)")
         if (s == "Air (P1)"):
-            # logger.info(" P1   --- E ")
-            new_valve_pos = 1#'E'
+            new_valve_pos = 1
         elif (s == "MeOH (P2)"):
-            # logger.info(" P2 ---- O")
-            new_valve_pos = 2#'O'
+            new_valve_pos = 2
         elif (s == "Detergent (P3)"):
-            # logger.info(" P3 --- I")
-            new_valve_pos = 3#'I'
+            new_valve_pos = 3
         elif (s == "DI Water (P4)"):
-            # logger.info(" P4 ---- B ")
-            new_valve_pos = 4#'B'
+            new_valve_pos = 4
         elif (s == "Waster (P5)"):
-            # logger.info(" P4 ---- B ")
-            new_valve_pos = 5#'B'
+            new_valve_pos = 5
         elif (s == "Cleaning Port (P6)"):
-            # logger.info(" P4 ---- B ")
-            new_valve_pos = 6#'B'
+            new_valve_pos = 6
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = 1#'E'
-        # self.pump1.set_valve(4, new_valve_pos)
-        self.pump1.set_multiwayvalve(3,new_valve_pos)
+            new_valve_pos = 1
+
+        self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,new_valve_pos)
         time.sleep(1)
-        s = self.pump1.get_valve(3)
-        # logger.info("----->{}".format(s))
-        # print(type(s))
+        s = self.pump1.get_valve(TITRANT_CLEANING_ADDRESS)
         cur_valve = "----"
         if (s=='1'):
             cur_valve = "Air (P1)"
-            # logger.info('EEEE')
         elif(s=='2'):
             cur_valve = "MeOH (P2)"
-            # logger.info('OOOO')
         elif(s=="3"):
             cur_valve = "Detergent (P3)"
-            # logger.info("IIII")
         elif(s=="4"):
             cur_valve = "DI Water (P4)"
-            # logger.info("BBBB")
         elif(s=="5"):
             cur_valve = "Waster (P5)"
-            # logger.info("BBBB")
         elif(s=="6"):
             cur_valve = "Clean. Port (P6)"
-            # logger.info("BBBB")                        
         else:
             cur_valve = "error"
-        # print('cur_valve:', cur_valve)
+
         self.v9_cur_pos.config(text=cur_valve)
 
 
 
+
+    #Pump Valve (Sample line)
+    def checkCombo2(self,event):
+        global SAMPLE_PUMP_ADDRESS
+        s = self.combo2.get()
+        if (s == "Pump to  Line(P1)"):
+            new_valve_pos = 'E'
+        elif (s == "Line to Gas(P2)"):
+            new_valve_pos = 'O'
+        elif (s == "Gas to Air(P3)"):
+            new_valve_pos = 'I'
+        elif (s == "Air to Pump(P4)"):
+            new_valve_pos = 'B'
+        else:
+            logger.info(' invalid valve selection')
+            new_valve_pos = 'E'
+        self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, new_valve_pos)
+        time.sleep(1)
+        s = self.pump1.get_valve(SAMPLE_PUMP_ADDRESS)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Pump to  Line(P1)"
+        elif(s=='o'):
+            cur_valve = "Line to Gas(P2)"
+        elif(s=="i"):
+            cur_valve = "Gas to Air(P3)"
+        elif(s=="b"):
+            cur_valve = "Air to Pump(P4)"
+        else:
+            cur_valve = "error"
+
+        self.v2_cur_pos.config(text=cur_valve)
+
+
+    #Loop Valve (Sample line)
+    def checkCombo4(self,event):
+        global SAMPLE_LOOP_ADDRESS
+        s = self.combo4.get()        
+        if (s == "Pump to Line(P1)"):
+            new_valve_pos = 'E'
+        elif (s == "Line to Gas(P2)"):
+            new_valve_pos = 'O'
+        elif (s == "Gas to Air(P3)"):
+            new_valve_pos = 'I'
+        elif (s == "Air to Pump(P4)"):
+            new_valve_pos = 'B'
+        else:
+            logger.info(' invalid valve selection')
+            new_valve_pos = 'E'
+        self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, new_valve_pos)
+        time.sleep(1)
+        s = self.pump1.get_valve(SAMPLE_LOOP_ADDRESS)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Pump to Line(P1)"
+        elif(s=='o'):
+            cur_valve = "Line to Gas(P2)"
+        elif(s=="i"):
+            cur_valve = "Gas to Air(P3)"
+        elif(s=="b"):
+            cur_valve = "Air to Pump(P4)"
+        else:
+            cur_valve = "error"
+        
+        self.v4_cur_pos.config(text=cur_valve)
+
+
+    #Titrant Port Valve (Sample line)
+    def checkCombo6(self,event):
+        global TITRANT_PORT_ADDRESS
+        s = self.combo6.get()
+        if (s == "Titrant Port(P1)"):
+            vlv = 1
+        elif (s == "Reservoirs(P2)"):
+            vlv = 2
+        elif (s == "Titrant Cannula(P3)"):
+            vlv = 3
+        else:
+            logger.error(' invalid valve selection')
+            vlv = 2
+
+        self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,vlv)
+        time.sleep(1)
+        s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
+        # logger.info("----->{}".format(s))
+        # print(type(s))
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "Titrant Port(P1)"
+            # logger.info('EEEE')
+        elif(s=='2'):
+            cur_valve = "Reservoirs(P2)"
+            # logger.info('OOOO')
+        elif(s=='3'):
+            cur_valve = "Titrant Cannula(P3)"
+            # logger.info("IIII")
+        else:
+            cur_valve = "error"
+
+        self.v6_cur_pos.config(text=cur_valve)
+
+
+    #Degrasser Valve (Sample line)         
+    def checkCombo7(self,event):
+        global DEGASSER_ADDRESS
+        s = self.combo7.get()
+        if (s == "Titrant Port(P1)"):
+            new_valve_pos = 1
+        elif (s == "Sample Port(P2)"):
+            new_valve_pos = 2
+        elif (s == "Ref Port(P3)"):
+            new_valve_pos = 3
+        elif (s == "Rec Port(P4)"):
+            new_valve_pos = 4
+        elif (s == "Reservoirs(P5)"):
+            new_valve_pos = 5
+        elif (s == "Cell(P6)"):
+            new_valve_pos = 6
+        else:
+            logger.error(' invalid valve selection')
+            new_valve_pos = 1
+
+        self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,new_valve_pos)
+        time.sleep(1)
+        s = self.pump1.get_valve(DEGASSER_ADDRESS)
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "Titrant Port(P1)"
+        elif(s=='2'):
+            cur_valve = "Sample Port(P2)"
+        elif(s=="3"):
+            cur_valve = "Ref Port(P3)"
+        elif(s=="4"):
+            cur_valve = "Rec Port(P4)"
+        elif(s=="5"):
+            cur_valve = "Reservoirs(P5)"
+        elif(s=="6"):
+            cur_valve = "Cell(P6)"
+        else:
+            cur_valve = "error"
+
+        self.v7_cur_pos.config(text=cur_valve)
+
+
+    #Cleaning Valve (Sample line)  
+    def checkCombo8(self, event):
+        global SAMPLE_CLEANING_ADDRESS 
+        s = self.combo8.get()
+        if (s == "Air(P1)"):
+            new_valve_pos = 1
+        elif (s == "MeOH(P2)"):
+            new_valve_pos = 2
+        elif (s == "Detergent(P3)"):
+            new_valve_pos = 3
+        elif (s == "WI Water(P4)"):
+            new_valve_pos = 4
+        elif (s == "Reservoirs(P5)"):
+            new_valve_pos = 5
+        elif (s == "Cell(P6)"):
+            new_valve_pos = 6
+        else:
+            logger.error(' invalid valve selection')
+            new_valve_pos = 1
+
+        self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,new_valve_pos)
+        time.sleep(1)
+        s = self.pump1.get_valve(SAMPLE_CLEANING_ADDRESS)
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "Air(P1)"
+        elif(s=='2'):
+            cur_valve = "MeOH(P2)"
+        elif(s=="3"):
+            cur_valve = "Detergent(P3)"
+        elif(s=="4"):
+            cur_valve = "WI Water(P4)"
+        elif(s=="5"):
+            cur_valve = "Reservoirs(P5)"
+        elif(s=="6"):
+            cur_valve = "Cell(P6)"
+        else:
+            cur_valve = "error"
+
+        self.v8_cur_pos.config(text=cur_valve)
+
+
+
+    #BUBBLE SENSOR SELECTION FOR PUMP 1
     def checkCombob0(self,event):        
         s = self.combo0.get()        
         ss=s.partition('S')
@@ -1158,7 +1260,7 @@ class run_GUI(GUI.GUI):
             self.BS = 14
 
 
-
+    #BUBBLE SENSOR SELECTION FOR PUMP 2
     def checkCombob1(self,event):        
         s = self.combob1.get()        
         ss=s.partition('S')

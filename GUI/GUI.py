@@ -483,7 +483,7 @@ class GUI():
                   fg=self.Title_mid).place(x = XX1 +20,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = yy+Y1 + dY1)  
-            self.v4_cur_pos = Label(self.tab1, text = "----",font=self.Font1 )
+            self.v4_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
             self.v4_cur_pos.pack()
             self.v4_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
 
@@ -500,7 +500,7 @@ class GUI():
                   fg=self.Title_mid).place(x = XX1 -18,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = yy+Y1 + dY1)  
-            self.v6_cur_pos = Label(self.tab1, text = "----",font=self.Font1 )
+            self.v6_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
             self.v6_cur_pos.pack()
             self.v6_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
             Label(self.tab1, text = "New Pos",font=self.Font1, bg=self.Color1,

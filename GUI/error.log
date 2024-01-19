@@ -194,3 +194,68 @@ ERROR:	can't select axis 1
 ERROR:	can't select axis 1
 ERROR:	can't select axis 1
 ERROR:	can't select axis 1
+2024-01-19 09:03:41,412:config.Pump:Error reading pump!!!
+2024-01-19 09:03:41,412:config.Pump:exception happened in pump!!
+2024-01-19 09:03:44,414:config.Pump:Error reading pump!!!
+2024-01-19 09:03:44,415:config.Pump:exception happened in pump!!
+2024-01-19 09:10:27,223:config.Pump:Error reading pump!!!
+2024-01-19 09:10:27,224:config.Pump:exception happened in pump!!
+2024-01-19 09:13:05,719:config.Pump:Error reading pump!!!
+2024-01-19 09:13:05,719:config.Pump:exception happened in pump!!
+2024-01-19 09:13:08,722:config.Pump:Error reading pump!!!
+2024-01-19 09:13:08,722:config.Pump:exception happened in pump!!
+2024-01-19 09:17:41,247:config.Pump:Error reading pump!!!
+2024-01-19 09:17:41,248:config.Pump:exception happened in pump!!
+2024-01-19 09:17:44,251:config.Pump:Error reading pump!!!
+2024-01-19 09:17:44,252:config.Pump:exception happened in pump!!
+ERROR: invalid valve selection
+ERROR: invalid valve selection
+ERROR: invalid valve selection
+2024-01-19 09:19:47,050:config.Pump:Error reading pump!!!
+2024-01-19 09:19:47,050:config.Pump:exception happened in pump!!
+2024-01-19 09:19:50,052:config.Pump:Error reading pump!!!
+2024-01-19 09:19:50,052:config.Pump:exception happened in pump!!
+2024-01-19 09:20:55,290:config.Pump:Error reading pump!!!
+2024-01-19 09:20:55,291:config.Pump:exception happened in pump!!
+2024-01-19 09:20:58,293:config.Pump:Error reading pump!!!
+2024-01-19 09:20:58,293:config.Pump:exception happened in pump!!
+2024-01-19 09:28:07,103:config.Pump:Error reading pump!!!
+2024-01-19 09:28:07,104:config.Pump:exception happened in pump!!
+2024-01-19 09:28:10,107:config.Pump:Error reading pump!!!
+2024-01-19 09:28:10,108:config.Pump:exception happened in pump!!
+2024-01-19 09:28:13,110:config.Pump:Error reading pump!!!
+2024-01-19 09:28:13,111:config.Pump:exception happened in pump!!
+2024-01-19 09:35:05,005:config.Pump:Error reading pump!!!
+2024-01-19 09:35:05,006:config.Pump:exception happened in pump!!
+2024-01-19 09:35:08,010:config.Pump:Error reading pump!!!
+2024-01-19 09:35:08,010:config.Pump:exception happened in pump!!
+2024-01-19 09:35:35,211:config.Pump:Error reading pump!!!
+2024-01-19 09:35:35,212:config.Pump:exception happened in pump!!
+2024-01-19 09:35:38,214:config.Pump:Error reading pump!!!
+2024-01-19 09:35:38,215:config.Pump:exception happened in pump!!
+2024-01-19 09:35:41,218:config.Pump:Error reading pump!!!
+2024-01-19 09:35:41,219:config.Pump:exception happened in pump!!
+2024-01-19 09:40:18,164:config.Pump:Error reading pump!!!
+2024-01-19 09:40:18,164:config.Pump:exception happened in pump!!
+2024-01-19 09:40:21,165:config.Pump:Error reading pump!!!
+2024-01-19 09:40:21,165:config.Pump:exception happened in pump!!
+2024-01-19 09:40:24,167:config.Pump:Error reading pump!!!
+2024-01-19 09:40:24,167:config.Pump:exception happened in pump!!
+2024-01-19 09:40:35,729:config.Pump:Error reading pump!!!
+2024-01-19 09:40:35,729:config.Pump:exception happened in pump!!
+2024-01-19 10:04:43,440:config.Pump:Error reading pump!!!
+2024-01-19 10:04:43,441:config.Pump:exception happened in pump!!
+2024-01-19 10:07:34,192:config.Pump:Error reading pump!!!
+2024-01-19 10:07:34,193:config.Pump:exception happened in pump!!
+2024-01-19 10:07:37,197:config.Pump:Error reading pump!!!
+2024-01-19 10:07:37,198:config.Pump:exception happened in pump!!
+2024-01-19 10:07:40,201:config.Pump:Error reading pump!!!
+2024-01-19 10:07:40,201:config.Pump:exception happened in pump!!
+2024-01-19 10:07:56,668:config.Pump:Error reading pump!!!
+2024-01-19 10:07:56,668:config.Pump:Error reading pump!!!
+2024-01-19 10:07:56,669:config.Pump:exception happened in pump!!
+2024-01-19 10:07:56,670:config.Pump:exception happened in pump!!
+2024-01-19 10:44:22,876:config.Pump:Error reading pump!!!
+2024-01-19 10:44:22,879:config.Pump:exception happened in pump!!
+2024-01-19 10:47:49,752:config.Pump:Error reading pump!!!
+2024-01-19 10:47:49,752:config.Pump:exception happened in pump!!
