@@ -1,14 +1,14 @@
-import GUI
-from tkinter import * 
-import tkinter.messagebox 
-from config.motor_3axes import motor_3axes as Motors
-import config.Pump as P
-import time
-import u6
-import threading
-import config.MeerstetterTEC as TEC
-import json
-import logging
+import  GUI
+from    tkinter import * 
+import  tkinter.messagebox 
+from    config.motor_3axes import motor_3axes as Motors
+import  config.Pump as P
+import  time
+import  u6
+import  threading
+import  config.MeerstetterTEC as TEC
+import  json
+import  logging
 
 
 #------------------- CONSTANTS  -----------------------------------------
@@ -24,14 +24,13 @@ MIXING_ACCELERATION         = 1     # mixing motor acceleration
 # pumps/valves RS485 addresses
 TIRRANT_PUMP_ADDRESS        = 1     # Pump 1
 TITRANT_LOOP_ADDRESS        = 2     # pump 1 loop valve
-TITRANT_CLEANING_ADDRESS    = 3     # titrant line: cleaning valve
 TITRANT_PIPETTE_ADDRESS     = 4     # titrant line: pipette valve
+TITRANT_CLEANING_ADDRESS    = 3     # titrant line: cleaning valve
 SAMPLE_PUMP_ADDRESS         = 5     # pump 2
 SAMPLE_LOOP_ADDRESS         = 6     # pump 2 loop valve
 TITRANT_PORT_ADDRESS        = 7     # sample line: titrant port valve
 DEGASSER_ADDRESS            = 8     # sample line: degasser valve
 SAMPLE_CLEANING_ADDRESS     = 9     # sample line: cleaning valve
-
 
 
 #------------------ initialize logger -------------------------------------
@@ -60,8 +59,8 @@ class run_GUI(GUI.GUI):
         logger.info("Initializing hardware -------------------------------------")
         self.PortAssignment()
         # self.InitMixerMotor()
-        self.Init__motors_all_axes()            
         self.Init_Pumps_Valves()
+        self.Init__motors_all_axes()            
         self.InitLabjack()
         self.InitTecController()
         self.InitTimer()
@@ -102,10 +101,11 @@ class run_GUI(GUI.GUI):
         self.p1_cur_pos.config(text = str(p1_cur_pos))
         # logger.info('cur pos:', p1_cur_pos)
         #------------------------------- update pump 2 position
+        
         p2_cur_pos = self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)            
         p2_cur_pos = int(p2_cur_pos / self.scalefactor_p2)
         self.p2_cur_pos.config(text = str(p2_cur_pos))
-
+        # logger.info('p2 cur pos:{}'.format( p2_cur_pos))
         # #------------------------------- update  of TEC controller parameters
         self.updateGUI_TectController()
         #-------- update Gantry vertical motor position on GUI ------------------
@@ -142,8 +142,10 @@ class run_GUI(GUI.GUI):
         self.tec_desired_tmp.config(text=str(target_temp))
 
 
-
     def Init_Pumps_Valves(self):        
+        global TIRRANT_PUMP_ADDRESS, TITRANT_LOOP_ADDRESS, TITRANT_CLEANING_ADDRESS
+        global TITRANT_PIPETTE_ADDRESS, SAMPLE_PUMP_ADDRESS, SAMPLE_LOOP_ADDRESS 
+        global TITRANT_PORT_ADDRESS, DEGASSER_ADDRESS, SAMPLE_CLEANING_ADDRESS 
         # # #------ init. Pump 1
         logger.info("Initializing Pumps/Valves.....")
         com_port = self.PUMP1_PORT
@@ -157,44 +159,64 @@ class run_GUI(GUI.GUI):
         logger.info("\t\tPump2 initialized")
         time.sleep(3)
 
-        logger.info("\t\tSetting valves to default positions")
+        #init. pumps speeds
+        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
+        logger.info("\t\tPump1 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
+        self.p1_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
 
-        self.pump1.set_valve(1, 'E')
+        self.p1_top_spd = DEFAULT_PUMP_SPEEED
+
+        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
+        logger.info("\t\tPump2 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
+        self.p2_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
+
+        self.p2_top_spd = DEFAULT_PUMP_SPEEED
+
+
+
+        logger.info("\t\tSetting valves to default positions")
+        self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, 'E')
         self.v1_cur_pos.config(text="Pump to Air (P1)")
         self.combo1.current(0)
 
-        self.pump1.set_valve(2, 'E')
+        self.pump1.set_valve(TITRANT_LOOP_ADDRESS, 'E')
         self.v3_cur_pos.config(text="Pump to Line (P1)")
         self.combo3.current(0)
 
-        self.pump1.set_multiwayvalve(4,3)
+        self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,3)
         self.v5_cur_pos.config(text="Titrant Cannula(P3)")
         self.combo5.current(2)
 
-        self.pump1.set_multiwayvalve(3,1)        
+        self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,1)        
         self.v9_cur_pos.config(text="Air (P1)")
         self.combo9.current(0)
 
-        self.pump1.set_valve(5, 'E')
+        self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, 'E')
         self.v2_cur_pos.config(text="Pump to Line (P1)")
         self.combo2.current(0)
 
+        self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, 'E')
+        self.v4_cur_pos.config(text="Pump to Line (P1)")
+        self.combo4.current(0)
 
+        self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,3)
+        self.v6_cur_pos.config(text="Titrant Cannula(P3)")
+        self.combo6.current(2)
+
+        self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,1)        
+        self.v7_cur_pos.config(text="Sample Port (P2)")
+        self.combo7.current(1)
+
+        self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,1)        
+        self.v8_cur_pos.config(text="WI Water(P4)")
+        self.combo8.current(3)
+
+        # init. scale factors 
         self.comboCfg1.current(8)
         self.pump1_scale_factor(9)
 
         self.comboCfg2.current(8)
         self.pump2_scale_factor(9)
-
-        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
-        logger.info("\t\tPump1 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
-        self.p1_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
-
-        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
-        logger.info("\t\tPump2 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
-        self.p2_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
-
-
 
 
 
@@ -563,7 +585,7 @@ class run_GUI(GUI.GUI):
 
     def checkComboCfg1(self, event):
         s = self.comboCfg1.get()
-        logger.info('pump1 config: :{}'.format( s))
+        logger.debug('pump1 config: :{}'.format( s))
         ss=s.partition(')')
         # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
@@ -583,10 +605,11 @@ class run_GUI(GUI.GUI):
         s =   self.ent_top_spd2.get()        
         logger.info("pump2 top speed: {}".format(s))
         if (is_float(s) == True):
-            max_spd = int(s)
-            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, max_spd)
+            self.p2_top_spd = int(s)
+            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, self.p2_top_spd)
             time.sleep(.25)
             self.p2_cur_spd.config(text = s)
+            
 
 
 
@@ -595,7 +618,7 @@ class run_GUI(GUI.GUI):
         # def option_selected(event):
         # logger.info('child:{}'.format( self.comboCfg2.get()))
         s = self.comboCfg2.get()
-        logger.info('pump2 config: :{}'.format( s))
+        logger.debug('pump2 config: :{}'.format( s))
         ss=s.partition(')')
         # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
@@ -614,12 +637,12 @@ class run_GUI(GUI.GUI):
     def p2_b_abs_pos_click(self):
         global SAMPLE_PUMP_ADDRESS
         s =   self.ent_abs_pos2.get()
-        print("=========================")
+        # print("=========================")
         logger.info(s)
         if (is_float(s) == True):
-            val = int(s)
-            logger.debug("pump2: set abs. pos:{}".format(s))
-            abs_pos = int(val * self.scalefactor_p1)
+            val = int(s)            
+            abs_pos = int(val * self.scalefactor_p2)
+            logger.debug("pump2: set abs. pos:{} . after scaling:{}".format(s, abs_pos))
             self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, abs_pos)
 
 
@@ -832,8 +855,8 @@ class run_GUI(GUI.GUI):
         s =   self.ent_top_spd.get()
         logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
-            max_spd = int(s)
-            self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, max_spd)
+            self.p1_top_spd = int(s)
+            self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, self.p1_top_spd)
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
 
@@ -1371,32 +1394,32 @@ class run_GUI(GUI.GUI):
             VOLUME = 1000.
             self.microstep_p1 = False
         elif (N == 2):
-            STEP_RANGE = 48000.
-            VOLUME = 1000. * 8
+            STEP_RANGE = 48000.* 8
+            VOLUME = 1000. 
             self.microstep_p1 = True
         elif (N == 3):
             STEP_RANGE = 48000.
             VOLUME = 500.
             self.microstep_p1 = False
         elif (N == 4):
-            STEP_RANGE = 48000.
-            VOLUME = 500. * 8
+            STEP_RANGE = 48000.* 8
+            VOLUME = 500. 
             self.microstep_p1 = True
         elif (N == 5):
             STEP_RANGE = 48000.
             VOLUME = 250.
             self.microstep_p1 = False
         elif (N == 6):
-            STEP_RANGE = 48000.
-            VOLUME = 250. * 8
+            STEP_RANGE = 48000.* 8
+            VOLUME = 250. 
             self.microstep_p1 = True
         elif (N == 7):
             STEP_RANGE = 24000.
             VOLUME = 2500.
             self.microstep_p1 = False
         elif (N == 8):
-            STEP_RANGE = 24000.
-            VOLUME = 2500. * 8
+            STEP_RANGE = 24000.* 8
+            VOLUME = 2500. 
             self.microstep_p1 = True
         elif (N == 9):
             STEP_RANGE = 1
@@ -1413,6 +1436,28 @@ class run_GUI(GUI.GUI):
             STEP_RANGE = 1
             VOLUME = 1
 
+
+        if (self.microstep_p1 == False):
+            logger.info('pump 1 mircostep off')
+            self.set_step_mode_p1(False)            
+        else:  #self.microstep_p1 = True
+            logger.info('pump 1 mircostep on')
+            self.set_step_mode_p1(True)
+
+            
+        # self.p1_top_spd = DEFAULT_PUMP_SPEEED
+        if self.microstep_p1 == False:
+            self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
+            time.sleep(.25)
+            logger.info("\t\tPump1 speed is set to {}".format(self.p1_top_spd))
+            self.p1_cur_spd.config(text = str(self.p1_top_spd))
+        else:
+            new_speed = self.p1_top_spd * 8
+            self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,new_speed)
+            time.sleep(.25)            
+            logger.info("\t\tPump1 speed is set to {}".format(new_speed))
+            self.p1_cur_spd.config(text = str(new_speed))
+   
         self.scalefactor_p1 = STEP_RANGE / VOLUME
         logger.info('\t\tpump 1 scale factor:{}'.format( self.scalefactor_p1))
 
@@ -1423,32 +1468,32 @@ class run_GUI(GUI.GUI):
             VOLUME = 1000.
             self.microstep_p2 = False
         elif (N == 2):
-            STEP_RANGE = 48000.
-            VOLUME = 1000. * 8
+            STEP_RANGE = 48000.* 8
+            VOLUME = 1000. 
             self.microstep_p2 = True
         elif (N == 3):
             STEP_RANGE = 48000.
             VOLUME = 500.
             self.microstep_p2 = False
         elif (N == 4):
-            STEP_RANGE = 48000.
-            VOLUME = 500. * 8
+            STEP_RANGE = 48000.* 8
+            VOLUME = 500. 
             self.microstep_p2 = True
         elif (N == 5):
             STEP_RANGE = 48000.
             VOLUME = 250.
             self.microstep_p2 = False
         elif (N == 6):
-            STEP_RANGE = 48000.
-            VOLUME = 250. * 8
+            STEP_RANGE = 48000. * 8
+            VOLUME = 250.
             self.microstep_p2 = True
         elif (N == 7):
             STEP_RANGE = 24000.
             VOLUME = 2500.
             self.microstep_p2 = False
         elif (N == 8):
-            STEP_RANGE = 24000.
-            VOLUME = 2500. * 8
+            STEP_RANGE = 24000.* 8
+            VOLUME = 2500. 
             self.microstep_p2 = True
         elif (N == 9):
             STEP_RANGE = 1
@@ -1464,6 +1509,27 @@ class run_GUI(GUI.GUI):
             logger.info("\t\tp2 invalid scale factor")
             STEP_RANGE = 1
             VOLUME = 1
+
+        if (self.microstep_p2 == False):
+            logger.info('pump 2 mircostep off')
+            self.set_step_mode_p2(False)            
+        else: 
+            logger.info('pump 2 mircostep on')
+            self.set_step_mode_p2(True)
+
+        # self.p2_top_spd = DEFAULT_PUMP_SPEEED
+        if self.microstep_p2 == False:
+            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
+            time.sleep(.25)
+            logger.info("\t\tPump2 speed is set to {}".format(self.p2_top_spd))
+            self.p2_cur_spd.config(text = str(self.p2_top_spd))
+        else:
+            new_speed = self.p2_top_spd * 8
+            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,new_speed)
+            time.sleep(.25)            
+            logger.info("\t\tPump2 speed is set to {}".format(new_speed))
+            self.p2_cur_spd.config(text = str(new_speed))
+
 
         self.scalefactor_p2 = STEP_RANGE / VOLUME
         logger.info('\t\tpump2 scale factor:{}'.format( self.scalefactor_p2))

@@ -5,3 +5,4 @@ Tests/Technosoft/config/__pycache__/
 *.pyc
 __pycache__/
 Malvern.bat
+GUI/error.log
