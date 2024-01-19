@@ -11,28 +11,20 @@ import json
 import logging
 
 #------------------- Constants -----------------------------------------
-BS1_THRESHOLD = 2.5  #Threshold value for bubble sensor 1
-BS2_THRESHOLD = 2.5  #Threshold value for bubble sensor 2
-BS3_THRESHOLD = 2.5  #Threshold value for bubble sensor 3
-BS4_THRESHOLD = 2.5  #Threshold value for bubble sensor 4
-BS5_THRESHOLD = 2.5  #Threshold value for bubble sensor 5
-BS6_THRESHOLD = 2.5  #Threshold value for bubble sensor 6
-BS7_THRESHOLD = 2.5  #Threshold value for bubble sensor 7
-BS8_THRESHOLD = 2.5  #Threshold value for bubble sensor 8
-BS9_THRESHOLD = 2.5  #Threshold value for bubble sensor 9
-BS10_THRESHOLD = 2.5  #Threshold value for bubble sensor 10
-BS11_THRESHOLD = 2.5  #Threshold value for bubble sensor 11
-BS12_THRESHOLD = 2.5  #Threshold value for bubble sensor 12
-BS13_THRESHOLD = 2.5  #Threshold value for bubble sensor 13
-BS14_THRESHOLD = 2.5  #Threshold value for bubble sensor 14
+BS_THRESHOLD = 2.5                  # Threshold value for bubble sensor 1
+BUBBLE_DETECTION_PUMP_SPEED = 50    # speed of pump during bubble detection
+DEFAULT_PUMP_SPEEED = 1000          # speed of pump at start up
+GANTRY_VER_SPEED = 15.0             # vertical gantry speed
+GANTRY_HOR_SPEED = 15.0             # horizontal gantry speed
+GANTRY_VER_ACCELERATION = 1         # vertical gantry acceleration
+GANTRY_HOR_ACCELERATION = 1         # horizontal gantry acceleration
 
-BUBBLE_DETECTION_SPEED = 50
-DEFAULT_PUMP_SPEEED = 1000
+
+
 #------------------ initialize logger -------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(levelname)s:%(message)s')
-# formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
 file_handler = logging.FileHandler('error.log')
 file_handler.setLevel(logging.ERROR)
 file_handler.setFormatter(formatter)
@@ -46,11 +38,8 @@ logger.addHandler(stream_handler)
 
 
 
-
-
-
 class run_GUI(GUI.GUI):
-    global BUBBLE_DETECTION_SPEED
+    global BUBBLE_DETECTION_PUMP_SPEED
     global DEFAULT_PUMP_SPEEED
     def __init__(self,root):
         super().__init__( root)
@@ -66,23 +55,24 @@ class run_GUI(GUI.GUI):
         logger.info("Hardware initialiation done")        
 
         #------------ Setting the inital states/values of the hardware ----------------------
-        # self.scalefactor = 1
-        self.microstep = False         
-        self.pump_scale_factor(1)
-        logger.info('\t\tmircostep off')
-        self.set_step_mode(False)
+        # self.scalefactor_p1 = 1
+        self.microstep_p1 = False         
+        self.pump1_scale_factor(9)
+        logger.info('\t\tpump 1 mircostep off')
+        self.set_step_mode_p1(False)
+
+        self.microstep_p2 = False         
+        self.pump2_scale_factor(9)
+        logger.info('\t\tpump 2 mircostep off')
+        self.set_step_mode_p2(False)
+        
+        # default bubble sensor = sensor 1
         self.BS= 1        
         
         # logger.info(self.mc.set_temp(35.3))
         # logger.info("----------------------------------------------")
-
         # #-------- set the motor1 speed to 0
-        self.m1_cur_spd.config(text="0")        
-
-        # # # #------ init valve 1 to 'E' 
-        # # # self.pump1.set_valve(1, 'E')
-        # # # time.sleep(.75)
-        # # # self.v1_cur_pos.config(text = "Pump to Air (P1)")
+        # self.m1_cur_spd.config(text="0")        
         
         logger.info("------------------------------------------------------------------")
         logger.info('System started successfully.')
@@ -93,9 +83,14 @@ class run_GUI(GUI.GUI):
         # logger.info('--->timer tick')
         #------------------------------- update pump 1 position
         p1_cur_pos = self.pump1.get_plunger_position(1)            
-        p1_cur_pos = int(p1_cur_pos / self.scalefactor)
+        p1_cur_pos = int(p1_cur_pos / self.scalefactor_p1)
         self.p1_cur_pos.config(text = str(p1_cur_pos))
         # logger.info('cur pos:', p1_cur_pos)
+        #------------------------------- update pump 2 position
+        p2_cur_pos = self.pump1.get_plunger_position(5)            
+        p2_cur_pos = int(p2_cur_pos / self.scalefactor_p2)
+        self.p2_cur_pos.config(text = str(p2_cur_pos))
+
         # #------------------------------- update  of TEC controller parameters
         self.updateGUI_TectController()
         #-------- update Gantry vertical motor position on GUI ------------------
@@ -138,9 +133,13 @@ class run_GUI(GUI.GUI):
         logger.info("Initializing Pumps/Valves.....")
         com_port = self.PUMP1_PORT
         self.pump1 = P.Pump(com_port)
-        # self.pump1 = P.Pump("COM6")
-        logger.info("\t\tPumps initialized")
+        
         self.pump1.pump_Zinit(1)
+        logger.info("\t\tPump1 initialized")
+        time.sleep(3)
+        
+        self.pump1.pump_Zinit(5)
+        logger.info("\t\tPump2 initialized")
         time.sleep(3)
 
         logger.info("\t\tSetting valves to default positions")
@@ -149,9 +148,9 @@ class run_GUI(GUI.GUI):
         self.v1_cur_pos.config(text="Pump to Air (P1)")
         self.combo1.current(0)
 
-        self.pump1.set_valve(2, 'B')
-        self.v3_cur_pos.config(text="Air to Pump (P4)")
-        self.combo3.current(3)
+        self.pump1.set_valve(2, 'E')
+        self.v3_cur_pos.config(text="Pump to Line (P1)")
+        self.combo3.current(0)
 
         self.pump1.set_multiwayvalve(4,3)
         self.v5_cur_pos.config(text="Titrant Cannula(P3)")
@@ -161,12 +160,27 @@ class run_GUI(GUI.GUI):
         self.v9_cur_pos.config(text="Air (P1)")
         self.combo9.current(0)
 
-        self.comboCfg1.current(8)
-        self.pump_scale_factor(9)
+        self.pump1.set_valve(5, 'E')
+        self.v2_cur_pos.config(text="Pump to Line (P1)")
+        self.combo2.current(0)
 
-        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
-        logger.info("\t\tPumps speed is set to {}".format(DEFAULT_PUMP_SPEEED))
+
+        self.comboCfg1.current(8)
+        self.pump1_scale_factor(9)
+
+        self.comboCfg2.current(8)
+        self.pump2_scale_factor(9)
+
+        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
+        logger.info("\t\tPump1 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
         self.p1_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
+
+        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
+        logger.info("\t\tPump2 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
+        self.p2_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
+
+
+
 
 
     def InitLabjack(self):
@@ -215,15 +229,14 @@ class run_GUI(GUI.GUI):
 
 
     def updateGUI_BubbleSensorLEDs(self):
-        global BS1_THRESHOLD, BS2_THRESHOLD, BS3_THRESHOLD, BS4_THRESHOLD, BS5_THRESHOLD
-        global BS6_THRESHOLD, BS7_THRESHOLD, BS8_THRESHOLD, BS9_THRESHOLD, BS10_THRESHOLD
-        global BS11_THRESHOLD, BS12_THRESHOLD, BS13_THRESHOLD, BS14_THRESHOLD
+        global BS_THRESHOLD
+        
         # Update The GUI with current value of bubble sensors
         X3 = 1050
         Y1 = 100
         dY1 = 40
         dd=50
-        if (self.BS0 < BS1_THRESHOLD):
+        if (self.BS0 < BS_THRESHOLD):
             self.led_on_1.place_forget()
             self.led_off_1.pack()
             self.led_off_1.place(x = X3+50,y = Y1 + 0*dY1)
@@ -232,7 +245,7 @@ class run_GUI(GUI.GUI):
             self.led_on_1.pack()            
             self.led_on_1.place(x = X3+50,y = Y1 + 0*dY1)
 
-        if (self.BS1 < BS2_THRESHOLD):
+        if (self.BS1 < BS_THRESHOLD):
             self.led_on_2.place_forget()
             # self.led_off_14.pack()
             self.led_off_2.place(x = X3+50,y = Y1 + 1*dY1)
@@ -241,7 +254,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_2.place(x = X3+50,y = Y1 + 1*dY1)
 
-        if (self.BS2 < BS3_THRESHOLD):
+        if (self.BS2 < BS_THRESHOLD):
             self.led_on_3.place_forget()
             # self.led_off_14.pack()
             self.led_off_3.place(x = X3+50,y = Y1 + 2*dY1)
@@ -250,7 +263,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_3.place(x = X3+50,y = Y1 + 2*dY1)
 
-        if (self.BS3 < BS4_THRESHOLD):
+        if (self.BS3 < BS_THRESHOLD):
             self.led_on_4.place_forget()
             # self.led_off_14.pack()
             self.led_off_4.place(x = X3+50,y = Y1 + 3*dY1)
@@ -259,7 +272,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_4.place(x = X3+50,y = Y1 + 3*dY1)
 
-        if (self.BS4 < BS5_THRESHOLD):
+        if (self.BS4 < BS_THRESHOLD):
             self.led_on_5.place_forget()
             # self.led_off_14.pack()
             self.led_off_5.place(x = X3+50,y = Y1 + 4*dY1)
@@ -268,7 +281,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_5.place(x = X3+50,y = Y1 + 4*dY1)
             
-        if (self.BS5 < BS6_THRESHOLD):
+        if (self.BS5 < BS_THRESHOLD):
             self.led_on_6.place_forget()
             # self.led_off_14.pack()
             self.led_off_6.place(x = X3+50,y = Y1 + 5*dY1)
@@ -277,7 +290,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_6.place(x = X3+50,y = Y1 + 5*dY1)
 
-        if (self.BS6 < BS7_THRESHOLD):
+        if (self.BS6 < BS_THRESHOLD):
             self.led_on_7.place_forget()
             # self.led_off_14.pack()
             self.led_off_7.place(x = X3+50,y = Y1 + 6*dY1)
@@ -286,7 +299,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_7.place(x = X3+50,y = Y1 + 6*dY1)
         
-        if (self.BS7 < BS8_THRESHOLD):
+        if (self.BS7 < BS_THRESHOLD):
             self.led_on_8.place_forget()
             # self.led_off_14.pack()
             self.led_off_8.place(x = X3+50,y = Y1 + 7*dY1)
@@ -295,7 +308,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_8.place(x = X3+50,y = Y1 + 7*dY1)
 
-        if (self.BS8 < BS9_THRESHOLD):
+        if (self.BS8 < BS_THRESHOLD):
             self.led_on_9.place_forget()
             # self.led_off_14.pack()
             self.led_off_9.place(x = X3+50,y = Y1 + 8*dY1)
@@ -304,7 +317,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_9.place(x = X3+50,y = Y1 + 8*dY1)
 
-        if (self.BS9< BS10_THRESHOLD):
+        if (self.BS9< BS_THRESHOLD):
             self.led_on_10.place_forget()
             # self.led_off_14.pack()
             self.led_off_10.place(x = X3+50,y = Y1 + 9*dY1)
@@ -313,7 +326,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_10.place(x = X3+50,y = Y1 + 9*dY1)
 
-        if (self.BS10 < BS11_THRESHOLD):
+        if (self.BS10 < BS_THRESHOLD):
             self.led_on_11.place_forget()
             # self.led_off_14.pack()
             self.led_off_11.place(x = X3+50,y = Y1 + 10*dY1)
@@ -322,7 +335,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_11.place(x = X3+50,y = Y1 + 10*dY1)
 
-        if (self.BS11 < BS12_THRESHOLD):
+        if (self.BS11 < BS_THRESHOLD):
             self.led_on_12.place_forget()
             # self.led_off_14.pack()
             self.led_off_12.place(x = X3+50,y = Y1 + 11*dY1)
@@ -331,7 +344,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_12.place(x = X3+50,y = Y1 + 11*dY1)
 
-        if (self.BS13 < BS13_THRESHOLD):
+        if (self.BS13 < BS_THRESHOLD):
             self.led_on_13.place_forget()
             # self.led_off_14.pack()
             self.led_off_13.place(x = X3+50,y = Y1 + 12*dY1)
@@ -340,7 +353,7 @@ class run_GUI(GUI.GUI):
             # self.led_on_14.pack()            
             self.led_on_13.place(x = X3+50,y = Y1 + 12*dY1)
 
-        if (self.BS13 < BS14_THRESHOLD):
+        if (self.BS13 < BS_THRESHOLD):
             self.led_on_14.place_forget()
             self.led_off_14.pack()
             self.led_off_14.place(x = X3+50,y = Y1 + 13*dY1)
@@ -362,7 +375,6 @@ class run_GUI(GUI.GUI):
         self.TEC_PORT = ports['TEC']
         self.PUMP1_PORT = ports['PUMP']
         self.TECHNOSOFT_PORT = ports['TECHNOSOFT']
-        # self.GANTRY_VER_AXIS_ID = 255
         self.GANTRY_VER_AXIS_ID = int(ports['GANTRY_VER_AXIS_ID'])
         self.GANTRY_HOR_AXIS_ID = int(ports['GANTRY_HOR_AXIS_ID'])
         self.MIXER_AXIS_ID = int(ports['MIXER_AXIS_ID'])        
@@ -370,9 +382,6 @@ class run_GUI(GUI.GUI):
         self.AXIS_ID_01 = self.MIXER_AXIS_ID
         self.AXIS_ID_02 = self.GANTRY_HOR_AXIS_ID
         self.AXIS_ID_03 = self.GANTRY_VER_AXIS_ID
-
-        # self.AXIS_ID_01 = 24
-        # self.AXIS_ID_02 = 1
         
         logger.info('\t\tTEC:'+ self.TEC_PORT)
         logger.info('\t\tTechnosoft:'+self.TECHNOSOFT_PORT )
@@ -386,6 +395,7 @@ class run_GUI(GUI.GUI):
         self.Ltechnosoftport.config(text=self.TECHNOSOFT_PORT)
         self.Lver_gant_axis_id.config(text=self.GANTRY_VER_AXIS_ID)
         self.Lmixer_axis_id.config(text=self.MIXER_AXIS_ID)
+        self.Lhor_gant_axis_id.config(text=self.GANTRY_HOR_AXIS_ID)
         self.Lpump1_id.config(text="1")
         self.Lvalv3_id.config(text="2")
         self.Lvalv5_id.config(text="3")
@@ -400,54 +410,39 @@ class run_GUI(GUI.GUI):
 
 
     def gantry_vertical_set_rel_click(self):
+        global GANTRY_VER_SPEED
+        global GANTRY_VER_ACCELERATION
         s = self.ent_gnt_ver_rel.get()
         # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            speed = 15.0;	
-            acceleration = 1.0#
             rel_pos =int(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            val = self.motors.move_relative_position(rel_pos, speed, acceleration)
+            val = self.motors.move_relative_position(rel_pos, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
             if val == -2:
-                # top = Toplevel(self.root)
-                # top.geometry("200x300")
-                # top.title("Warning!!!")
-                # Label(top,text="!!!!!!!!!!!!!!!!!!!").place(x=1000,y=400)
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
-
-            # time.sleep(0.5)
-            # p= self.motors.read_actual_position()
-            # self.m3_cur_spd.config(text = p)
-
         else:
             logger.info("Not a number. Please enter an integer for VG rel. position")
 
 
 
     def gantry_vertical_set_abs_click(self):
-
+        global GANTRY_VER_SPEED
+        global GANTRY_VER_ACCELERATION
         s = self.ent_gnt_ver_abs.get()
-        # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            speed = 15.0;	
-            acceleration = 1.0#
             abs_pos =int(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            self.motors.move_absolute_position(abs_pos, speed, acceleration)
-            # time.sleep(0.5)
-            # p= self.motors.read_actual_position()
-            # self.m3_cur_spd.config(text = p)            
+            self.motors.move_absolute_position(abs_pos, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
         
 
     def gantry_vertical_homing_click(self):
-        # logger.debug('child-->V homing')
         logger.debug('Homing Gantry Vertical')
         self.motors.homing(self.AXIS_ID_03)
         
@@ -458,28 +453,18 @@ class run_GUI(GUI.GUI):
 
 
     def gantry_horizontal_set_rel_click(self):
-        # logger.debug('child-->{}'.format(self.ent_gnt_hor_rel.get()))
+        global GANTRY_HOR_SPEED
+        global GANTRY_HOR_ACCELERATION
         s = self.ent_gnt_hor_rel.get()
-        # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            speed = 15.0;	
-            acceleration = 1.0#
             rel_pos =int(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            val = self.motors.move_relative_position(rel_pos, speed, acceleration)
+            val = self.motors.move_relative_position(rel_pos, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
             if val == -2:
-                # top = Toplevel(self.root)
-                # top.geometry("200x300")
-                # top.title("Warning!!!")
-                # Label(top,text="!!!!!!!!!!!!!!!!!!!").place(x=1000,y=400)
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
-
-            # time.sleep(0.5)
-            # p= self.motors.read_actual_position()
-            # self.m3_cur_spd.config(text = p)
 
         else:
             logger.info("Not a number. Please enter an integer for VG rel. position")
@@ -488,20 +473,15 @@ class run_GUI(GUI.GUI):
 
 
     def gantry_horizontal_set_abs_click(self):
-        # logger.debug('child-->{}'.format(self.ent_gnt_hor_abs.get()))
+        global GANTRY_HOR_SPEED
+        global GANTRY_HOR_ACCELERATION
         s = self.ent_gnt_hor_abs.get()
-        # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            speed = 15.0;	
-            acceleration = 1.0#
             abs_pos =int(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            self.motors.move_absolute_position(abs_pos, speed, acceleration)
-            # time.sleep(0.5)
-            # p= self.motors.read_actual_position()
-            # self.m3_cur_spd.config(text = p)            
+            self.motors.move_absolute_position(abs_pos, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
                 
@@ -509,11 +489,6 @@ class run_GUI(GUI.GUI):
 
     def Init__motors_all_axes(self):
         logger.info("Initializing motors .....")        
-        # self.motors = Motor_VG.motor_Linear(self.TECHNOSOFT_PORT.encode('ascii'),
-        #                                       self.GANTRY_VER_AXIS_ID, b"LEFS25") 
-
-
-        # com_port = b"COM7"
         com_port = self.TECHNOSOFT_PORT.encode()        
         primary_axis =  b"Mixer"
         self.motors = Motors(com_port, self.AXIS_ID_01, self.AXIS_ID_02, self.AXIS_ID_03 ,primary_axis)   
@@ -549,7 +524,6 @@ class run_GUI(GUI.GUI):
         s =   self.ent_tmp.get()
         logger.info("TEC Controller new target tmp: {}".format(s))
         if (is_float(s) == True):
-            # logger.info(s)
             self.mc.set_temp(float(s))
         else:
             logger.error("invalid input")
@@ -558,16 +532,14 @@ class run_GUI(GUI.GUI):
     def tec_b_start_click(self):
         logger.info("TEC Controller Enabled")
         self.mc.enable()
-        pass
+
 
     def tec_b_stop_click(self):
         logger.info("TEC Controller Disabled")
         self.mc.disable()
-        pass
 
 
     def checkComboCfg1(self, event):
-        # def option_selected(event):
         s = self.comboCfg1.get()
         logger.info('pump1 config: :{}'.format( s))
         ss=s.partition(')')
@@ -575,45 +547,90 @@ class run_GUI(GUI.GUI):
         index = ss[0]
         # logger.info('int number:{}'.format( int(index)))        
         # logger.info("INDEX = ", index)
-        self.pump_scale_factor(int(index))
-        if (self.microstep == False):
-            logger.info('mircostep off')
-            self.set_step_mode(False)            
-        else:  #self.microstep = True
-            logger.info('mircostep on')
-            self.set_step_mode(True)
+        self.pump1_scale_factor(int(index))
+        if (self.microstep_p1 == False):
+            logger.info('pump 1 mircostep off')
+            self.set_step_mode_p1(False)            
+        else:  #self.microstep_p1 = True
+            logger.info('pump 1 mircostep on')
+            self.set_step_mode_p1(True)
             
 
     def p2_b_top_spd_click(self):        
-        s =   self.ent_top_spd2.get()
-        logger.debug("child: p2_top speed:{}".format(s))
-        # logger.debug(s)
+        s =   self.ent_top_spd2.get()        
+        logger.info("pump2 top speed: {}".format(s))
+        if (is_float(s) == True):
+            max_spd = int(s)
+            self.pump1.set_speed(5,max_spd)
+             ####===============to be moved to the timer thread
+            time.sleep(.25)
+            self.p2_cur_spd.config(text = s)
+
+
 
 
     def checkComboCfg2(self, event):
         # def option_selected(event):
-        logger.info('child:{}'.format( self.comboCfg2.get()))
+        # logger.info('child:{}'.format( self.comboCfg2.get()))
+        s = self.comboCfg2.get()
+        logger.info('pump2 config: :{}'.format( s))
+        ss=s.partition(')')
+        # index = self.comboCfg1.get(0, "end") 
+        index = ss[0]
+        # logger.info('int number:{}'.format( int(index)))        
+        # logger.info("INDEX = ", index)
+        self.pump2_scale_factor(int(index))
+        if (self.microstep_p2 == False):
+            logger.info('pump 2 mircostep off')
+            self.set_step_mode_p2(False)            
+        else:  #self.microstep_p1 = True
+            logger.info('pump 2 mircostep on')
+            self.set_step_mode_p2(True)
 
 
-    def p2_b_abs_pos_click(self):        
+
+    def p2_b_abs_pos_click(self):
+        # logger.info("child: p1_abs pos")
         s =   self.ent_abs_pos2.get()
-        logger.debug("pump2: set abs. pos:{}".format(s))
-        # logger.debug(s)
+        print("=========================")
+        logger.info(s)
+        if (is_float(s) == True):
+            val = int(s)
+            logger.debug("pump2: set abs. pos:{}".format(s))
+            abs_pos = int(val * self.scalefactor_p1)
+            # logger.info('position is:{}'.format(abs_pos))
+            self.pump1.set_pos_absolute(5, abs_pos)
+            ####===============to be moved to the timer thread
+            # time.sleep(.25)
+            # cur_plunger_pos = self.pump1.get_plunger_position(1)            
+            # self.p1_cur_pos.config(text = str(cur_plunger_pos))
+
+
 
     def p2_b_pickup_pos_click(self):
+        logger.info("P2_pickup ")
         s =   self.ent_pickup_pos2.get()
-        logger.debug("pump2: set pickup pos:{}".format(s))
-        # logger.debug(s)
-        
+        if (is_float(s) == True):
+            val = int(s)
+            logger.debug("pump2: set pickup pos:{}".format(s))
+            rel_pos = int(val * self.scalefactor_p2)            
+            self.pump1.set_pickup(5, rel_pos)
+
+
 
 
     def p2_b_dispense_pos_click(self):
         # logger.debug("child: p2_dispense ")
         s =   self.ent_dispemse_pos2.get()
-        logger.debug("pump2: set dispense pos:{}".format(s))
-        # logger.debug(s)
+        logger.info("P2_dispense ")
+        if (is_float(s) == True):
+            val = int(s)
+            logger.debug("pump2: set dispense pos:{}".format(s))
+            # logger.info(int(s))
+            rel_pos = int(val * self.scalefactor_p2)            
+            self.pump1.set_dispense(5,rel_pos)
 
-        
+
                 
     def m1_b_stop_click(self):
         # logger.debug("child: m1_stop")
@@ -664,7 +681,7 @@ class run_GUI(GUI.GUI):
         if (is_float(s) == True):
             val = int(s)
             logger.debug("pump1: set abs. pos:{}".format(s))
-            abs_pos = int(val * self.scalefactor)
+            abs_pos = int(val * self.scalefactor_p1)
             # logger.info('position is:{}'.format(abs_pos))
             self.pump1.set_pos_absolute(1, abs_pos)
             ####===============to be moved to the timer thread
@@ -681,7 +698,7 @@ class run_GUI(GUI.GUI):
             val = int(s)
             logger.debug("pump1: set pickup pos:{}".format(s))
             # logger.info(int(s))
-            rel_pos = int(val * self.scalefactor)            
+            rel_pos = int(val * self.scalefactor_p1)            
             self.pump1.set_pickup(1, rel_pos)
 
 
@@ -690,9 +707,9 @@ class run_GUI(GUI.GUI):
         s =   self.ent_dispemse_pos.get()
         if (is_float(s) == True):
             val = int(s)
-            logger.debug("pump2: set dispense pos:{}".format(s))
+            logger.debug("pump1: set dispense pos:{}".format(s))
             # logger.info(int(s))
-            rel_pos = int(val * self.scalefactor)            
+            rel_pos = int(val * self.scalefactor_p1)            
             self.pump1.set_dispense(1,rel_pos)
 
 
@@ -704,10 +721,11 @@ class run_GUI(GUI.GUI):
 
     def p1_b_dispenseUntillbubble(self):
         logger.info('Dispense until bubble')
-        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
+        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
         self.pump1.set_pos_absolute(1, 0)
-        input0 = (self.labjack.getAIN(0))
+        # input0 = (self.labjack.getAIN(0))
+        input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
         cur_state = self.air_or_liquid(input0)
         prev_state = cur_state
@@ -720,19 +738,17 @@ class run_GUI(GUI.GUI):
         self.pump1.stop(1)
         logger.info('\t\tBubble detection terminated')
         self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
-
-
-
 
 
 
 
     def p1_b_pickupUntillbubble(self):
-        logger.info("Pickup until bubble")
-        self.pump1.set_speed(1,BUBBLE_DETECTION_SPEED)
+        logger.info("Pump 1: Pickup until bubble")
+        self.pump1.set_speed(1,BUBBLE_DETECTION_PUMP_SPEED)
         time.sleep(1)        
         self.pump1.set_pos_absolute(1, 20000)
-        input0 = (self.labjack.getAIN(0))
+        # input0 = (self.labjack.getAIN(0))
+        input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
         cur_state = self.air_or_liquid(input0)
         prev_state = cur_state
@@ -747,25 +763,70 @@ class run_GUI(GUI.GUI):
         self.pump1.set_speed(1,DEFAULT_PUMP_SPEEED)
 
 
+
+
     def air_or_liquid(self, voltage):
-        if voltage > BS1_THRESHOLD:
+        if voltage > BS_THRESHOLD:
             return 'liquid'
         else:
             return 'air'
-        
+
 
 
 
     def p2_b_pickupUntillbubble(self):
-        logger.debug("child: p2 pickup until bubble")
+        # logger.debug("child: p2 pickup until bubble")
+        logger.info("Pump 2: Pickup until bubble")
+        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
+        time.sleep(1)        
+        self.pump1.set_pos_absolute(5, 20000)
+        # input0 = (self.labjack.getAIN(0))
+        input0 = (self.labjack.getAIN(self.BS - 1))
+        #check if the bubble semsor detect air or liquid
+        cur_state = self.air_or_liquid(input0)
+        prev_state = cur_state
+        while (cur_state == prev_state):
+            prev_state = cur_state
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            cur_state = self.air_or_liquid(input0)
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(5)))
+            time.sleep(.05)
+        self.pump1.stop(5)
+        logger.info('\t\tBubble detection terminated')
+        self.pump1.set_speed(5,DEFAULT_PUMP_SPEEED)
+
+
 
 
     def p2_b_dispenseUntillbubble(self):
-        logger.debug("child: p2 dispense until bubble")
+        # logger.debug("child: p2 dispense until bubble")
+        logger.info('Pump 2: Dispense until bubble')
+        self.pump1.set_speed(5,BUBBLE_DETECTION_PUMP_SPEED)
+        time.sleep(1)        
+        self.pump1.set_pos_absolute(5, 0)
+        # input0 = (self.labjack.getAIN(0))
+        input0 = (self.labjack.getAIN(self.BS - 1))
+        #check if the bubble semsor detect air or liquid
+        cur_state = self.air_or_liquid(input0)
+        prev_state = cur_state
+        while (cur_state == prev_state):
+            prev_state = cur_state
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            cur_state = self.air_or_liquid(input0)
+            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(5)))
+            time.sleep(.05)
+        self.pump1.stop(5)
+        logger.info('\t\tBubble detection terminated')
+        self.pump1.set_speed(5,DEFAULT_PUMP_SPEEED)
+
+
+
 
         
     def p2_b_teminateP2(self):
-        logger.debug('child: termnate p2')
+        # logger.debug('child: termnate p2')
+        logger.info('Termnate pump2')
+        self.pump1.stop(5)
 
 
     def p1_b_top_spd_click(self):        
@@ -777,6 +838,50 @@ class run_GUI(GUI.GUI):
              ####===============to be moved to the timer thread
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
+
+
+    #change pisition of pump Valve (Sample line)
+    def checkCombo2(self,event):
+        s = self.combo2.get()
+        # logger.info('child -->'+s)
+        
+        if (s == "Pump to  Line(P1)"):
+            # logger.info(" P1   --- E ")
+            new_valve_pos = 'E'
+        elif (s == "Line to Gas(P2)"):
+            # logger.info(" P2 ---- O")
+            new_valve_pos = 'O'
+        elif (s == "Gas to Air(P3)"):
+            # logger.info(" P3 --- I")
+            new_valve_pos = 'I'
+        elif (s == "Air to Pump(P4)"):
+            # logger.info(" P4 ---- B ")
+            new_valve_pos = 'B'
+        else:
+            logger.info(' invalid valve selection')
+            new_valve_pos = 'E'
+        self.pump1.set_valve(5, new_valve_pos)
+        time.sleep(1)
+        s = self.pump1.get_valve(5)
+        # logger.info("-----> ",s)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Pump to  Line(P1)"
+            # logger.info('EEEE')
+        elif(s=='o'):
+            cur_valve = "Line to Gas(P2)"
+            # logger.info('OOOO')
+        elif(s=="i"):
+            cur_valve = "Gas to Air(P3)"
+            # logger.info("IIII")
+        elif(s=="b"):
+            cur_valve = "Air to Pump(P4)"
+            # logger.info("BBBB")
+        else:
+            cur_valve = "error"
+
+        self.v2_cur_pos.config(text=cur_valve)
+
 
     #change pisition of pump Valve (Titrant line)
     def checkCombo1(self,event):
@@ -832,15 +937,14 @@ class run_GUI(GUI.GUI):
         # print('parent-->'+self.combo3.get())
         s = self.combo3.get()
         # logger.info('child -->'+s)
-        # ("Pump to Air (P1)","Air to Gas (P2)","Gas to Line (P3)",
-        #                          "Line to Pump (P4)")
-        if (s == "Pump to Line (P1)"):
+
+        if (s == "Gas to Line (P1)"):
             # logger.info(" P1   --- E ")
             new_valve_pos = 'E'
-        elif (s == "Line to Gas (P2)"):
+        elif (s == "Line to Pump (P2)"):
             # logger.info(" P2 ---- O")
             new_valve_pos = 'O'
-        elif (s == "Gas to Air (P3)"):
+        elif (s == "Pump to Air (P3)"):
             # logger.info(" P3 --- I")
             new_valve_pos = 'I'
         elif (s == "Air to Pump (P4)"):
@@ -856,13 +960,13 @@ class run_GUI(GUI.GUI):
         # print(type(s))
         cur_valve = "----"
         if (s=='e'):
-            cur_valve = "Pump to Line (P1)"
+            cur_valve = "Gas to Line (P1)"
             # logger.info('EEEE')
         elif(s=='o'):
-            cur_valve = "Line to Gas (P2)"
+            cur_valve = "Line to Pump (P2)"
             # logger.info('OOOO')
         elif(s=="i"):
-            cur_valve = "Gas to Air (P3)"
+            cur_valve = "Pump to Air (P3)"
             # logger.info("IIII")
         elif(s=="b"):
             cur_valve = "Air to Pump (P4)"
@@ -1138,67 +1242,129 @@ class run_GUI(GUI.GUI):
 
 
 
-    def set_step_mode(self, flag):
+    def set_step_mode_p1(self, flag):
 
         if (flag == False):
-            logger.info('switch to normal mode')
+            logger.info('switch pump1 to normal mode')
             self.pump1.set_microstep_position(1,0)
         else:
-            logger.info(" switched to p&v  ")
+            logger.info(" switched pump1 to p&v  ")
             self.pump1.set_microstep_position(1,2)
 
 
+    def set_step_mode_p2(self, flag):
 
-    def pump_scale_factor(self, N):        
+        if (flag == False):
+            logger.info('switch pump2 to normal mode')
+            self.pump1.set_microstep_position(5,0)
+        else:
+            logger.info(" switched pump2 to p&v  ")
+            self.pump1.set_microstep_position(5,2)
+
+
+
+    def pump1_scale_factor(self, N):        
         if (N == 1):
             STEP_RANGE = 48000.
             VOLUME = 1000.
-            self.microstep = False
+            self.microstep_p1 = False
         elif (N == 2):
             STEP_RANGE = 48000.
             VOLUME = 1000. * 8
-            self.microstep = True
+            self.microstep_p1 = True
         elif (N == 3):
             STEP_RANGE = 48000.
             VOLUME = 500.
-            self.microstep = False
+            self.microstep_p1 = False
         elif (N == 4):
             STEP_RANGE = 48000.
             VOLUME = 500. * 8
-            self.microstep = True
+            self.microstep_p1 = True
         elif (N == 5):
             STEP_RANGE = 48000.
             VOLUME = 250.
-            self.microstep = False
+            self.microstep_p1 = False
         elif (N == 6):
             STEP_RANGE = 48000.
             VOLUME = 250. * 8
-            self.microstep = True
+            self.microstep_p1 = True
         elif (N == 7):
             STEP_RANGE = 24000.
             VOLUME = 2500.
-            self.microstep = False
+            self.microstep_p1 = False
         elif (N == 8):
             STEP_RANGE = 24000.
             VOLUME = 2500. * 8
-            self.microstep = True
+            self.microstep_p1 = True
         elif (N == 9):
             STEP_RANGE = 1
             VOLUME = 1
-            self.microstep = False
+            self.microstep_p1 = False
             pass
         elif (N == 10):
             STEP_RANGE = 1
             VOLUME = 1
-            self.microstep = True
+            self.microstep_p1 = True
             pass
         else:
-            logger.info("\t\tinvalid scale factor")
-            self.scalefactor = 1
+            logger.info("\t\tp1 invalid scale factor")
+            STEP_RANGE = 1
+            VOLUME = 1
 
-        self.scalefactor = STEP_RANGE / VOLUME
-        logger.info('\t\tscale factor:{}'.format( self.scalefactor))
+        self.scalefactor_p1 = STEP_RANGE / VOLUME
+        logger.info('\t\tpump 1 scale factor:{}'.format( self.scalefactor_p1))
 
+
+    def pump2_scale_factor(self, N):        
+        if (N == 1):
+            STEP_RANGE = 48000.
+            VOLUME = 1000.
+            self.microstep_p2 = False
+        elif (N == 2):
+            STEP_RANGE = 48000.
+            VOLUME = 1000. * 8
+            self.microstep_p2 = True
+        elif (N == 3):
+            STEP_RANGE = 48000.
+            VOLUME = 500.
+            self.microstep_p2 = False
+        elif (N == 4):
+            STEP_RANGE = 48000.
+            VOLUME = 500. * 8
+            self.microstep_p2 = True
+        elif (N == 5):
+            STEP_RANGE = 48000.
+            VOLUME = 250.
+            self.microstep_p2 = False
+        elif (N == 6):
+            STEP_RANGE = 48000.
+            VOLUME = 250. * 8
+            self.microstep_p2 = True
+        elif (N == 7):
+            STEP_RANGE = 24000.
+            VOLUME = 2500.
+            self.microstep_p2 = False
+        elif (N == 8):
+            STEP_RANGE = 24000.
+            VOLUME = 2500. * 8
+            self.microstep_p2 = True
+        elif (N == 9):
+            STEP_RANGE = 1
+            VOLUME = 1
+            self.microstep_p2 = False
+            pass
+        elif (N == 10):
+            STEP_RANGE = 1
+            VOLUME = 1
+            self.microstep_p2 = True
+            pass
+        else:
+            logger.info("\t\tp2 invalid scale factor")
+            STEP_RANGE = 1
+            VOLUME = 1
+
+        self.scalefactor_p2 = STEP_RANGE / VOLUME
+        logger.info('\t\tpump2 scale factor:{}'.format( self.scalefactor_p2))
 
 
     ###------------------- END OF CLASS DEFINITION ------------------------------------------------------

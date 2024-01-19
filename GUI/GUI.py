@@ -97,20 +97,28 @@ class GUI():
             self.Ltechnosoftport = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
             self.Ltechnosoftport.pack()
             self.Ltechnosoftport.place(x = XX1+XX2,y = Y1+4*dY1)
-            Label(self.tab3, text = "Vertical Gantry Axis ID:",font=self.Font3 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1+6*dY1)  
-            self.Lver_gant_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
-            self.Lver_gant_axis_id.pack()
-            self.Lver_gant_axis_id.place(x = XX1+XX2,y = Y1+6*dY1)
+
             Label(self.tab3, text = "Mixer Axis ID:",font=self.Font3 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1+7*dY1)  
+                  fg='black').place(x = XX1,y = Y1+6*dY1)  
             self.Lmixer_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
             self.Lmixer_axis_id.pack()
-            self.Lmixer_axis_id.place(x = XX1+XX2,y = Y1+7*dY1)
+            self.Lmixer_axis_id.place(x = XX1+XX2,y = Y1+6*dY1)
+
+            Label(self.tab3, text = "Vertical Gantry Axis ID:",font=self.Font3 , bg=self.Color1,
+                  fg='black').place(x = XX1,y = Y1+8*dY1)  
+            self.Lver_gant_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
+            self.Lver_gant_axis_id.pack()
+            self.Lver_gant_axis_id.place(x = XX1+XX2,y = Y1+8*dY1)
+            
+            Label(self.tab3, text = "Horizontal Gantry Axis ID:",font=self.Font3 , bg=self.Color1,
+                  fg='black').place(x = XX1,y = Y1+10*dY1)  
+            self.Lhor_gant_axis_id = Label(self.tab3, text = "----",font='sans 15 italic' , bg=self.Color1,fg='green')
+            self.Lhor_gant_axis_id.pack()
+            self.Lhor_gant_axis_id.place(x = XX1+XX2,y = Y1+10*dY1)
 
             XX3 = 500 # first col. of labels
             XX4 = 200 # second col of labels
-            Label(self.tab3, text = "CAN BUS ADDRESS",font=self.Font4 , bg=self.Color1,
+            Label(self.tab3, text = "PUMPS/VALVES ADDRESS",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX3,y=Y1-80)  
             Label(self.tab3, text = "Pump 1:",font=self.Font3 , bg=self.Color1,
                   fg='black').place(x = XX3,y = Y1+0*dY1)  
@@ -285,8 +293,10 @@ class GUI():
                   fg=self.Title_mid ).place(x = XX1+70,y = Y10-0)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y10 + dY1)  
-            self.p_cur_pos2 = Label(self.tab1, text = "----",font=self.Font2 ).place(x =XX1 + XX2,
-                                                                                          y = Y10 + dY1)  
+            self.p2_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
+            self.p2_cur_pos.pack()
+            self.p2_cur_pos.place(x =XX1 + XX2,y = Y10 + dY1)  
+
             Label(self.tab1, text = "Absolute Pos",font=self.Font1, bg=self.Color1,
                   fg='black' ).place(x = XX1,y = Y10 + 2*dY1)  
             self.ent_abs_pos2 = Entry(self.tab1, width=8)
@@ -315,8 +325,10 @@ class GUI():
                   fg=self.Title_mid).place(x = XX1+70,y =  Y10 + 5.5*dY1)  
             Label(self.tab1, text = "Cur Top Spd",font=self.Font1, bg=self.Color1,
                   fg='black' ).place(x = XX1,y = Y10 + 6.5*dY1)  
-            self.p1_cur_spd2 = Label(self.tab1, text = "----",font=self.Font2 ).place(x =XX1 + XX2,
-                                                                                          y = Y10 + 6.5*dY1)  
+            self.p2_cur_spd = Label(self.tab1, text = "----",font=self.Font2 )
+            self.p2_cur_spd.pack()
+            self.p2_cur_spd.place(x =XX1 + XX2,y = Y10 + 6.5*dY1)  
+
             Label(self.tab1, text = "Top Speed",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y10 + 7.5*dY1)  
             self.ent_top_spd2 = Entry(self.tab1, width=8)
@@ -398,7 +410,7 @@ class GUI():
             Label(self.tab1, text = "New Pos",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = yy+Y1 + 2*dY1)  
             self.combo3 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
-            self.combo3['values'] = ("Pump to Line (P1)","Line to Gas (P2)","Gas to Air (P3)",
+            self.combo3['values'] = ("Gas to Line (P1)","Line to Pump (P2)","Pump to Air (P3)",
                                     "Air to Pump (P4)")
             self.combo3.current(0)
             self.combo3.place(x = XX1 + XX2-32,y =yy+ Y1 + 2*dY1)
@@ -442,84 +454,93 @@ class GUI():
 
       def setup_SampleValves(self):
             #--------------------- COLUMN 4:   VALVES 2, 4, 6, 7, 8 --------------------
-            Y1 = 90
-            dx_t2 = 770   
+            Y1 = 90             
+            XX1 = 770   
             dY1 = 30            
-            XX2 = 110  #2nd col of labels   
+            XX2 = 70  #2nd col of labels   
+            XX3=30
             Label(self.tab1, text = "SAMPLE LINE",font=self.Font4 , bg=self.Color1,
-                  fg=self.Title_large).place(x =dx_t2 +20,y = Y1-80)  
+                  fg=self.Title_large).place(x =XX1 +20,y = Y1-80)  
             Label(self.tab1, text = "2: PUMP VALVE",font=self.Font5 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = dx_t2 +20,y = Y1-10)  
+                  fg=self.Title_mid).place(x = XX1 +20,y = Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = Y1 + dY1)  
-            self.v2_cur_pos = Label(self.tab1, text = "----",
-                                    font=self.Font1 ).place(x =XX2 + dx_t2,y = Y1 + dY1)  
+                  fg='black').place(x = XX1,y = Y1 + dY1)  
+            self.v2_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
+            self.v2_cur_pos.pack()
+            self.v2_cur_pos.place(x =XX2 + XX1+XX3,y = Y1 + dY1)  
+
             Label(self.tab1, text = "New Pos",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = dx_t2,y = Y1 + 2*dY1)  
-            self.combo2 = ttk.Combobox(self.tab1,  width=2, font=self.Font6)
-            self.combo2['values'] = (1,2,3,4,5,"Text")
-            self.combo2.current(3)
-            self.combo2.place(x = XX2 + dx_t2,y = Y1 + 2*dY1)
+                  fg='black' ).place(x = XX1,y = Y1 + 2*dY1)  
+            self.combo2 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
+            self.combo2['values'] = ("Pump to  Line(P1)","Line to Gas(P2)"
+                                     ,"Gas to Air(P3)","Air to Pump(P4)")
+            self.combo2.current(0)
+            self.combo2.place(x = XX2 + XX1,y = Y1 + 2*dY1)
             self.combo2.bind("<<ComboboxSelected>>", self.checkCombo2) 
             
             yy = 125
             Label(self.tab1, text = "4: LOOP VALVE",font=self.Font5 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = dx_t2 +20,y=yy+Y1-10)  
+                  fg=self.Title_mid).place(x = XX1 +20,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + dY1)  
-            self.v4_cur_pos = Label(self.tab1, text = "----",
-                                    font=self.Font1 ).place(x =XX2 + dx_t2,y = yy+Y1 + dY1)  
+                  fg='black').place(x = XX1,y = yy+Y1 + dY1)  
+            self.v4_cur_pos = Label(self.tab1, text = "----",font=self.Font1 )
+            self.v4_cur_pos.pack()
+            self.v4_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
+
             Label(self.tab1, text = "New Pos",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = dx_t2,y = yy+Y1 + 2*dY1)  
-            self.combo4 = ttk.Combobox(self.tab1,  width=2, font=self.Font6)
-            self.combo4['values'] = (1,2,3,4,5,"Text")
-            self.combo4.current(3)
-            self.combo4.place(x = XX2 + dx_t2,y = yy+Y1 + 2*dY1)
+                  fg='black' ).place(x = XX1,y = yy+Y1 + 2*dY1)  
+            self.combo4 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
+            self.combo4['values'] = ("Pump to Line(P1)","Line to Gas(P2)","Gas to Air(P3)","Air to Pump(P4)")
+            self.combo4.current(0)
+            self.combo4.place(x = XX2 + XX1,y = yy+Y1 + 2*dY1)
             self.combo4.bind("<<ComboboxSelected>>", self.checkCombo4) 
             
             yy = 125*2
             Label(self.tab1, text = "6: TITRANT PORT VALVE",font=self.Font5 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = dx_t2 -18,y=yy+Y1-10)  
+                  fg=self.Title_mid).place(x = XX1 -18,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + dY1)  
-            self.v6_cur_pos = Label(self.tab1, text = "----",
-                                    font=self.Font1 ).place(x =XX2 + dx_t2,y = yy+Y1 + dY1)  
+                  fg='black').place(x = XX1,y = yy+Y1 + dY1)  
+            self.v6_cur_pos = Label(self.tab1, text = "----",font=self.Font1 )
+            self.v6_cur_pos.pack()
+            self.v6_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
             Label(self.tab1, text = "New Pos",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = dx_t2,y = yy+Y1 + 2*dY1)  
-            self.combo6 = ttk.Combobox(self.tab1,  width=2, font=self.Font6)
-            self.combo6['values'] = (1,2,3,4,5,"Text")
-            self.combo6.current(3)
-            self.combo6.place(x = XX2 + dx_t2,y = yy+Y1 + 2*dY1)
+                  fg='black' ).place(x = XX1,y = yy+Y1 + 2*dY1)  
+            self.combo6 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
+            self.combo6['values'] = ("Titrant Port(P1)","Reservoirs(P2)","Titrant Cannula(P3)")
+            self.combo6.current(0)
+            self.combo6.place(x = XX2 + XX1,y = yy+Y1 + 2*dY1)
             self.combo6.bind("<<ComboboxSelected>>", self.checkCombo6) 
             
             yy = 125*3
             Label(self.tab1, text = "7: DEGASSER VALVE",font=self.Font5 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = dx_t2 -1,y=yy+Y1-10)  
+                  fg=self.Title_mid).place(x = XX1 -1,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + dY1)  
-            self.v7_cur_pos = Label(self.tab1, text = "----",
-                                    font=self.Font1 ).place(x =XX2 + dx_t2,y = yy+Y1 + dY1)  
+                  fg='black').place(x = XX1,y = yy+Y1 + dY1)  
+            self.v7_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
+            self.v7_cur_pos.pack()
+            self.v7_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
             Label(self.tab1, text = "New Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + 2*dY1)  
-            self.combo7 = ttk.Combobox(self.tab1,  width=2, font=self.Font6)
-            self.combo7['values'] = (1,2,3,4,5,"Text")
-            self.combo7.current(3)
-            self.combo7.place(x = XX2 + dx_t2,y =yy+ Y1 + 2*dY1)
+                  fg='black').place(x = XX1,y = yy+Y1 + 2*dY1)  
+            self.combo7 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
+            self.combo7['values'] = ("Titrant Port(P1)","Sample Port(P2)","Ref Port(P3)","Rec Port(P4)","Reservoirs(P5)","Cell(P6)")
+            self.combo7.current(0)
+            self.combo7.place(x = XX2 + XX1,y =yy+ Y1 + 2*dY1)
             self.combo7.bind("<<ComboboxSelected>>", self.checkCombo7) 
             
             yy = 125*4
             Label(self.tab1, text = "8: CLEANING VALVE",font=self.Font5 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = dx_t2 +0,y=yy+Y1-10)  
+                  fg=self.Title_mid).place(x = XX1 +0,y=yy+Y1-10)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + dY1)  
-            self.v8_cur_pos = Label(self.tab1, text = "----",
-                                    font=self.Font1 ).place(x =XX2 + dx_t2,y = yy+Y1 + dY1)  
+                  fg='black').place(x = XX1,y = yy+Y1 + dY1)  
+            self.v8_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
+            self.v8_cur_pos.pack()
+            self.v8_cur_pos.place(x =XX2 + XX1+XX3,y = yy+Y1 + dY1)  
             Label(self.tab1, text = "New Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = dx_t2,y = yy+Y1 + 2*dY1)  
-            self.combo8 = ttk.Combobox(self.tab1,  width=2, font=self.Font6)
-            self.combo8['values'] = (1,2,3,4,5,"Text")
+                  fg='black').place(x = XX1,y = yy+Y1 + 2*dY1)  
+            self.combo8 = ttk.Combobox(self.tab1,  width=17, font=self.Font6)
+            self.combo8['values'] = ("Air(P1)","MeOH(P2)","Detergent(P3)","WI Water(P4)","Reservoirs(P5)","Cell(P6)")
             self.combo8.current(3)
-            self.combo8.place(x = XX2 + dx_t2,y =yy+ Y1 + 2*dY1)
+            self.combo8.place(x = XX2 + XX1,y =yy+ Y1 + 2*dY1)
             self.combo8.bind("<<ComboboxSelected>>", self.checkCombo8) 
 
 

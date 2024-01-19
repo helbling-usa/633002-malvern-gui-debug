@@ -77,10 +77,10 @@ class Pump():
 
     def config_valve(self, axis, valve_type):
         str1 = '/'+str(axis)+'U'+str(valve_type)+'\r\n'
-        # print('config valve:',str1)
+        print('config valve:',str1)
         self.ser.write(str1.encode())
         str1 = self.read()
-        # print('set valve type respone:', str1)
+        print('set valve type respone:', str1)
 
         # str1 = '/'+str(axis)+'?27R\r\n'        
         # self.ser.write(str1.encode())
@@ -96,6 +96,8 @@ class Pump():
         # print("---->", str1)
         # print('the valve is in position:',str1[4])
         return str1[4]
+
+
 
 
     def get_peakspeed(self, axis):
