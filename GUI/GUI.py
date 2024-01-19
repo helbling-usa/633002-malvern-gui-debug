@@ -754,16 +754,16 @@ class GUI():
             dY1 = 50
             XX1 = 50
             Y1 = 140
-            XX2 = 100
+            XX2 = 140
             XX3=50
             Label(self.tab2, text = "MIXING MOTOR",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1+10,y = 40)  
-            Label(self.tab2, text = "Current Spd",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Spd (rpm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             self.m1_cur_spd = Label(self.tab2, text = "----",font=self.Font1 )
             self.m1_cur_spd.pack()
             self.m1_cur_spd.place(x =XX1 + XX2,y = Y1 + dY1)  
-            Label(self.tab2, text = "New Spd",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Spd (rpm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 2*dY1)  
             self.ent_m1_spd_ = Entry(self.tab2, width=8)
             self.ent_m1_spd_.pack()
@@ -779,22 +779,22 @@ class GUI():
       def setup_GantryHorizontal(self):
             dY1 = 50
             Y1 = 140
-            XX2 = 100
+            XX2 = 130
             XX3=50
-            XX1 = 350
+            XX1 = 320
             delta = 50
             #--------------------- COLUMN 2: Gantry Horizontal ---------------------------------------
-            XX1 = 350
+            
             Label(self.tab2, text = "GANTRY HORIZ.",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1-10,y = 40)  
-            Label(self.tab2, text = "Current Pos",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             
             self.m2_cur_spd = Label(self.tab2, text = "----",font=self.Font1 )
             self.m2_cur_spd.pack()
             self.m2_cur_spd.place(x =XX1 + XX2+ delta,y = Y1 + dY1)  
 
-            Label(self.tab2, text = "New Relative Pos.",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Relative Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 2*dY1)              
             self.ent_gnt_hor_rel = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_hor_rel.pack()
@@ -802,7 +802,7 @@ class GUI():
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
                   command=self.gantry_horizontal_set_rel_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 2*dY1 - 2)
 
-            Label(self.tab2, text = "New Absolute Pos.",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Absolute Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 3*dY1)  
             self.ent_gnt_hor_abs = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_hor_abs.pack()
@@ -822,21 +822,21 @@ class GUI():
             #--------------------- COLUMN 3: Gantry vertical ---------------------------------------
             dY1 = 50
             Y1 = 140
-            XX2 = 100
+            XX2 = 130
             XX3=50
-            XX1 = 650
+            XX1 = 620
             delta = 50
             Label(self.tab2, text = "GANTRY VER.",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1-0,y = 40)  
             
-            Label(self.tab2, text = "Current Pos",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             self.m3_cur_spd = Label(self.tab2, text = "----",
                                     font=self.Font1 )
             self.m3_cur_spd.pack()
             self.m3_cur_spd.place(x =XX1 + XX2+ delta,y = Y1 + dY1)  
             
-            Label(self.tab2, text = "New Relative Pos.",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Relative Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 2*dY1)              
             self.ent_gnt_ver_rel = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_ver_rel.pack()
@@ -844,7 +844,7 @@ class GUI():
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
                   command=self.gantry_vertical_set_rel_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 2*dY1 - 2)
 
-            Label(self.tab2, text = "New Absolute Pos.",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Absolute Pos (um)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 3*dY1)  
             self.ent_gnt_ver_abs = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_ver_abs.pack()

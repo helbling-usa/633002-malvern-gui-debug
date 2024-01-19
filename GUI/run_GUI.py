@@ -12,25 +12,26 @@ import  logging
 
 
 #------------------- CONSTANTS  -----------------------------------------
-BS_THRESHOLD                = 2.5   # Threshold value for bubble sensor 1
-BUBBLE_DETECTION_PUMP_SPEED = 50    # speed of pump during bubble detection
-DEFAULT_PUMP_SPEEED         = 1000  # speed of pump at start up
-GANTRY_VER_SPEED            = 15.0  # vertical gantry speed
-GANTRY_HOR_SPEED            = 15.0  # horizontal gantry speed
-GANTRY_VER_ACCELERATION     = 1     # vertical gantry acceleration
-GANTRY_HOR_ACCELERATION     = 1     # horizontal gantry acceleration
-MIXING_ACCELERATION         = 1     # mixing motor acceleration
-
+BS_THRESHOLD                = 2.5       # Threshold value for bubble sensor 1
+BUBBLE_DETECTION_PUMP_SPEED = 50        # speed of pump during bubble detection
+DEFAULT_PUMP_SPEEED         = 1000      # speed of pump at start up
+GANTRY_VER_SPEED            = 15.0      # vertical gantry speed
+GANTRY_HOR_SPEED            = 15.0      # horizontal gantry speed
+GANTRY_VER_ACCELERATION     = 1         # vertical gantry acceleration
+GANTRY_HOR_ACCELERATION     = 1         # horizontal gantry acceleration
+MIXING_ACCELERATION         = 1         # mixing motor acceleration
+RPM_2_TML_SPEED             = 0.1365    # conversion from rpm to mixing motor TML unit  (0.267 for Reza's mixer)
+TML_LENGTH_2_MM             = 7.5       # tml unit for length to um
 # pumps/valves RS485 addresses
-TIRRANT_PUMP_ADDRESS        = 1     # Pump 1
-TITRANT_LOOP_ADDRESS        = 2     # pump 1 loop valve
-TITRANT_PIPETTE_ADDRESS     = 4     # titrant line: pipette valve
-TITRANT_CLEANING_ADDRESS    = 3     # titrant line: cleaning valve
-SAMPLE_PUMP_ADDRESS         = 5     # pump 2
-SAMPLE_LOOP_ADDRESS         = 6     # pump 2 loop valve
-TITRANT_PORT_ADDRESS        = 7     # sample line: titrant port valve
-DEGASSER_ADDRESS            = 8     # sample line: degasser valve
-SAMPLE_CLEANING_ADDRESS     = 9     # sample line: cleaning valve
+TIRRANT_PUMP_ADDRESS        = 1         # Pump 1
+TITRANT_LOOP_ADDRESS        = 2         # pump 1 loop valve
+TITRANT_PIPETTE_ADDRESS     = 4         # titrant line: pipette valve
+TITRANT_CLEANING_ADDRESS    = 3         # titrant line: cleaning valve
+SAMPLE_PUMP_ADDRESS         = 5         # pump 2
+SAMPLE_LOOP_ADDRESS         = 6         # pump 2 loop valve
+TITRANT_PORT_ADDRESS        = 7         # sample line: titrant port valve
+DEGASSER_ADDRESS            = 8         # sample line: degasser valve
+SAMPLE_CLEANING_ADDRESS     = 9         # sample line: cleaning valve
 
 
 #------------------ initialize logger -------------------------------------
@@ -111,11 +112,13 @@ class run_GUI(GUI.GUI):
         #-------- update Gantry vertical motor position on GUI ------------------
         self.motors.select_axis(self.AXIS_ID_03)
         p= self.motors.read_actual_position()
-        self.m3_cur_spd.config(text = p)
+        p_mm = TML_LENGTH_2_MM * p
+        self.m3_cur_spd.config(text = p_mm)
         #-------- update Gantry horizontal motor position on GUI ------------------
         self.motors.select_axis(self.AXIS_ID_02)
         p= self.motors.read_actual_position()
-        self.m2_cur_spd.config(text = p)
+        p_mm = TML_LENGTH_2_MM * p
+        self.m2_cur_spd.config(text = p_mm)
         #-------- read bubble sensor and update the GUI -------------------------
         self.read_BubbleSensors()
         self.updateGUI_BubbleSensorLEDs()
@@ -460,10 +463,11 @@ class run_GUI(GUI.GUI):
         # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            rel_pos =int(s)
+            rel_pos_mm =int(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            val = self.motors.move_relative_position(rel_pos, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
+            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
+            val = self.motors.move_relative_position(rel_pos_tml, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
@@ -478,10 +482,11 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_ver_abs.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            abs_pos =int(s)
+            abs_pos_mm =int(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            self.motors.move_absolute_position(abs_pos, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
+            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )
+            self.motors.move_absolute_position(abs_pos_tml, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
         
@@ -502,10 +507,11 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_hor_rel.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            rel_pos =int(s)
+            rel_pos_mm =int(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            val = self.motors.move_relative_position(rel_pos, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
+            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
+            val = self.motors.move_relative_position(rel_pos_tml, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
@@ -522,10 +528,11 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_hor_abs.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            abs_pos =int(s)
+            abs_pos_mm =int(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            self.motors.move_absolute_position(abs_pos, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
+            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )
+            self.motors.move_absolute_position(abs_pos_tml, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
                 
@@ -680,17 +687,17 @@ class run_GUI(GUI.GUI):
 
     def m1_b_SetSpeed(self):
         global MIXING_ACCELERATION
+        global RPM_2_TML_SPEED
         # logger.info("child: m1_new_spd")
         s =   self.ent_m1_spd_.get()
         # logger.info(s)
-        if (is_float(s) == True):
-            # logger.info('it\'s a number:{}'.format( float(s)))
-            # m1_speed = float(s)
-
+        if (is_float(s) == True):            
             self.motors.select_axis(self.AXIS_ID_01)
             speed =float(s)
             acceleration = MIXING_ACCELERATION#1
-            self.motors.set_speed(speed,acceleration)    
+            new_speed = speed  * RPM_2_TML_SPEED
+            logger.debug('\t\tmixing motor speed:{}rpm = {}TML unit'.format( speed, new_speed))
+            self.motors.set_speed(new_speed,acceleration)    
 
             self.m1_cur_spd.config(text=s)    
         else:
