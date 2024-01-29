@@ -21,7 +21,7 @@ GANTRY_VER_ACCELERATION     = 1         # vertical gantry acceleration
 GANTRY_HOR_ACCELERATION     = 1         # horizontal gantry acceleration
 MIXING_ACCELERATION         = 1         # mixing motor acceleration
 RPM_2_TML_SPEED             = 0.1365    # conversion from rpm to mixing motor TML unit  (0.267 for Reza's mixer)
-TML_LENGTH_2_MM             = 7.5       # tml unit for length to um
+TML_LENGTH_2_MM             = 7.5 /1000      # tml unit for length to um
 # pumps/valves RS485 addresses
 TIRRANT_PUMP_ADDRESS        = 1         # Pump 1
 TITRANT_LOOP_ADDRESS        = 2         # pump 1 loop valve
@@ -113,12 +113,14 @@ class run_GUI(GUI.GUI):
         self.motors.select_axis(self.AXIS_ID_03)
         p= self.motors.read_actual_position()
         p_mm = TML_LENGTH_2_MM * p
-        self.m3_cur_spd.config(text = p_mm)
+        p_mm_str = "{:.2f}".format(p_mm)
+        self.m3_cur_spd.config(text = p_mm_str)
         #-------- update Gantry horizontal motor position on GUI ------------------
         self.motors.select_axis(self.AXIS_ID_02)
         p= self.motors.read_actual_position()
         p_mm = TML_LENGTH_2_MM * p
-        self.m2_cur_spd.config(text = p_mm)
+        p_mm_str = "{:.2f}".format(p_mm)
+        self.m2_cur_spd.config(text = p_mm_str)
         #-------- read bubble sensor and update the GUI -------------------------
         self.read_BubbleSensors()
         self.updateGUI_BubbleSensorLEDs()
@@ -150,17 +152,17 @@ class run_GUI(GUI.GUI):
         global TITRANT_PIPETTE_ADDRESS, SAMPLE_PUMP_ADDRESS, SAMPLE_LOOP_ADDRESS 
         global TITRANT_PORT_ADDRESS, DEGASSER_ADDRESS, SAMPLE_CLEANING_ADDRESS 
         # # #------ init. Pump 1
-        logger.info("Initializing Pumps/Valves.....")
+        # logger.info("Initializing Pumps/Valves.....")
         com_port = self.PUMP1_PORT
         self.pump1 = P.Pump(com_port)
         
-        self.pump1.pump_Zinit(1)
-        logger.info("\t\tPump1 initialized")
-        time.sleep(3)
+        # self.pump1.pump_Zinit(1)
+        # logger.info("\t\tPump1 initialized")
+        # time.sleep(3)
         
-        self.pump1.pump_Zinit(5)
-        logger.info("\t\tPump2 initialized")
-        time.sleep(3)
+        # self.pump1.pump_Zinit(5)
+        # logger.info("\t\tPump2 initialized")
+        # time.sleep(3)
 
         #init. pumps speeds
         self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
@@ -454,6 +456,20 @@ class run_GUI(GUI.GUI):
 
 
 
+    def p1_b_init_pump1(self):
+        logger.debug("child:init pump 1")
+        self.pump1.pump_Zinit(1)
+        logger.info("\t\tPump1 initialized")
+        time.sleep(3)
+
+
+    def p2_b_init_pump2(self):
+        logger.debug("child:init pump 2")
+        
+        self.pump1.pump_Zinit(5)
+        logger.info("\t\tPump2 initialized")
+        time.sleep(3)
+
 
 
     def gantry_vertical_set_rel_click(self):
@@ -463,7 +479,7 @@ class run_GUI(GUI.GUI):
         # logger.info('child-->'+s)
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            rel_pos_mm =int(s)
+            rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
             rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
@@ -482,7 +498,7 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_ver_abs.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            abs_pos_mm =int(s)
+            abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
             abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )
@@ -507,7 +523,7 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_hor_rel.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Relative-----------------")
-            rel_pos_mm =int(s)
+            rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
@@ -528,7 +544,7 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_hor_abs.get()
         if (is_float(s) == True):
             #logger.info("----------MOVE Absolute-----------------")
-            abs_pos_mm =int(s)
+            abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
             abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )

@@ -118,7 +118,7 @@ class GUI():
 
             XX3 = 500 # first col. of labels
             XX4 = 200 # second col of labels
-            Label(self.tab3, text = "PUMPS/VALVES ADDRESS",font=self.Font4 , bg=self.Color1,
+            Label(self.tab3, text = "PUMP/VALVE ADDRESS",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX3,y=Y1-80)  
             Label(self.tab3, text = "Pump 1:",font=self.Font3 , bg=self.Color1,
                   fg='black').place(x = XX3,y = Y1+0*dY1)  
@@ -179,8 +179,11 @@ class GUI():
             XX3 = 60 #  3rd col of labels
             Label(self.tab1, text = "PUMP 1",font=self.Font4 , bg=self.Color1, 
                   fg= self.Title_large).place(x = XX1+60,y = 10)  
+            self.b_abs_pos = Button(self.tab1,text="     Initialize Pump 1     ", bg=self.Color2, 
+                                    fg=self.Color3,font=self.Font7,
+                                    command=self.p1_b_init_pump1).place(x = XX1+20 , y = 75)
             Label(self.tab1, text = "Pump Config.",font=self.Font3, bg=self.Color1,
-                  fg=self.Title_mid ).place(x = XX1+60,y = 80)           
+                  fg=self.Title_mid ).place(x = XX1+60,y = 100+20)           
             self.comboCfg1 = ttk.Combobox(self.tab1,  width=26, font=self.Font6)
             self.comboCfg1['values'] = ("1) 60mm x 1000 ul full steps","2) 60mm x 1000 ul micro steps",
                                           "3) 60mm x 500 ul full steps","4) 60mm x 500 ul micro steps",
@@ -188,54 +191,57 @@ class GUI():
                                           "7) 30mm x 2500 ul full steps", "8) 30mm x 2500 ul micro steps",
                                           "9) Full steps", "10) Microsteps")
             self.comboCfg1.current(0)
-            self.comboCfg1.place(x = XX1+0 ,y = Y1-40)
+            self.comboCfg1.place(x = XX1+0 ,y = Y1-0)
             self.comboCfg1.bind("<<ComboboxSelected>>", self.checkComboCfg1)
+            Y_offset=30
             Label(self.tab1, text = "Position",font=self.Font3, bg=self.Color1,
-                  fg=self.Title_mid ).place(x = XX1+70,y =Y1-0)  
+                  fg=self.Title_mid ).place(x = XX1+70,y =Y1+Y_offset)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1 + dY1)  
+                  fg='black').place(x = XX1,y = Y1 + dY1+Y_offset)  
             self.p1_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
             self.p1_cur_pos.pack()
-            self.p1_cur_pos.place(x =XX1 + XX2,y = Y1 + dY1)  
+            self.p1_cur_pos.place(x =XX1 + XX2,y = Y1 + dY1+Y_offset)  
             Label(self.tab1, text = "Absolute Pos",font=self.Font1 , bg=self.Color1
-                  ,fg='black').place(x = XX1,y = Y1 + 2*dY1)  
+                  ,fg='black').place(x = XX1,y = Y1 + 2*dY1+Y_offset)  
             self.ent_abs_pos = Entry(self.tab1, width=8)
             self.ent_abs_pos.pack()
-            self.ent_abs_pos.place(x = XX1 + XX2,y = Y1 + 2*dY1 ) 
+            self.ent_abs_pos.place(x = XX1 + XX2,y = Y1 + 2*dY1 +Y_offset) 
             self.b_abs_pos = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                     command=self.p1_b_abs_pos_click).place(x = XX1 + XX2+60, 
-                                                                        y = Y1 + 2*dY1 - 2)
+                                                                        y = Y1 + 2*dY1 - 2+Y_offset)
             Label(self.tab1, text = "Pickup Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1 + 3*dY1)  
+                  fg='black').place(x = XX1,y = Y1 + 3*dY1+Y_offset)  
             self.ent_pickup_pos = Entry(self.tab1, width=8) 
             self.ent_pickup_pos.pack()
-            self.ent_pickup_pos.place(x = XX1 + XX2,y = Y1 + 3*dY1, )
+            self.ent_pickup_pos.place(x = XX1 + XX2,y = Y1 + 3*dY1+Y_offset )
             self.b_pickup_pos = Button(self.tab1,text="set", bg=self.Color2, 
                                     fg=self.Color3,command=self.p1_b_pickup_pos_click).place(x = XX1 + XX2+XX3, 
-                                                                              y = Y1 + 3*dY1 - 2)
+                                                                              y = Y1 + 3*dY1 - 2+Y_offset)
             Label(self.tab1, text = "Dispense Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1 + 4*dY1)  
+                  fg='black').place(x = XX1,y = Y1 + 4*dY1+Y_offset)  
             self.ent_dispemse_pos = Entry(self.tab1, width=8)
             self.ent_dispemse_pos.pack()
-            self.ent_dispemse_pos.place(x = XX1 + XX2,y = Y1 + 4*dY1, ) 
+            self.ent_dispemse_pos.place(x = XX1 + XX2,y = Y1 + 4*dY1+Y_offset ) 
             self.b_dispense_pos = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3,
                                           command=self.p1_b_dispense_pos_click).place(x = XX1 + XX2+XX3,
-                                                                                    y = Y1 + 4*dY1 - 2)
+                                                                                    y = Y1 + 4*dY1 - 2+Y_offset)
+            
+            Y_offset=10
             Label(self.tab1, text = "Speed",font=self.Font3 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = XX1+70,y =  Y1 + 5.5*dY1)  
+                  fg=self.Title_mid).place(x = XX1+70,y =  Y1 + 5.5*dY1+Y_offset)  
             Label(self.tab1, text = "Cur Top Spd",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y1 + 6.5*dY1)  
+                  fg='black').place(x = XX1,y = Y1 + 6.5*dY1+Y_offset)  
             self.p1_cur_spd = Label(self.tab1, text = "----",font=self.Font2 )
             self.p1_cur_spd.pack()
-            self.p1_cur_spd.place(x =XX1 + XX2,y = Y1 + 6.5*dY1)  
+            self.p1_cur_spd.place(x =XX1 + XX2,y = Y1 + 6.5*dY1+Y_offset)  
             Label(self.tab1, text = "Top Speed",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = XX1,y = Y1 + 7.5*dY1)  
+                  fg='black' ).place(x = XX1,y = Y1 + 7.5*dY1+Y_offset)  
             self.ent_top_spd = Entry(self.tab1, width=8)
             self.ent_top_spd.pack()
-            self.ent_top_spd.place(x = XX1 + XX2,y = Y1 + 7.5*dY1 ) 
+            self.ent_top_spd.place(x = XX1 + XX2,y = Y1 + 7.5*dY1+Y_offset ) 
             self.b_top_spd = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                     command=self.p1_b_top_spd_click).place(x = XX1 + XX2+XX3,
-                                                                        y = Y1 + 7.5*dY1 - 2)
+                                                                        y = Y1 + 7.5*dY1 - 2+Y_offset)
             
             Label(self.tab1, text = "Until Bubble Sensor",font=self.Font3 , bg=self.Color1,
                   fg=self.Title_mid).place(x = XX1+15 ,y = Y1 + 9*dY1)  
@@ -277,8 +283,11 @@ class GUI():
 
             Label(self.tab1, text = "PUMP 2",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1+60,y = 10)          
+            self.b_abs_pos = Button(self.tab1,text="     Initialize Pump 2     ", bg=self.Color2, 
+                                    fg=self.Color3,font=self.Font7,
+                                    command=self.p2_b_init_pump2).place(x = XX1+20 , y = 75)
             Label(self.tab1, text = "Pump Config.",font=self.Font3, bg=self.Color1,
-                  fg=self.Title_mid ).place(x = XX1+60,y = 80)           
+                  fg=self.Title_mid ).place(x = XX1+60,y =100+20)           
             self.comboCfg2 = ttk.Combobox(self.tab1,  width=26, font=self.Font6)
             self.comboCfg2['values'] = ("1) 60mm x 1000 ul full steps","2) 60mm x 1000 ul micro steps",
                                           "3) 60mm x 500 ul full steps","4) 60mm x 500 ul micro steps",
@@ -286,57 +295,59 @@ class GUI():
                                           "7) 30mm x 2500 ul full steps", "8) 30mm x 2500 ul micro steps",
                                           "9) Full steps", "10) Microsteps")
             self.comboCfg2.current(0)
-            self.comboCfg2.place(x = XX1+0 ,y = Y1-40)
+            self.comboCfg2.place(x = XX1+0 ,y = Y1-0)
             self.comboCfg2.bind("<<ComboboxSelected>>", self.checkComboCfg2)        
-
+            Y_offset=30
             Label(self.tab1, text = "Position",font=self.Font3, bg=self.Color1,
-                  fg=self.Title_mid ).place(x = XX1+70,y = Y10-0)  
+                  fg=self.Title_mid ).place(x = XX1+70,y = Y10+Y_offset)  
             Label(self.tab1, text = "Current Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y10 + dY1)  
+                  fg='black').place(x = XX1,y = Y10 + dY1+Y_offset)  
             self.p2_cur_pos = Label(self.tab1, text = "----",font=self.Font2 )
             self.p2_cur_pos.pack()
-            self.p2_cur_pos.place(x =XX1 + XX2,y = Y10 + dY1)  
+            self.p2_cur_pos.place(x =XX1 + XX2,y = Y10 + dY1+Y_offset)  
 
             Label(self.tab1, text = "Absolute Pos",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = XX1,y = Y10 + 2*dY1)  
+                  fg='black' ).place(x = XX1,y = Y10 + 2*dY1+Y_offset)  
             self.ent_abs_pos2 = Entry(self.tab1, width=8)
             self.ent_abs_pos2.pack()
-            self.ent_abs_pos2.place(x = XX1 + XX2,y = Y10 + 2*dY1 ) 
+            self.ent_abs_pos2.place(x = XX1 + XX2,y = Y10 + 2*dY1+Y_offset ) 
             self.b_abs_pos2 = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                     command=self.p2_b_abs_pos_click).place(x = XX1 + XX2+XX3,
-                                                                              y = Y10 + 2*dY1 - 2)
+                                                                              y = Y10 + 2*dY1 - 2+Y_offset)
             Label(self.tab1, text = "Pickup Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y10 + 3*dY1)  
+                  fg='black').place(x = XX1,y = Y10 + 3*dY1+Y_offset)  
             self.ent_pickup_pos2 = Entry(self.tab1, width=8) 
             self.ent_pickup_pos2.pack()
-            self.ent_pickup_pos2.place(x = XX1 + XX2,y = Y10 + 3*dY1, )
+            self.ent_pickup_pos2.place(x = XX1 + XX2,y = Y10 + 3*dY1+Y_offset)
             self.b_pickup_pos2 = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                           command=self.p2_b_pickup_pos_click).place(x = XX1 + XX2+XX3,
-                                                                                    y = Y10 + 3*dY1 - 2)
+                                                                                    y = Y10 + 3*dY1 - 2+Y_offset)
             Label(self.tab1, text = "Dispense Pos",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y10 + 4*dY1)  
+                  fg='black').place(x = XX1,y = Y10 + 4*dY1+Y_offset)  
             self.ent_dispemse_pos2 = Entry(self.tab1, width=8)
             self.ent_dispemse_pos2.pack()
-            self.ent_dispemse_pos2.place(x = XX1 + XX2,y = Y10 + 4*dY1, ) 
+            self.ent_dispemse_pos2.place(x = XX1 + XX2,y = Y10 + 4*dY1+Y_offset ) 
             self.b_dispense_pos2 = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                           command=self.p2_b_dispense_pos_click).place(x = XX1 + XX2+XX3,
-                                                                                    y = Y10 + 4*dY1 - 2)
+                                                                                    y = Y10 + 4*dY1 - 2+Y_offset)
+            
+            Y_offset = 10
             Label(self.tab1, text = "Speed",font=self.Font3 , bg=self.Color1,
-                  fg=self.Title_mid).place(x = XX1+70,y =  Y10 + 5.5*dY1)  
+                  fg=self.Title_mid).place(x = XX1+70,y =  Y10 + 5.5*dY1+Y_offset)  
             Label(self.tab1, text = "Cur Top Spd",font=self.Font1, bg=self.Color1,
-                  fg='black' ).place(x = XX1,y = Y10 + 6.5*dY1)  
+                  fg='black' ).place(x = XX1,y = Y10 + 6.5*dY1+Y_offset)  
             self.p2_cur_spd = Label(self.tab1, text = "----",font=self.Font2 )
             self.p2_cur_spd.pack()
-            self.p2_cur_spd.place(x =XX1 + XX2,y = Y10 + 6.5*dY1)  
+            self.p2_cur_spd.place(x =XX1 + XX2,y = Y10 + 6.5*dY1+Y_offset)  
 
             Label(self.tab1, text = "Top Speed",font=self.Font1 , bg=self.Color1,
-                  fg='black').place(x = XX1,y = Y10 + 7.5*dY1)  
+                  fg='black').place(x = XX1,y = Y10 + 7.5*dY1+Y_offset)  
             self.ent_top_spd2 = Entry(self.tab1, width=8)
             self.ent_top_spd2.pack()
-            self.ent_top_spd2.place(x = XX1 + XX2,y = Y10 + 7.5*dY1, ) 
+            self.ent_top_spd2.place(x = XX1 + XX2,y = Y10 + 7.5*dY1+Y_offset ) 
             self.b_top_spd2 = Button(self.tab1,text="set", bg=self.Color2, fg=self.Color3, 
                                     command=self.p2_b_top_spd_click).place(x = XX1 + XX2 + XX3,
-                                                                              y = Y10 + 7.5*dY1 - 2)
+                                                                              y = Y10 + 7.5*dY1 - 2+Y_offset)
             
             Label(self.tab1, text = "Until Bubble Sensor",font=self.Font3 , bg=self.Color1,
                   fg=self.Title_mid).place(x = XX1+15 ,y = Y1 + 9*dY1)  
@@ -787,14 +798,14 @@ class GUI():
             
             Label(self.tab2, text = "GANTRY HORIZ.",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1-10,y = 40)  
-            Label(self.tab2, text = "Current Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             
             self.m2_cur_spd = Label(self.tab2, text = "----",font=self.Font1 )
             self.m2_cur_spd.pack()
             self.m2_cur_spd.place(x =XX1 + XX2+ delta,y = Y1 + dY1)  
 
-            Label(self.tab2, text = "New Relative Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Relative Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 2*dY1)              
             self.ent_gnt_hor_rel = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_hor_rel.pack()
@@ -802,7 +813,7 @@ class GUI():
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
                   command=self.gantry_horizontal_set_rel_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 2*dY1 - 2)
 
-            Label(self.tab2, text = "New Absolute Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Absolute Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 3*dY1)  
             self.ent_gnt_hor_abs = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_hor_abs.pack()
@@ -829,14 +840,14 @@ class GUI():
             Label(self.tab2, text = "GANTRY VER.",font=self.Font4 , bg=self.Color1,
                   fg=self.Title_large).place(x = XX1-0,y = 40)  
             
-            Label(self.tab2, text = "Current Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "Current Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + dY1)  
             self.m3_cur_spd = Label(self.tab2, text = "----",
                                     font=self.Font1 )
             self.m3_cur_spd.pack()
             self.m3_cur_spd.place(x =XX1 + XX2+ delta,y = Y1 + dY1)  
             
-            Label(self.tab2, text = "New Relative Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Relative Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 2*dY1)              
             self.ent_gnt_ver_rel = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_ver_rel.pack()
@@ -844,7 +855,7 @@ class GUI():
             Button(self.tab2, bg=self.Color2, fg=self.Color3,text="set", 
                   command=self.gantry_vertical_set_rel_click).place(x = XX1 + XX2+55+ delta,y = Y1 + 2*dY1 - 2)
 
-            Label(self.tab2, text = "New Absolute Pos (um)",font=self.Font1 , bg=self.Color1,
+            Label(self.tab2, text = "New Absolute Pos (mm)",font=self.Font1 , bg=self.Color1,
                   fg='black').place(x = XX1,y = Y1 + 3*dY1)  
             self.ent_gnt_ver_abs = Entry(self.tab2, width=5,font=self.Font1) 
             self.ent_gnt_ver_abs.pack()
@@ -1029,6 +1040,12 @@ class GUI():
             s =   self.ent_abs_pos.get()
             logger.debug(s)
             # self.p1_cur_pos["text"]=  s
+
+      def p1_b_init_pump1(self):
+            logger.debug("parent:init pump 1")
+
+      def p2_b_init_pump2(self):
+            logger.debug("parent:init pump 2")
 
       def p1_b_pickup_pos_click(self):
             logger.debug("parent: p1_pickup ")
