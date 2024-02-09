@@ -126,7 +126,7 @@ if __name__ == "__main__":
         elif val=='9':
             test_6way_valve(p1,3)
         elif val=='10':
-            p1.pump_Zinit(5)
+            p1.pump_Zinit(2)
         elif val=='11':
             test_4way_valve(p1,5)
         time.sleep(2)

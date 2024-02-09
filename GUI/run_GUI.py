@@ -21,17 +21,18 @@ GANTRY_VER_ACCELERATION     = 1         # vertical gantry acceleration
 GANTRY_HOR_ACCELERATION     = 1         # horizontal gantry acceleration
 MIXING_ACCELERATION         = 1         # mixing motor acceleration
 RPM_2_TML_SPEED             = 0.1365    # conversion from rpm to mixing motor TML unit  (0.267 for Reza's mixer)
-TML_LENGTH_2_MM             = 7.5 /1000      # tml unit for length to um
+TML_LENGTH_2_MM_VER         = 10. /1000      # tml unit for length to um
+TML_LENGTH_2_MM_HOR         = 7.5 /1000      # tml unit for length to um
 # pumps/valves RS485 addresses
 TIRRANT_PUMP_ADDRESS        = 1         # Pump 1
-TITRANT_LOOP_ADDRESS        = 2         # pump 1 loop valve
-TITRANT_PIPETTE_ADDRESS     = 4         # titrant line: pipette valve
-TITRANT_CLEANING_ADDRESS    = 3         # titrant line: cleaning valve
-SAMPLE_PUMP_ADDRESS         = 5         # pump 2
-SAMPLE_LOOP_ADDRESS         = 6         # pump 2 loop valve
-TITRANT_PORT_ADDRESS        = 7         # sample line: titrant port valve
-DEGASSER_ADDRESS            = 8         # sample line: degasser valve
-SAMPLE_CLEANING_ADDRESS     = 9         # sample line: cleaning valve
+TITRANT_LOOP_ADDRESS        = 3         # pump 1 loop valve
+TITRANT_PIPETTE_ADDRESS     = 5         # titrant line: pipette valve
+TITRANT_CLEANING_ADDRESS    = 9         # titrant line: cleaning valve
+SAMPLE_PUMP_ADDRESS         = 2         # pump 2
+SAMPLE_LOOP_ADDRESS         = 4         # pump 2 loop valve
+TITRANT_PORT_ADDRESS        = 6         # sample line: titrant port valve
+DEGASSER_ADDRESS            = 7         # sample line: degasser valve
+SAMPLE_CLEANING_ADDRESS     = 8         # sample line: cleaning valve
 
 
 #------------------ initialize logger -------------------------------------
@@ -112,13 +113,13 @@ class run_GUI(GUI.GUI):
         #-------- update Gantry vertical motor position on GUI ------------------
         self.motors.select_axis(self.AXIS_ID_03)
         p= self.motors.read_actual_position()
-        p_mm = TML_LENGTH_2_MM * p
+        p_mm = TML_LENGTH_2_MM_VER * p
         p_mm_str = "{:.2f}".format(p_mm)
         self.m3_cur_spd.config(text = p_mm_str)
         #-------- update Gantry horizontal motor position on GUI ------------------
         self.motors.select_axis(self.AXIS_ID_02)
         p= self.motors.read_actual_position()
-        p_mm = TML_LENGTH_2_MM * p
+        p_mm = TML_LENGTH_2_MM_HOR * p
         p_mm_str = "{:.2f}".format(p_mm)
         self.m2_cur_spd.config(text = p_mm_str)
         #-------- read bubble sensor and update the GUI -------------------------
@@ -458,7 +459,7 @@ class run_GUI(GUI.GUI):
 
     def p1_b_init_pump1(self):
         logger.debug("child:init pump 1")
-        self.pump1.pump_Zinit(1)
+        self.pump1.pump_Zinit(TIRRANT_PUMP_ADDRESS)
         logger.info("\t\tPump1 initialized")
         time.sleep(3)
 
@@ -466,7 +467,7 @@ class run_GUI(GUI.GUI):
     def p2_b_init_pump2(self):
         logger.debug("child:init pump 2")
         
-        self.pump1.pump_Zinit(5)
+        self.pump1.pump_Zinit(SAMPLE_PUMP_ADDRESS)
         logger.info("\t\tPump2 initialized")
         time.sleep(3)
 
@@ -482,7 +483,7 @@ class run_GUI(GUI.GUI):
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
+            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM_VER )
             val = self.motors.move_relative_position(rel_pos_tml, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
@@ -501,7 +502,7 @@ class run_GUI(GUI.GUI):
             abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
-            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )
+            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM_VER )
             self.motors.move_absolute_position(abs_pos_tml, GANTRY_VER_SPEED, GANTRY_VER_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
@@ -526,7 +527,7 @@ class run_GUI(GUI.GUI):
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM )
+            rel_pos_tml = int(rel_pos_mm / TML_LENGTH_2_MM_HOR )
             val = self.motors.move_relative_position(rel_pos_tml, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
@@ -547,7 +548,7 @@ class run_GUI(GUI.GUI):
             abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
-            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM )
+            abs_pos_tml = int(abs_pos_mm / TML_LENGTH_2_MM_HOR )
             self.motors.move_absolute_position(abs_pos_tml, GANTRY_HOR_SPEED, GANTRY_HOR_ACCELERATION)
         else:
             logger.info("Not a number. Please enter an integer for VG abs. position")        
@@ -626,9 +627,13 @@ class run_GUI(GUI.GUI):
     def p2_b_top_spd_click(self):    
         global SAMPLE_PUMP_ADDRESS    
         s =   self.ent_top_spd2.get()        
-        logger.info("pump2 top speed: {}".format(s))
+        # logger.info("pump2 top speed: {}".format(s))
         if (is_float(s) == True):
-            self.p2_top_spd = int(s)
+            physical_speed = int(s)
+            self.p2_top_spd = int(physical_speed * self.scalefactor_p2)
+            logger.info("\t\tPump2 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p2_top_spd, physical_speed,
+                                                                                                        self.scalefactor_p2 ))
+            
             self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, self.p2_top_spd)
             time.sleep(.25)
             self.p2_cur_spd.config(text = s)
@@ -831,7 +836,7 @@ class run_GUI(GUI.GUI):
         cur_state = self.air_or_liquid(input0)
         prev_state = cur_state
         while (cur_state == prev_state):
-            prev_state = cur_state
+            # prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
@@ -854,7 +859,7 @@ class run_GUI(GUI.GUI):
         cur_state = self.air_or_liquid(input0)
         prev_state = cur_state
         while (cur_state == prev_state):
-            prev_state = cur_state
+            # prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
             logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
@@ -876,9 +881,13 @@ class run_GUI(GUI.GUI):
     def p1_b_top_spd_click(self):   
         global TIRRANT_PUMP_ADDRESS     
         s =   self.ent_top_spd.get()
-        logger.info("p1_top speed: {}".format(s))
+        # logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
-            self.p1_top_spd = int(s)
+            physical_speed = int(s)
+            self.p1_top_spd = int(physical_speed * self.scalefactor_p1)
+            # print('speed:', self.p1_top_spd, '  scale factor:', self.scalefactor_p1)
+            logger.info("\t\tPump1 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p1_top_spd, physical_speed,
+                                                                                                        self.scalefactor_p1 ))
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, self.p1_top_spd)
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
@@ -1467,22 +1476,25 @@ class run_GUI(GUI.GUI):
             logger.info('pump 1 mircostep on')
             self.set_step_mode_p1(True)
 
-            
+        self.scalefactor_p1 = STEP_RANGE / VOLUME    
+        logger.info('\t\tpump 1 scale factor:{}'.format( self.scalefactor_p1))
         # self.p1_top_spd = DEFAULT_PUMP_SPEEED
         if self.microstep_p1 == False:
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
             time.sleep(.25)
-            logger.info("\t\tPump1 speed is set to {}".format(self.p1_top_spd))
-            self.p1_cur_spd.config(text = str(self.p1_top_spd))
+            str1 =  "{:.2f}".format(self.p1_top_spd / self.scalefactor_p1)
+            self.p1_cur_spd.config(text = str1)
+            logger.info("\t\tPump1 speed is set to {} logical  = {} physical".format(self.p1_top_spd, str1))
         else:
             new_speed = self.p1_top_spd * 8
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,new_speed)
             time.sleep(.25)            
-            logger.info("\t\tPump1 speed is set to {}".format(new_speed))
-            self.p1_cur_spd.config(text = str(new_speed))
-   
-        self.scalefactor_p1 = STEP_RANGE / VOLUME
-        logger.info('\t\tpump 1 scale factor:{}'.format( self.scalefactor_p1))
+            str1 =  "{:.2f}".format(new_speed / self.scalefactor_p1)
+            self.p1_cur_spd.config(text = str1) 
+            logger.info("\t\tPump1 speed is set to {} logical  = {} physical".format(new_speed, str1))
+              
+        
+        
 
 
     def pump2_scale_factor(self, N):        
@@ -1540,22 +1552,28 @@ class run_GUI(GUI.GUI):
             logger.info('pump 2 mircostep on')
             self.set_step_mode_p2(True)
 
+        self.scalefactor_p2 = STEP_RANGE / VOLUME
+        logger.info('\t\tpump2 scale factor:{}'.format( self.scalefactor_p2))
         # self.p2_top_spd = DEFAULT_PUMP_SPEEED
         if self.microstep_p2 == False:
             self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
             time.sleep(.25)
-            logger.info("\t\tPump2 speed is set to {}".format(self.p2_top_spd))
-            self.p2_cur_spd.config(text = str(self.p2_top_spd))
+            str1 =  "{:.2f}".format(self.p2_top_spd / self.scalefactor_p2)
+            self.p2_cur_spd.config(text = str1)            
+            logger.info("\t\tPump2 speed is set to {} logical  = {} physical".format(self.p2_top_spd, str1))
         else:
             new_speed = self.p2_top_spd * 8
             self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,new_speed)
             time.sleep(.25)            
-            logger.info("\t\tPump2 speed is set to {}".format(new_speed))
-            self.p2_cur_spd.config(text = str(new_speed))
+            str1 =  "{:.2f}".format(new_speed / self.scalefactor_p2)
+            self.p2_cur_spd.config(text = str1)            
+            logger.info("\t\tPump2 speed is set to {} logical  = {} physical".format(new_speed, str1))
+
+            # logger.info("\t\tPump2 speed is set to {}".format(new_speed))
+            # self.p2_cur_spd.config(text = str(new_speed))
 
 
-        self.scalefactor_p2 = STEP_RANGE / VOLUME
-        logger.info('\t\tpump2 scale factor:{}'.format( self.scalefactor_p2))
+
 
 
     ###------------------- END OF CLASS DEFINITION ------------------------------------------------------

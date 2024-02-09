@@ -112,9 +112,10 @@ class Pump():
         # logger.info('get valve :',str1)
         self.ser.write(str1.encode())
         str1 = self.read()
+        logger.info("--raw-->{}".format( str1))
         str1 = str1.decode('ascii')
-        # logger.info("---->", str1)
-        # logger.info('the valve is in position:',str1[4])
+        logger.info("--decode-->{}".format( str1))
+        logger.info('the valve is in position:{}'.format(str1[4]))
         return str1[4]
 
 

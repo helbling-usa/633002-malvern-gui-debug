@@ -18,7 +18,16 @@ class Pump():
         self.ser.reset_output_buffer()
         self.ser.reset_input_buffer()
         
-        
+
+    def pump_setAutoinit(self, axis):
+        str1 = '/'+ str(axis)+'u5_1\r\n'
+        self.ser.write(str1.encode())
+        self.read()
+        # self.ser.write(b'/1ZR\r\n')
+        # self.ser.flush()
+
+
+
     def pump_Zinit(self, axis):
         str1 = '/'+ str(axis)+'ZR\r\n'
         self.ser.write(str1.encode())
@@ -175,6 +184,7 @@ class Pump():
             # print(response_frame)            
             return response_frame
         # res = ser.readline()
+        # print("==========",response_frame)
         return response_frame
 
 
