@@ -93,7 +93,6 @@ class Pump:
         self.ser.write(str1.encode())
         str1 = self.read()
         # logger.info('set valve type respone:', str1)
-
         # str1 = '/'+str(axis)+'?27R\r\n'
         # self.ser.write(str1.encode())
         # str1 = self.read()
@@ -107,10 +106,9 @@ class Pump:
         str1 = str1.decode("ascii")
         # logger.info("---->", str1)
         # logger.info('the valve is in position:',str1[4])
-        print(str1)
-
+        # print(str1)
         valve_pos = self.extract_valv_pos(str1)
-        print("===========>valve position is:", valve_pos)
+        # logger.debug(f"\t\tvalve position is: {valve_pos}")
         return valve_pos  # str1[4]
 
     def extract_valv_pos(self, str_test):
