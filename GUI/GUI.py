@@ -678,14 +678,8 @@ class GUI:
         ).place(x=XX1, y=Y1 + 2 * dY1)
         self.combo1 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
         # self.combo1['values'] = (" I"," O"," B"," E")
-        # self.combo1['values'] = ("Pump to Air (P1)","Air to Gas (P2)","Gas to Line (P3)",
-        #                         "Line to Pump (P4)")
-        self.combo1["values"] = (
-            "Gas to Line (P1)",
-            "Pump to Line (P2)",
-            "Pump to Air (P3)",
-            "Gas to Air (P4)",
-        )
+        self.combo1['values'] = ("Gas to Line (P1)","Pump to Line (P2)","Pump to Air (P3)",
+                                    "Gas to Air (P4)")
         self.combo1.current(0)
         self.combo1.place(x=XX1 + XX2 - 32, y=Y1 + 2 * dY1)
         self.combo1.bind("<<ComboboxSelected>>", self.checkCombo1)
@@ -708,14 +702,8 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo3 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo3['values'] = ("Gas to Line (P1)","Line to Pump (P2)","Pump to Air (P3)",
-        #                         "Air to Pump (P4)")
-        self.combo3["values"] = (
-            "Gas to Line (P1)",
-            "Line to Pump (P2)",
-            "Pump to Air (P3)",
-            "Gas to Air (P4)",
-        )
+        self.combo3['values'] = ("Gas to Air (P1)","Pump to Air (P2)","Line to Pump (P3)",
+                                    "Line to Gas (P4)")
         self.combo3.current(0)
         self.combo3.place(x=XX1 + XX2 - 32, y=yy + Y1 + 2 * dY1)
         self.combo3.bind("<<ComboboxSelected>>", self.checkCombo3)
@@ -738,12 +726,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo5 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo5['values'] = ("Titrant Port (P1)","Reservoirs (P2)","Titrant Cannula(P3)")
-        self.combo5["values"] = (
-            "Reservoirs (P1)",
-            "Titrant Cannula (P2)",
-            "Titrant Port (P3)",
-        )
+        self.combo5['values'] = ("Titrant Cannula (P1)","Titrant Port (P2)","Reservoirs (P3)")
         self.combo5.current(0)
         self.combo5.place(x=XX1 + XX2 - 32, y=yy + Y1 + 2 * dY1)
         self.combo5.bind("<<ComboboxSelected>>", self.checkCombo5)
@@ -766,16 +749,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo9 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo9['values'] = ("Air (P1)", "MeOH (P2)", "Detergent (P3)", "DI Water (P4)",
-        #                          "Waster (P5)","Cleaning Port (P6)")
-        self.combo9["values"] = (
-            "Air (P1)",
-            "MeOH (P2)",
-            "Detergent (P3)",
-            "DI Water (P4)",
-            "Waste (P5)",
-            "Cleaning Port (P6)",
-        )
+        self.combo9['values'] = ("N/A (P1)", "Air (P2)", "DI Water (P3)", "Detergent (P4)", "MeOH (P5)","Waste (P6)")
         self.combo9.current(3)
         self.combo9.place(x=XX1 + XX2 - 32, y=yy + Y1 + 2 * dY1)
         self.combo9.bind("<<ComboboxSelected>>", self.checkCombo9)
@@ -812,14 +786,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + 2 * dY1)
         self.combo2 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo2['values'] = ("Pump to  Line(P1)","Line to Gas(P2)"
-        #                          ,"Gas to Air(P3)","Air to Pump(P4)")
-        self.combo2["values"] = (
-            "Pump to Line (P1)",
-            "Line to Gas (P2)",
-            "Gas to Air (P3)",
-            "Air to Pump (P4)",
-        )
+        self.combo2['values'] = ("Gas to Air (P1)","Pump to Air (P2)","Pump to Line (P3)","Gas to Line (P4)")
         self.combo2.current(0)
         self.combo2.place(x=XX2 + XX1, y=Y1 + 2 * dY1)
         self.combo2.bind("<<ComboboxSelected>>", self.checkCombo2)
@@ -843,13 +810,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo4 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo4['values'] = ("Pump to Line(P1)","Line to Gas(P2)","Gas to Air(P3)","Air to Pump(P4)")
-        self.combo4["values"] = (
-            "Pump to Line (P1)",
-            "Line to Gas (P2)",
-            "Gas to Air P3)",
-            "Air to Pump (P4)",
-        )
+        self.combo4['values'] = ("Line to Gas (P1)","Line to Pump (P2)","Pump to Air (P3)","Gas to Air (P4)")
         self.combo4.current(0)
         self.combo4.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo4.bind("<<ComboboxSelected>>", self.checkCombo4)
@@ -872,8 +833,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo6 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo6['values'] = ("Titrant Port(P1)","Reservoirs(P2)","Titrant Cannula(P3)")
-        self.combo6["values"] = ("Sample Line (P1)", "Titrant Line (P2)", "N/A (P3)")
+        self.combo6['values'] = ("Sample Line (P1)","Titrant Line (P2)","N/A (P3)")
         self.combo6.current(0)
         self.combo6.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo6.bind("<<ComboboxSelected>>", self.checkCombo6)
@@ -896,15 +856,8 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo7 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo7['values'] = ("Titrant Port(P1)","Sample Port(P2)","Ref Port(P3)","Rec Port(P4)","Reservoirs(P5)","Cell(P6)")
-        self.combo7["values"] = (
-            "Reservoirs (P1)",
-            "Rec Port (P2)",
-            "Sample Port (P3)",
-            "Ref Port (P4)",
-            "Titrant Port (P5)",
-            "Cell (P6)",
-        )
+        self.combo7['values'] = ("Reservoirs (P1)","Rec Port (P2)","Sample Port (P3)",
+                                 "Ref Port (P4)","Titrant Port (P5)","Cell (P6)")
         self.combo7.current(0)
         self.combo7.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo7.bind("<<ComboboxSelected>>", self.checkCombo7)
@@ -927,8 +880,7 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo8 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        # self.combo8['values'] = ("Air(P1)","MeOH(P2)","Detergent(P3)","WI Water(P4)","Reservoirs(P5)","Cell(P6)")
-        self.combo8["values"] = ("Air (P1)","MeOH (P2)","Detergent (P3)","DI Water (P4)","Waste (P5)","Cleaning Port (P6)")
+        self.combo8['values'] = ("Waste (P1)","MeOH (P2)","Detergent (P3)","DI Water (P4)","Cleaning Port (P5)","Air (P6)")
         self.combo8.current(3)
         self.combo8.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo8.bind("<<ComboboxSelected>>", self.checkCombo8)

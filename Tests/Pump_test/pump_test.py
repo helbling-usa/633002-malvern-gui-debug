@@ -95,8 +95,8 @@ def show_message():
     print("\t\t14) Test valve 4 (3 way)")
     print("15) Test valve 5 (3 way)       ", end="")
     print("\t\t16) Test valve 6 (3 way)")
-    print("17) Test valve 7 (3 way)       ", end="")
-    print("\t\t18) Test valve 8 (3 way)")
+    print("17) Test valve 7 (6 way)       ", end="")
+    print("\t\t18) Test valve 8 (6 way)")
     print("19) Test valve 9 (6 way)")
 
 
