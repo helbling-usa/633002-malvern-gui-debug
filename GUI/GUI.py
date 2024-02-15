@@ -1152,7 +1152,7 @@ class GUI:
             fg=self.Color3,
             command=self.m1_b_SetSpeed,
         ).place(x=XX1 + XX2 + XX3 + 10, y=Y1 + 2 * dY1 - 2)
-        self.b_m1_spd = Button(
+        self.b_m1_stop = Button(
             self.tab2,
             text="STOP",
             bg="#fc9d9d",
@@ -1160,6 +1160,7 @@ class GUI:
             font=self.Font5,
             command=self.m1_b_stop_click,
         ).place(x=XX1 + 50, y=Y1 + 3 * dY1 - 2)
+
 
     def setup_GantryHorizontal(self):
         dY1 = 50
