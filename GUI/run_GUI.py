@@ -625,22 +625,6 @@ class run_GUI(GUI.GUI):
             self.set_step_mode_p1(True)
             
 
-    def p2_b_top_spd_click(self):    
-        global SAMPLE_PUMP_ADDRESS    
-        s =   self.ent_top_spd2.get()        
-        # logger.info("pump2 top speed: {}".format(s))
-        if (is_float(s) == True):
-            physical_speed = int(s)
-            self.p2_top_spd = int(physical_speed * self.scalefactor_p2)
-            logger.info("\t\tPump2 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p2_top_spd, physical_speed,
-                                                                                                        self.scalefactor_p2 ))
-            
-            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, self.p2_top_spd)
-            time.sleep(.25)
-            self.p2_cur_spd.config(text = s)
-            
-
-
 
 
     def checkComboCfg2(self, event):
@@ -660,6 +644,25 @@ class run_GUI(GUI.GUI):
         else:  #self.microstep_p1 = True
             logger.info('pump 2 mircostep on')
             self.set_step_mode_p2(True)
+
+
+
+
+    def p2_b_top_spd_click(self):    
+        global SAMPLE_PUMP_ADDRESS    
+        s =   self.ent_top_spd2.get()        
+        # logger.info("pump2 top speed: {}".format(s))
+        if (is_float(s) == True):
+            physical_speed = int(s)
+            self.p2_top_spd = int(physical_speed * self.scalefactor_p2)
+            logger.info("\t\tPump2 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p2_top_spd, physical_speed,
+                                                                                                        self.scalefactor_p2 ))
+            
+            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, self.p2_top_spd)
+            time.sleep(.25)
+            self.p2_cur_spd.config(text = s)
+            
+
 
 
 
@@ -1397,23 +1400,23 @@ class run_GUI(GUI.GUI):
 
 
     def set_step_mode_p1(self, flag):
-
+        global TIRRANT_PUMP_ADDRESS        
         if (flag == False):
             logger.info('switch pump1 to normal mode')
-            self.pump1.set_microstep_position(1,0)
+            self.pump1.set_microstep_position(TIRRANT_PUMP_ADDRESS,0)
         else:
             logger.info(" switched pump1 to p&v  ")
-            self.pump1.set_microstep_position(1,2)
+            self.pump1.set_microstep_position(TIRRANT_PUMP_ADDRESS,2)
 
 
     def set_step_mode_p2(self, flag):
-
+        global SAMPLE_PUMP_ADDRESS
         if (flag == False):
             logger.info('switch pump2 to normal mode')
-            self.pump1.set_microstep_position(5,0)
+            self.pump1.set_microstep_position(SAMPLE_PUMP_ADDRESS,0)
         else:
             logger.info(" switched pump2 to p&v  ")
-            self.pump1.set_microstep_position(5,2)
+            self.pump1.set_microstep_position(SAMPLE_PUMP_ADDRESS,2)
 
 
 
