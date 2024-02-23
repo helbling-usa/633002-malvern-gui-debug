@@ -1445,7 +1445,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.0)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.1)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800

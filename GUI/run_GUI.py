@@ -15,8 +15,8 @@ import  logging
 BS_THRESHOLD                = 2.5       # Threshold value for bubble sensor 1
 BUBBLE_DETECTION_PUMP_SPEED = 50        # speed of pump during bubble detection
 DEFAULT_PUMP_SPEEED         = 1000      # speed of pump at start up
-GANTRY_VER_SPEED            = 15.0      # vertical gantry speed
-GANTRY_HOR_SPEED            = 15.0      # horizontal gantry speed
+GANTRY_VER_SPEED            = 1.0      # vertical gantry speed
+GANTRY_HOR_SPEED            = 1.0      # horizontal gantry speed
 GANTRY_VER_ACCELERATION     = 1         # vertical gantry acceleration
 GANTRY_HOR_ACCELERATION     = 1         # horizontal gantry acceleration
 MIXING_ACCELERATION         = 1         # mixing motor acceleration
@@ -99,13 +99,13 @@ class run_GUI(GUI.GUI):
         # logger.info('--->timer tick')
         #------------------------------- update pump 1 position
         p1_cur_pos = self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)            
-        p1_cur_pos = int(p1_cur_pos / self.scalefactor_p1)
+        p1_cur_pos =  int(10.0 * p1_cur_pos / self.scalefactor_p1) / 10.0
         self.p1_cur_pos.config(text = str(p1_cur_pos))
         # logger.info('cur pos:', p1_cur_pos)
         #------------------------------- update pump 2 position
         
         p2_cur_pos = self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)            
-        p2_cur_pos = int(p2_cur_pos / self.scalefactor_p2)
+        p2_cur_pos = int(10.0 * p2_cur_pos / self.scalefactor_p2) / 10.0
         self.p2_cur_pos.config(text = str(p2_cur_pos))
         # logger.info('p2 cur pos:{}'.format( p2_cur_pos))
         # #------------------------------- update  of TEC controller parameters
@@ -672,7 +672,7 @@ class run_GUI(GUI.GUI):
         # print("=========================")
         logger.info(s)
         if (is_float(s) == True):
-            val = int(s)            
+            val = float(s)            
             abs_pos = int(val * self.scalefactor_p2)
             logger.debug("pump2: set abs. pos:{} . after scaling:{}".format(s, abs_pos))
             self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, abs_pos)
@@ -683,7 +683,7 @@ class run_GUI(GUI.GUI):
         logger.info("P2_pickup ")
         s =   self.ent_pickup_pos2.get()
         if (is_float(s) == True):
-            val = int(s)
+            val = float(s)
             logger.debug("pump2: set pickup pos:{}".format(s))
             rel_pos = int(val * self.scalefactor_p2)            
             self.pump1.set_pickup(SAMPLE_PUMP_ADDRESS, rel_pos)
@@ -694,7 +694,7 @@ class run_GUI(GUI.GUI):
         s =   self.ent_dispemse_pos2.get()
         logger.info("P2_dispense ")
         if (is_float(s) == True):
-            val = int(s)
+            val = float(s)
             logger.debug("pump2: set dispense pos:{}".format(s))
             rel_pos = int(val * self.scalefactor_p2)            
             self.pump1.set_dispense(SAMPLE_PUMP_ADDRESS, rel_pos)
@@ -734,7 +734,7 @@ class run_GUI(GUI.GUI):
         global TIRRANT_PUMP_ADDRESS        
         s =   self.ent_abs_pos.get()
         if (is_float(s) == True):
-            val = int(s)
+            val = float(s)
             logger.debug("pump1: set abs. pos:{}".format(s))
             abs_pos = int(val * self.scalefactor_p1)
             self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, abs_pos)
@@ -746,7 +746,7 @@ class run_GUI(GUI.GUI):
         logger.info("P1_pickup ")
         s =   self.ent_pickup_pos.get()
         if (is_float(s) == True):
-            val = int(s)
+            val = float(s)
             logger.debug("pump1: set pickup pos:{}".format(s))
             # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
@@ -758,7 +758,7 @@ class run_GUI(GUI.GUI):
         logger.info("P1_dispense ")
         s =   self.ent_dispemse_pos.get()
         if (is_float(s) == True):
-            val = int(s)
+            val = float(s)
             logger.debug("pump1: set dispense pos:{}".format(s))
             # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
