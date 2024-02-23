@@ -881,7 +881,7 @@ class GUI:
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo8 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
         self.combo8['values'] = ("Waste (P1)","MeOH (P2)","Detergent (P3)","DI Water (P4)","Cleaning Port (P5)","Air (P6)")
-        self.combo8.current(3)
+        self.combo8.current(0)
         self.combo8.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo8.bind("<<ComboboxSelected>>", self.checkCombo8)
 
@@ -1446,7 +1446,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.3)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.4)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800

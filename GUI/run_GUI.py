@@ -1176,9 +1176,9 @@ class run_GUI(GUI.GUI):
             logger.info(' invalid valve selection')
             new_valve_pos = '1'
 
-        self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,new_valve_pos)
+        self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,new_valve_pos)
         time.sleep(1)
-        s = self.pump1.get_valve(TITRANT_CLEANING_ADDRESS)        
+        s = self.pump1.get_valve(SAMPLE_CLEANING_ADDRESS)        
         cur_valve = "----"
         if (s=='1'):
             cur_valve = "Waste (P1)"
