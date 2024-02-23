@@ -182,40 +182,40 @@ class run_GUI(GUI.GUI):
 
         logger.info("\t\tSetting valves to default positions")
         self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, 'E')
-        self.v1_cur_pos.config(text="Pump to Air (P1)")
+        self.v1_cur_pos.config(text="Gas to Line (P1)")
         self.combo1.current(0)
 
         self.pump1.set_valve(TITRANT_LOOP_ADDRESS, 'E')
-        self.v3_cur_pos.config(text="Pump to Line (P1)")
+        self.v3_cur_pos.config(text="Gas to Air (P1)")
         self.combo3.current(0)
 
-        self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,3)
-        self.v5_cur_pos.config(text="Titrant Cannula(P3)")
+        self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,1)
+        self.v5_cur_pos.config(text="Titrant Cannula (P1)")
         self.combo5.current(2)
 
         self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,1)        
-        self.v9_cur_pos.config(text="Air (P1)")
+        self.v9_cur_pos.config(text="N/A (P1)")
         self.combo9.current(0)
 
         self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, 'E')
-        self.v2_cur_pos.config(text="Pump to Line (P1)")
+        self.v2_cur_pos.config(text="Gas to Air (P1)")
         self.combo2.current(0)
 
         self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, 'E')
-        self.v4_cur_pos.config(text="Pump to Line (P1)")
+        self.v4_cur_pos.config(text="Line to Gas (P1)")
         self.combo4.current(0)
 
         self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,3)
-        self.v6_cur_pos.config(text="Titrant Cannula(P3)")
+        self.v6_cur_pos.config(text="N/A (P3)")
         self.combo6.current(2)
 
         self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,1)        
-        self.v7_cur_pos.config(text="Sample Port (P2)")
+        self.v7_cur_pos.config(text="Reservoirs (P1)")
         self.combo7.current(1)
 
         self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,1)        
-        self.v8_cur_pos.config(text="WI Water(P4)")
-        self.combo8.current(3)
+        self.v8_cur_pos.config(text="Waste (P1)")
+        self.combo8.current(0)
 
         # init. scale factors 
         self.comboCfg1.current(8)
