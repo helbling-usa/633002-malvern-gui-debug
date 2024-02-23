@@ -651,19 +651,20 @@ class run_GUI(GUI.GUI):
     def p2_b_top_spd_click(self):    
         global SAMPLE_PUMP_ADDRESS    
         s =   self.ent_top_spd2.get()        
-        # logger.info("pump2 top speed: {}".format(s))
         if (is_float(s) == True):
-            physical_speed = int(s)
+            physical_speed = float(s)
             self.p2_top_spd = int(physical_speed * self.scalefactor_p2)
-            logger.info("\t\tPump2 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p2_top_spd, physical_speed,
+            if self.microstep_p2 == False:                
+                self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
+            else:
+                self.p2_top_spd = self.p2_top_spd * 8
+                self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
+
+            time.sleep(.5)            
+            logger.info("\t\tPump1 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p2_top_spd, physical_speed,
                                                                                                         self.scalefactor_p2 ))
-            
-            self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, self.p2_top_spd)
             time.sleep(.25)
             self.p2_cur_spd.config(text = s)
-            
-
-
 
 
     def p2_b_abs_pos_click(self):
@@ -887,9 +888,15 @@ class run_GUI(GUI.GUI):
         s =   self.ent_top_spd.get()
         # logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
-            physical_speed = int(s)
+            physical_speed = float(s)
             self.p1_top_spd = int(physical_speed * self.scalefactor_p1)
-            # print('speed:', self.p1_top_spd, '  scale factor:', self.scalefactor_p1)
+            if self.microstep_p1 == False:                
+                self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
+            else:
+                self.p1_top_spd = self.p1_top_spd * 8
+                self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
+
+            time.sleep(.5)            
             logger.info("\t\tPump1 speed is set to {} logical  = {} physical.   scale factor:{}".format(self.p1_top_spd, physical_speed,
                                                                                                         self.scalefactor_p1 ))
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, self.p1_top_spd)
