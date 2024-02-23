@@ -657,7 +657,7 @@ class run_GUI(GUI.GUI):
             if self.microstep_p2 == False:                
                 self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
             else:
-                self.p2_top_spd = self.p2_top_spd * 8
+                self.p2_top_spd = self.p2_top_spd * 1
                 self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
 
             time.sleep(.5)            
@@ -893,7 +893,7 @@ class run_GUI(GUI.GUI):
             if self.microstep_p1 == False:                
                 self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
             else:
-                self.p1_top_spd = self.p1_top_spd * 8
+                self.p1_top_spd = self.p1_top_spd * 1
                 self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
 
             time.sleep(.5)            
