@@ -833,7 +833,8 @@ class GUI:
             self.tab1, text="New Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=yy + Y1 + 2 * dY1)
         self.combo6 = ttk.Combobox(self.tab1, width=17, font=self.Font6)
-        self.combo6['values'] = ("Sample Line (P1)","Titrant Line (P2)","N/A (P3)")
+        # self.combo6['values'] = ("Sample Line (P1)","Titrant Line (P2)","N/A (P3)")
+        self.combo6['values'] = ("N/A (P1)","Titrant Line (P2)","Sample Line (P3)")
         self.combo6.current(0)
         self.combo6.place(x=XX2 + XX1, y=yy + Y1 + 2 * dY1)
         self.combo6.bind("<<ComboboxSelected>>", self.checkCombo6)
@@ -1446,7 +1447,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.5)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.6)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800

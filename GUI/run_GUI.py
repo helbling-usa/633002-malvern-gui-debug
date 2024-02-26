@@ -206,8 +206,8 @@ class run_GUI(GUI.GUI):
         self.combo4.current(0)
 
         self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,3)
-        self.v6_cur_pos.config(text="N/A (P3)")
-        self.combo6.current(2)
+        self.v6_cur_pos.config(text="N/A (P1)")
+        self.combo6.current(0)
 
         self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,1)        
         self.v7_cur_pos.config(text="Reservoirs (P1)")
@@ -1077,16 +1077,16 @@ class run_GUI(GUI.GUI):
         self.v5_cur_pos.config(text=cur_valve)
 
 
-
+ 
     #Titrant Port Valve (Sample line)
     def checkCombo6(self,event):
         global TITRANT_PORT_ADDRESS
         s = self.combo6.get()
-        if (s == "Sample Line (P1)"):
+        if (s == "N/A (P1)"):
             vlv = 'I'
         elif (s == "Titrant Line (P2)"):
             vlv = 'E'
-        elif (s == "N/A (P3)"):
+        elif (s == "Sample Line (P3)"):
             vlv = 'O'
         else:
             logger.error(' invalid valve selection')
@@ -1100,13 +1100,13 @@ class run_GUI(GUI.GUI):
         # print(type(s))
         cur_valve = "----"
         if (s=='i'):
-            cur_valve = "Sample Line (P1)"
+            cur_valve = "N/A (P1)"
             # logger.info('IIII')
         elif(s=='e'):
             cur_valve = "Titrant Line (P2)"
             # logger.info('EEEE')
         elif(s=='o'):
-            cur_valve = "N/A (P3)"
+            cur_valve = "Sample Line (P3)"
             # logger.info("OOOO")
         else:
             cur_valve = "error"

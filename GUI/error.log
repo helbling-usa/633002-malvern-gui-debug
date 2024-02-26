@@ -1454,3 +1454,14 @@ ERROR:invalid valve selection
 2024-02-23 14:48:46,160:config.Pump:exception happened in pump!!
 2024-02-23 14:48:49,164:config.Pump:Error reading pump!!!
 2024-02-23 14:48:49,164:config.Pump:exception happened in pump!!
+2024-02-26 15:53:29,703:config.Pump:Error reading pump!!!
+2024-02-26 15:53:29,740:config.Pump:exception happened in pump!!
+ERROR: invalid valve selection
+ERROR: invalid valve selection
+ERROR: invalid valve selection
+2024-02-26 15:55:02,836:config.Pump:Error reading pump!!!
+2024-02-26 15:55:02,837:config.Pump:exception happened in pump!!
+2024-02-26 15:55:27,051:config.Pump:Error reading pump!!!
+2024-02-26 15:55:27,051:config.Pump:exception happened in pump!!
+2024-02-26 15:55:42,222:config.Pump:Error reading pump!!!
+2024-02-26 15:55:42,222:config.Pump:exception happened in pump!!
