@@ -290,110 +290,87 @@ class run_GUI(GUI.GUI):
 
         if (self.BS1 < BS_THRESHOLD):
             self.led_on_2.place_forget()
-            # self.led_off_14.pack()
             self.led_off_2.place(x = X3+50,y = Y1 + 1*dY1)
         else:
             self.led_off_2.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_2.place(x = X3+50,y = Y1 + 1*dY1)
 
         if (self.BS2 < BS_THRESHOLD):
             self.led_on_3.place_forget()
-            # self.led_off_14.pack()
             self.led_off_3.place(x = X3+50,y = Y1 + 2*dY1)
         else:
             self.led_off_3.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_3.place(x = X3+50,y = Y1 + 2*dY1)
 
         if (self.BS3 < BS_THRESHOLD):
             self.led_on_4.place_forget()
-            # self.led_off_14.pack()
             self.led_off_4.place(x = X3+50,y = Y1 + 3*dY1)
         else:
             self.led_off_4.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_4.place(x = X3+50,y = Y1 + 3*dY1)
 
         if (self.BS4 < BS_THRESHOLD):
             self.led_on_5.place_forget()
-            # self.led_off_14.pack()
             self.led_off_5.place(x = X3+50,y = Y1 + 4*dY1)
         else:
             self.led_off_5.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_5.place(x = X3+50,y = Y1 + 4*dY1)
             
         if (self.BS5 < BS_THRESHOLD):
             self.led_on_6.place_forget()
-            # self.led_off_14.pack()
             self.led_off_6.place(x = X3+50,y = Y1 + 5*dY1)
         else:
             self.led_off_6.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_6.place(x = X3+50,y = Y1 + 5*dY1)
 
         if (self.BS6 < BS_THRESHOLD):
             self.led_on_7.place_forget()
-            # self.led_off_14.pack()
             self.led_off_7.place(x = X3+50,y = Y1 + 6*dY1)
         else:
             self.led_off_7.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_7.place(x = X3+50,y = Y1 + 6*dY1)
         
         if (self.BS7 < BS_THRESHOLD):
             self.led_on_8.place_forget()
-            # self.led_off_14.pack()
             self.led_off_8.place(x = X3+50,y = Y1 + 7*dY1)
         else:
             self.led_off_8.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_8.place(x = X3+50,y = Y1 + 7*dY1)
 
         if (self.BS8 < BS_THRESHOLD):
             self.led_on_9.place_forget()
-            # self.led_off_14.pack()
             self.led_off_9.place(x = X3+50,y = Y1 + 8*dY1)
         else:
             self.led_off_9.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_9.place(x = X3+50,y = Y1 + 8*dY1)
 
         if (self.BS9< BS_THRESHOLD):
             self.led_on_10.place_forget()
-            # self.led_off_14.pack()
             self.led_off_10.place(x = X3+50,y = Y1 + 9*dY1)
         else:
             self.led_off_10.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_10.place(x = X3+50,y = Y1 + 9*dY1)
 
         if (self.BS10 < BS_THRESHOLD):
             self.led_on_11.place_forget()
-            # self.led_off_14.pack()
             self.led_off_11.place(x = X3+50,y = Y1 + 10*dY1)
         else:
             self.led_off_11.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_11.place(x = X3+50,y = Y1 + 10*dY1)
 
         if (self.BS11 < BS_THRESHOLD):
             self.led_on_12.place_forget()
-            # self.led_off_14.pack()
             self.led_off_12.place(x = X3+50,y = Y1 + 11*dY1)
         else:
             self.led_off_12.place_forget()
-            # self.led_on_14.pack()            
             self.led_on_12.place(x = X3+50,y = Y1 + 11*dY1)
 
-        if (self.BS13 < BS_THRESHOLD):
+        if (self.BS12 < BS_THRESHOLD):
             self.led_on_13.place_forget()
-            # self.led_off_14.pack()
             self.led_off_13.place(x = X3+50,y = Y1 + 12*dY1)
         else:
             self.led_off_13.place_forget()
-            # self.led_on_14.pack()            
+         
             self.led_on_13.place(x = X3+50,y = Y1 + 12*dY1)
 
         if (self.BS13 < BS_THRESHOLD):
