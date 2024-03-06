@@ -35,6 +35,13 @@ DEGASSER_ADDRESS            = 7         # sample line: degasser valve
 SAMPLE_CLEANING_ADDRESS     = 8         # sample line: cleaning valve
 
 
+BUBBLE_DETECTION_PUMP_SPEED_TITRANT         = 20         # ????step/sec
+BUBBLE_DETECTION_PUMP_SPEED_SAMPLE          = 20         # ????setp/sec
+PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME    = 2500      # ul
+PICKUP_UNTIL_BUBBLE_TARGET_TITRANT_VOLUME   = 500       # ul
+TITRANT_MAX_FULL_STEPS                      = 48000     # max tirtant  pump steps in full step
+SAMPLE_MAX_FULL_STEPS                       = 24000     # max sample pump steps in full step
+
 #------------------ initialize logger -------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -903,52 +910,109 @@ class run_GUI(GUI.GUI):
         self.pump1.stop(TIRRANT_PUMP_ADDRESS)
 
 
+    def p1_b_pickupUntillbubble(self):
+        global TIRRANT_PUMP_ADDRESS
+        logger.info("Pump 1: Pickup until bubble")
+        logger.info("Scale facotr  -->   titrant pump: {}".format(self.scalefactor_p1))
+        s = self.comboCfg1.get()
+        print("=====================================",s)
+        if (s == "9) Full steps"):
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * 10)
+            titrant_pump_fill_position = int(TITRANT_MAX_FULL_STEPS)
+        elif (s ==  "10) Microsteps"):
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * 80)
+            titrant_pump_fill_position = int( TITRANT_MAX_FULL_STEPS * 8.0)
+        else:
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * self.scalefactor_p1)
+            titrant_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_TITRANT_VOLUME * self.scalefactor_p1)
+
+        logger.info('pump 1 pickup speed: {}'.format(pump1_speed))
+        logger.info("Pickup target position: {}".format(titrant_pump_fill_position))
+        pump_address = TIRRANT_PUMP_ADDRESS
+        self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
+
+
+    def find_bubble(self, pump_speed, pump_position, pump_address):
+        self.pump1.set_speed(pump_address, pump_speed)
+        time.sleep(1)        
+        self.pump1.set_pos_absolute(pump_address, pump_position)
+        time.sleep(0.5)
+        input0 = (self.labjack.getAIN(self.BS - 1))
+        #check if the bubble semsor detect air or liquid
+        cur_state = self.air_or_liquid(input0)
+        prev_state = cur_state
+        while (cur_state == prev_state):
+            prev_state = cur_state
+            input0 = (self.labjack.getAIN(self.BS - 1))
+            cur_state = self.air_or_liquid(input0)
+            logger.info('        selcted BS:{}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(pump_address)))
+            time.sleep(.05)
+        self.pump1.stop(pump_address)
+        logger.info('\t\tBubble detection terminated')
+        time.sleep(.5)
+        self.pump1.set_speed(pump_address,DEFAULT_PUMP_SPEEED)
+
 
     def p1_b_dispenseUntillbubble(self):
         global TIRRANT_PUMP_ADDRESS
         logger.info('Dispense until bubble')
-        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
-        time.sleep(1)        
-        self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, 0)
-        # input0 = (self.labjack.getAIN(0))
-        input0 = (self.labjack.getAIN(self.BS - 1))
-        #check if the bubble semsor detect air or liquid
-        cur_state = self.air_or_liquid(input0)
-        prev_state = cur_state
-        while (cur_state == prev_state):
-            prev_state = cur_state
-            input0 = (self.labjack.getAIN(self.BS - 1))
-            cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)))
-            time.sleep(.05)
-        self.pump1.stop(TIRRANT_PUMP_ADDRESS)
-        logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, DEFAULT_PUMP_SPEEED)
+        logger.info("Scale facotr  -->   titrant pump: {}".format(self.scalefactor_p1))
+        s = self.comboCfg1.get()
+        print("=====================================",s)
+        if (s == "9) Full steps"):
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * 10)            
+        elif (s ==  "10) Microsteps"):
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * 80)
+        else:
+            pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * self.scalefactor_p1)
+
+        titrant_pump_fill_position = 0
+        logger.info("Dispemse target position: {}".format(titrant_pump_fill_position))
+        pump_address = TIRRANT_PUMP_ADDRESS
+        self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
 
 
+    def p2_b_pickupUntillbubble(self):
+        global SAMPLE_PUMP_ADDRESS
+        logger.info("Pump 2: Pickup until bubble")
+        logger.info("Scale facotr  -->   sample pump: {}".format(self.scalefactor_p2)) 
+        s = self.comboCfg1.get()
+        print("=====================================",s)
+        if (s == "9) Full steps"):
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * 10)
+            sample_pump_fill_position = int(SAMPLE_MAX_FULL_STEPS)
+        elif (s ==  "10) Microsteps"):
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * 80)
+            sample_pump_fill_position = int( SAMPLE_MAX_FULL_STEPS * 8.0)
+        else:
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * self.scalefactor_p2)
+            sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
+
+        logger.info('pump 2 pickup speed: {}'.format(pump2_speed))
+        # sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
+        logger.info("Pickup target position: {}".format(sample_pump_fill_position))
+        pump_address = SAMPLE_PUMP_ADDRESS
+        self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
 
 
-    def p1_b_pickupUntillbubble(self):
-        global TIRRANT_PUMP_ADDRESS
-        logger.info("Pump 1: Pickup until bubble")
-        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
-        time.sleep(1)        
-        self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, 20000)
-        input0 = (self.labjack.getAIN(self.BS - 1))
-        #check if the bubble semsor detect air or liquid
-        cur_state = self.air_or_liquid(input0)
-        prev_state = cur_state
-        while (cur_state == prev_state):
-            prev_state = cur_state
-            input0 = (self.labjack.getAIN(self.BS - 1))
-            cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)))
-            time.sleep(.05)
-        self.pump1.stop(TIRRANT_PUMP_ADDRESS)
-        logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
+    def p2_b_dispenseUntillbubble(self):
+        global SAMPLE_PUMP_ADDRESS
+        logger.info('Pump 2: Dispense until bubble')
+        logger.info("Scale facotr  -->   sample pump: {}".format(self.scalefactor_p2))
+        s = self.comboCfg2.get()
+        print("=====================================",s)
+        if (s == "9) Full steps"):
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * 10)            
+        elif (s ==  "10) Microsteps"):
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * 80)
+        else:
+            pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * self.scalefactor_p2)
 
-
+        logger.info('pump 2 pickup speed: {}'.format(pump2_speed))
+        sample_pump_fill_position =  0
+        logger.info("Dispense target position: {}".format(sample_pump_fill_position))
+        pump_address = SAMPLE_PUMP_ADDRESS
+        self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
 
 
     def air_or_liquid(self, voltage):
@@ -956,56 +1020,6 @@ class run_GUI(GUI.GUI):
             return 'liquid'
         else:
             return 'air'
-
-
-
-
-    def p2_b_pickupUntillbubble(self):
-        global SAMPLE_PUMP_ADDRESS
-        logger.info("Pump 2: Pickup until bubble")
-        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
-        time.sleep(1)        
-        self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, 20000)
-        # input0 = (self.labjack.getAIN(0))
-        input0 = (self.labjack.getAIN(self.BS - 1))
-        #check if the bubble semsor detect air or liquid
-        cur_state = self.air_or_liquid(input0)
-        prev_state = cur_state
-        while (cur_state == prev_state):
-            # prev_state = cur_state
-            input0 = (self.labjack.getAIN(self.BS - 1))
-            cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
-            time.sleep(.05)
-        self.pump1.stop(SAMPLE_PUMP_ADDRESS)
-        logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
-
-
-
-
-    def p2_b_dispenseUntillbubble(self):
-        global SAMPLE_PUMP_ADDRESS
-        logger.info('Pump 2: Dispense until bubble')
-        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS, BUBBLE_DETECTION_PUMP_SPEED)
-        time.sleep(1)        
-        self.pump1.set_pos_absolute(SAMPLE_PUMP_ADDRESS, 0)
-        input0 = (self.labjack.getAIN(self.BS - 1))
-        #check if the bubble semsor detect air or liquid
-        cur_state = self.air_or_liquid(input0)
-        prev_state = cur_state
-        while (cur_state == prev_state):
-            # prev_state = cur_state
-            input0 = (self.labjack.getAIN(self.BS - 1))
-            cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS {}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)))
-            time.sleep(.05)
-        self.pump1.stop(SAMPLE_PUMP_ADDRESS)
-        logger.info('\t\tBubble detection terminated')
-        self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
-
-
-
 
         
     def p2_b_teminateP2(self):
@@ -1033,8 +1047,6 @@ class run_GUI(GUI.GUI):
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS, self.p1_top_spd)
             time.sleep(.25)
             self.p1_cur_spd.config(text = s)
-
-
 
 
     #Pump Valve (Titrant line)
@@ -1081,6 +1093,7 @@ class run_GUI(GUI.GUI):
             else:
                 cur_valve = "error"
             self.v1_cur_pos.config(text=cur_valve)
+
 
     #Pump Valve (Sample line)
     def checkCombo2(self,event):
