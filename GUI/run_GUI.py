@@ -181,41 +181,33 @@ class run_GUI(GUI.GUI):
 
 
         logger.info("\t\tSetting valves to default positions")
-        self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, 'E')
-        self.v1_cur_pos.config(text="Gas to Line (P1)")
-        self.combo1.current(0)
 
-        self.pump1.set_valve(TITRANT_LOOP_ADDRESS, 'E')
-        self.v3_cur_pos.config(text="Gas to Air (P1)")
-        self.combo3.current(0)
+        self.config_valve1()
+        self.combo1.current(4)
 
-        self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,1)
-        self.v5_cur_pos.config(text="Titrant Cannula (P1)")
-        self.combo5.current(2)
+        self.config_valve2()
+        self.combo2.current(4)
 
-        self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,1)        
-        self.v9_cur_pos.config(text="N/A (P1)")
-        self.combo9.current(0)
+        self.config_valve3()
+        self.combo3.current(4)
 
-        self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, 'E')
-        self.v2_cur_pos.config(text="Gas to Air (P1)")
-        self.combo2.current(0)
+        self.config_valve4()
+        self.combo4.current(4)
 
-        self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, 'E')
-        self.v4_cur_pos.config(text="Line to Gas (P1)")
-        self.combo4.current(0)
+        self.config_valve5()
+        self.combo5.current(3)
 
-        self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,3)
-        self.v6_cur_pos.config(text="N/A (P1)")
-        self.combo6.current(0)
+        self.config_valve6()
+        self.combo6.current(3)
 
-        self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,1)        
-        self.v7_cur_pos.config(text="Reservoirs (P1)")
-        self.combo7.current(1)
+        self.config_valve7()
+        self.combo7.current(6)
 
-        self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,1)        
-        self.v8_cur_pos.config(text="Waste (P1)")
-        self.combo8.current(0)
+        self.config_valve8()
+        self.combo8.current(6)
+
+        self.config_valve9()
+        self.combo9.current(6)
 
         # init. scale factors 
         self.comboCfg1.current(8)
@@ -224,6 +216,168 @@ class run_GUI(GUI.GUI):
         self.comboCfg2.current(8)
         self.pump2_scale_factor(9)
 
+
+    def config_valve1(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(TIRRANT_PUMP_ADDRESS)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Gas to Line (P1)"
+        elif(s=='o'):
+            cur_valve = "Pump to Line (P2)"
+        elif(s=='i'):
+            cur_valve = "Pump to Air (P3)"
+        elif(s=='b'):
+            cur_valve = "Gas to Air (P4)"
+        else:
+            cur_valve = "error"
+        self.v1_cur_pos.config(text=cur_valve)
+
+
+    def config_valve2(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(SAMPLE_PUMP_ADDRESS)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Gas to Air (P1)"
+        elif(s=='o'):
+            cur_valve = "Pump to Air (P2)"
+        elif(s=='i'):
+            cur_valve = "Pump to Line (P3)"
+        elif(s=='b'):
+            cur_valve = "Gas to Line (P4)"
+        else:
+            cur_valve = "error"
+        self.v2_cur_pos.config(text=cur_valve)
+
+
+    def config_valve3(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(TITRANT_LOOP_ADDRESS)
+        cur_valve = "----"
+        if (s=='e'):
+            cur_valve = "Gas to Air (P1)"
+        elif(s=='o'):
+            cur_valve = "Pump to Air (P2)"
+        elif(s=='i'):
+            cur_valve = "Line to Pump (P3)"
+        elif(s=='b'):
+            cur_valve = "Line to Gas (P4)"
+        else:
+            cur_valve = "error"
+        self.v3_cur_pos.config(text=cur_valve)        
+
+
+    def config_valve4(self):
+            time.sleep(0.5)
+            s = self.pump1.get_valve(SAMPLE_LOOP_ADDRESS)
+            cur_valve = "----"
+            if (s=='e'):
+                cur_valve = "Line to Gas (P1)"
+            elif(s=='o'):
+                cur_valve = "Line to Pump (P2)"
+            elif(s=='i'):
+                cur_valve = "Pump to Air (P3)"
+            elif(s=='b'):
+                cur_valve = "Gas to Air (P4)"
+            else:
+                cur_valve = "error"
+            self.v4_cur_pos.config(text=cur_valve)
+
+    def config_valve5(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(TITRANT_PIPETTE_ADDRESS)
+        # logger.info("----->{}".format(s))
+        cur_valve = "----"
+        if (s=='i'):
+            cur_valve = "Titrant Cannula (P1)"
+        elif(s=='e'):
+            cur_valve = "Titrant Port (P2)"
+        elif(s=='o'):
+            cur_valve = "Reservoirs (P3)"
+        else:
+            cur_valve = "error"
+        self.v5_cur_pos.config(text=cur_valve)        
+
+    def config_valve6(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
+        # logger.info("----->{}".format(s))
+        # print(type(s))
+        cur_valve = "----"
+        if (s=='i'):
+            cur_valve = "N/A (P1)"
+        elif(s=='e'):
+            cur_valve = "Titrant Line (P2)"
+        elif(s=='o'):
+            cur_valve = "Sample Line (P3)"
+        else:
+            cur_valve = "error"
+        self.v6_cur_pos.config(text=cur_valve)
+
+
+    def config_valve7(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(DEGASSER_ADDRESS)
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "Reservoirs (P1)"
+        elif(s=='2'):
+            cur_valve = "Rec Port (P2)"
+        elif(s=='3'):
+            cur_valve = "Sample Port (P3)"
+        elif(s=='4'):
+            cur_valve = "Ref Port (P4)"
+        elif(s=='5'):
+            cur_valve = "Titrant Port (P5)"
+        elif(s=='6'):
+            cur_valve = "Cell (P6)"
+        else:
+            cur_valve = "error"
+        self.v7_cur_pos.config(text=cur_valve)
+
+
+
+    def config_valve8(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(SAMPLE_CLEANING_ADDRESS)        
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "Waste (P1)"
+        elif(s=='2'):
+            cur_valve = "MeOH (P2)"
+        elif(s=='3'):
+            cur_valve = "Detergent (P3)"
+        elif(s=='4'):
+            cur_valve = "DI Water (P4)"
+        elif(s=='5'):
+            cur_valve = "Cleaning Port (P5)"
+        elif(s=='6'):
+            cur_valve = "Air (P6)"
+        else:
+            cur_valve = "error"
+        self.v8_cur_pos.config(text=cur_valve)
+
+
+    def config_valve9(self):
+        time.sleep(0.5)
+        s = self.pump1.get_valve(TITRANT_CLEANING_ADDRESS)
+        cur_valve = "----"
+        if (s=='1'):
+            cur_valve = "N/A (P1)"
+        elif(s=='2'):
+            cur_valve = "Air (P2)"
+        elif(s=='3'):
+            cur_valve = "DI Water (P3)"
+        elif(s=='4'):
+            cur_valve = "Detergent (P4)"
+        elif(s=='5'):
+            cur_valve = "MeOH (P5)"
+        elif(s=='6'):
+            cur_valve = "Waste (P6)"
+        else:
+            cur_valve = "error"
+        self.v9_cur_pos.config(text=cur_valve)
 
 
     def InitLabjack(self):
@@ -886,6 +1040,7 @@ class run_GUI(GUI.GUI):
     #Pump Valve (Titrant line)
     def checkCombo1(self,event):
         global TIRRANT_PUMP_ADDRESS
+        valve_is_valid = True
         s = self.combo1.get()
         # logger.info('child -->'+s)
         if (s == "Gas to Line (P1)"):
@@ -902,32 +1057,35 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = 'I'
-        self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(TIRRANT_PUMP_ADDRESS)
-        # logger.info("-----> ",s)
-        cur_valve = "----"
-        if (s=='e'):
-            cur_valve = "Gas to Line (P1)"
-            # logger.info('EEEE')
-        elif(s=='o'):
-            cur_valve = "Pump to Line (P2)"
-            # logger.info('OOOO')
-        elif(s=='i'):
-            cur_valve = "Pump to Air (P3)"
-            # logger.info("IIII")
-        elif(s=='b'):
-            cur_valve = "Gas to Air (P4)"
-            # logger.info("BBBB")
-        else:
-            cur_valve = "error"
-
-        self.v1_cur_pos.config(text=cur_valve)
+            # new_valve_pos = 'I'
+            valve_is_valid = False
+        
+        if valve_is_valid:
+            self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(TIRRANT_PUMP_ADDRESS)
+            # logger.info("-----> ",s)
+            cur_valve = "----"
+            if (s=='e'):
+                cur_valve = "Gas to Line (P1)"
+                # logger.info('EEEE')
+            elif(s=='o'):
+                cur_valve = "Pump to Line (P2)"
+                # logger.info('OOOO')
+            elif(s=='i'):
+                cur_valve = "Pump to Air (P3)"
+                # logger.info("IIII")
+            elif(s=='b'):
+                cur_valve = "Gas to Air (P4)"
+                # logger.info("BBBB")
+            else:
+                cur_valve = "error"
+            self.v1_cur_pos.config(text=cur_valve)
 
     #Pump Valve (Sample line)
     def checkCombo2(self,event):
         global SAMPLE_PUMP_ADDRESS
+        valve_is_valid = True
         s = self.combo2.get()
         if (s == "Gas to Air (P1)"):
             new_valve_pos = 'E'
@@ -939,28 +1097,31 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = 'O'
-        self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(SAMPLE_PUMP_ADDRESS)
-        cur_valve = "----"
-        if (s=='e'):
-            cur_valve = "Gas to Air (P1)"
-        elif(s=='o'):
-            cur_valve = "Pump to Air (P2)"
-        elif(s=='i'):
-            cur_valve = "Pump to Line (P3)"
-        elif(s=='b'):
-            cur_valve = "Gas to Line (P4)"
-        else:
-            cur_valve = "error"
-
-        self.v2_cur_pos.config(text=cur_valve)
+            # new_valve_pos = 'O'
+            valve_is_valid = False
+        
+        if valve_is_valid:
+            self.pump1.set_valve(SAMPLE_PUMP_ADDRESS, new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(SAMPLE_PUMP_ADDRESS)
+            cur_valve = "----"
+            if (s=='e'):
+                cur_valve = "Gas to Air (P1)"
+            elif(s=='o'):
+                cur_valve = "Pump to Air (P2)"
+            elif(s=='i'):
+                cur_valve = "Pump to Line (P3)"
+            elif(s=='b'):
+                cur_valve = "Gas to Line (P4)"
+            else:
+                cur_valve = "error"
+            self.v2_cur_pos.config(text=cur_valve)
 
 
     #Loop Valve (Titrant line)
     def checkCombo3(self, event):
         global TITRANT_LOOP_ADDRESS
+        valve_is_valid = True
         s = self.combo3.get()
         if (s == "Gas to Air (P1)"):
             new_valve_pos = 'E'
@@ -972,27 +1133,31 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = 'E'
-        self.pump1.set_valve(TITRANT_LOOP_ADDRESS, new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(TITRANT_LOOP_ADDRESS)
-        cur_valve = "----"
-        if (s=='e'):
-            cur_valve = "Gas to Air (P1)"
-        elif(s=='o'):
-            cur_valve = "Pump to Air (P2)"
-        elif(s=='i'):
-            cur_valve = "Line to Pump (P3)"
-        elif(s=='b'):
-            cur_valve = "Line to Gas (P4)"
-        else:
-            cur_valve = "error"
-        self.v3_cur_pos.config(text=cur_valve)
+            # new_valve_pos = 'E'
+            valve_is_valid = False
+
+        if valve_is_valid:
+            self.pump1.set_valve(TITRANT_LOOP_ADDRESS, new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(TITRANT_LOOP_ADDRESS)
+            cur_valve = "----"
+            if (s=='e'):
+                cur_valve = "Gas to Air (P1)"
+            elif(s=='o'):
+                cur_valve = "Pump to Air (P2)"
+            elif(s=='i'):
+                cur_valve = "Line to Pump (P3)"
+            elif(s=='b'):
+                cur_valve = "Line to Gas (P4)"
+            else:
+                cur_valve = "error"
+            self.v3_cur_pos.config(text=cur_valve)
 
 
     #Loop Valve (Sample line)
     def checkCombo4(self,event):
         global SAMPLE_LOOP_ADDRESS
+        valve_is_valid = True
         s = self.combo4.get()        
         if (s == "Line to Gas (P1)"):
             new_valve_pos = 'E'
@@ -1004,28 +1169,32 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = 'E'
-        self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(SAMPLE_LOOP_ADDRESS)
-        cur_valve = "----"
-        if (s=='e'):
-            cur_valve = "Line to Gas (P1)"
-        elif(s=='o'):
-            cur_valve = "Line to Pump (P2)"
-        elif(s=='i'):
-            cur_valve = "Pump to Air (P3)"
-        elif(s=='b'):
-            cur_valve = "Gas to Air (P4)"
-        else:
-            cur_valve = "error"
+            # new_valve_pos = 'E'
+            valve_is_valid = False
         
-        self.v4_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            self.pump1.set_valve(SAMPLE_LOOP_ADDRESS, new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(SAMPLE_LOOP_ADDRESS)
+            cur_valve = "----"
+            if (s=='e'):
+                cur_valve = "Line to Gas (P1)"
+            elif(s=='o'):
+                cur_valve = "Line to Pump (P2)"
+            elif(s=='i'):
+                cur_valve = "Pump to Air (P3)"
+            elif(s=='b'):
+                cur_valve = "Gas to Air (P4)"
+            else:
+                cur_valve = "error"
+            
+            self.v4_cur_pos.config(text=cur_valve)
 
 
     #Pipette Valve (Titrant line)
     def checkCombo5(self, event):
         global TITRANT_PIPETTE_ADDRESS
+        valve_is_valid = True
         s = self.combo5.get()
         if (s == "Titrant Cannula (P1)"):
             vlv = 'I'
@@ -1035,29 +1204,32 @@ class run_GUI(GUI.GUI):
             vlv = 'O'
         else:
             logger.info(' invalid valve selection')
-            vlv = 'I'
+            # vlv = 'I'
+            valve_is_valid = False
 
-        # self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,vlv)
-        self.pump1.set_valve(TITRANT_PIPETTE_ADDRESS,vlv)
-        time.sleep(1)
-        s = self.pump1.get_valve(TITRANT_PIPETTE_ADDRESS)
-        # logger.info("----->{}".format(s))
-        cur_valve = "----"
-        if (s=='i'):
-            cur_valve = "Titrant Cannula (P1)"
-        elif(s=='e'):
-            cur_valve = "Titrant Port (P2)"
-        elif(s=='o'):
-            cur_valve = "Reservoirs (P3)"
-        else:
-            cur_valve = "error"
-        self.v5_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            # self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,vlv)
+            self.pump1.set_valve(TITRANT_PIPETTE_ADDRESS,vlv)
+            time.sleep(1)
+            s = self.pump1.get_valve(TITRANT_PIPETTE_ADDRESS)
+            # logger.info("----->{}".format(s))
+            cur_valve = "----"
+            if (s=='i'):
+                cur_valve = "Titrant Cannula (P1)"
+            elif(s=='e'):
+                cur_valve = "Titrant Port (P2)"
+            elif(s=='o'):
+                cur_valve = "Reservoirs (P3)"
+            else:
+                cur_valve = "error"
+            self.v5_cur_pos.config(text=cur_valve)
 
 
  
     #Titrant Port Valve (Sample line)
     def checkCombo6(self,event):
         global TITRANT_PORT_ADDRESS
+        valve_is_valid = True
         s = self.combo6.get()
         if (s == "N/A (P1)"):
             vlv = 'I'
@@ -1067,33 +1239,35 @@ class run_GUI(GUI.GUI):
             vlv = 'O'
         else:
             logger.error(' invalid valve selection')
-            vlv = 'E'
+            # vlv = 'E'
+            valve_is_valid = False
 
-        # self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,vlv)
-        self.pump1.set_valve(TITRANT_PORT_ADDRESS,vlv)
-        time.sleep(1)
-        s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
-        # logger.info("----->{}".format(s))
-        # print(type(s))
-        cur_valve = "----"
-        if (s=='i'):
-            cur_valve = "N/A (P1)"
-            # logger.info('IIII')
-        elif(s=='e'):
-            cur_valve = "Titrant Line (P2)"
-            # logger.info('EEEE')
-        elif(s=='o'):
-            cur_valve = "Sample Line (P3)"
-            # logger.info("OOOO")
-        else:
-            cur_valve = "error"
-
-        self.v6_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            # self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,vlv)
+            self.pump1.set_valve(TITRANT_PORT_ADDRESS,vlv)
+            time.sleep(1)
+            s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
+            # logger.info("----->{}".format(s))
+            # print(type(s))
+            cur_valve = "----"
+            if (s=='i'):
+                cur_valve = "N/A (P1)"
+                # logger.info('IIII')
+            elif(s=='e'):
+                cur_valve = "Titrant Line (P2)"
+                # logger.info('EEEE')
+            elif(s=='o'):
+                cur_valve = "Sample Line (P3)"
+                # logger.info("OOOO")
+            else:
+                cur_valve = "error"
+            self.v6_cur_pos.config(text=cur_valve)
 
 
     #Degrasser Valve (Sample line)         
     def checkCombo7(self,event):
         global DEGASSER_ADDRESS
+        valve_is_valid = True
         s = self.combo7.get()
         if (s == "Reservoirs (P1)"):
             new_valve_pos = '1'
@@ -1109,33 +1283,35 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.error(' invalid valve selection')
-            new_valve_pos = '1'
+            # new_valve_pos = '1'
+            valve_is_valid = False
 
-        self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(DEGASSER_ADDRESS)
-        cur_valve = "----"
-        if (s=='1'):
-            cur_valve = "Reservoirs (P1)"
-        elif(s=='2'):
-            cur_valve = "Rec Port (P2)"
-        elif(s=='3'):
-            cur_valve = "Sample Port (P3)"
-        elif(s=='4'):
-            cur_valve = "Ref Port (P4)"
-        elif(s=='5'):
-            cur_valve = "Titrant Port (P5)"
-        elif(s=='6'):
-            cur_valve = "Cell (P6)"
-        else:
-            cur_valve = "error"
-
-        self.v7_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            self.pump1.set_multiwayvalve(DEGASSER_ADDRESS,new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(DEGASSER_ADDRESS)
+            cur_valve = "----"
+            if (s=='1'):
+                cur_valve = "Reservoirs (P1)"
+            elif(s=='2'):
+                cur_valve = "Rec Port (P2)"
+            elif(s=='3'):
+                cur_valve = "Sample Port (P3)"
+            elif(s=='4'):
+                cur_valve = "Ref Port (P4)"
+            elif(s=='5'):
+                cur_valve = "Titrant Port (P5)"
+            elif(s=='6'):
+                cur_valve = "Cell (P6)"
+            else:
+                cur_valve = "error"
+            self.v7_cur_pos.config(text=cur_valve)
 
 
     #Cleaning Valve (Sample line)  
     def checkCombo8(self, event):
         global TITRANT_CLEANING_ADDRESS
+        valve_is_valid = True
         s = self.combo8.get()
         if (s == "Waste (P1)"):
             new_valve_pos = '1'
@@ -1151,32 +1327,34 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = '1'
+            # new_valve_pos = '1'
+            valve_is_valid = False
 
-        self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(SAMPLE_CLEANING_ADDRESS)        
-        cur_valve = "----"
-        if (s=='1'):
-            cur_valve = "Waste (P1)"
-        elif(s=='2'):
-            cur_valve = "MeOH (P2)"
-        elif(s=='3'):
-            cur_valve = "Detergent (P3)"
-        elif(s=='4'):
-            cur_valve = "DI Water (P4)"
-        elif(s=='5'):
-            cur_valve = "Cleaning Port (P5)"
-        elif(s=='6'):
-            cur_valve = "Air (P6)"
-        else:
-            cur_valve = "error"
-
-        self.v8_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            self.pump1.set_multiwayvalve(SAMPLE_CLEANING_ADDRESS,new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(SAMPLE_CLEANING_ADDRESS)        
+            cur_valve = "----"
+            if (s=='1'):
+                cur_valve = "Waste (P1)"
+            elif(s=='2'):
+                cur_valve = "MeOH (P2)"
+            elif(s=='3'):
+                cur_valve = "Detergent (P3)"
+            elif(s=='4'):
+                cur_valve = "DI Water (P4)"
+            elif(s=='5'):
+                cur_valve = "Cleaning Port (P5)"
+            elif(s=='6'):
+                cur_valve = "Air (P6)"
+            else:
+                cur_valve = "error"
+            self.v8_cur_pos.config(text=cur_valve)
 
 
     #Cleaning Vlave (Titrant line)
     def checkCombo9(self, event):
+        valve_is_valid = True
         global TITRANT_CLEANING_ADDRESS
         s = self.combo9.get()
         if (s == "N/A (P1)"):
@@ -1193,27 +1371,29 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.info(' invalid valve selection')
-            new_valve_pos = '1'
+            # new_valve_pos = '1'
+            valve_is_valid = False
 
-        self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,new_valve_pos)
-        time.sleep(1)
-        s = self.pump1.get_valve(TITRANT_CLEANING_ADDRESS)
-        cur_valve = "----"
-        if (s=='1'):
-            cur_valve = "N/A (P1)"
-        elif(s=='2'):
-            cur_valve = "Air (P2)"
-        elif(s=='3'):
-            cur_valve = "DI Water (P3)"
-        elif(s=='4'):
-            cur_valve = "Detergent (P4)"
-        elif(s=='5'):
-            cur_valve = "MeOH (P5)"
-        elif(s=='6'):
-            cur_valve = "Waste (P6)"
-        else:
-            cur_valve = "error"
-        self.v9_cur_pos.config(text=cur_valve)
+        if valve_is_valid:
+            self.pump1.set_multiwayvalve(TITRANT_CLEANING_ADDRESS,new_valve_pos)
+            time.sleep(1)
+            s = self.pump1.get_valve(TITRANT_CLEANING_ADDRESS)
+            cur_valve = "----"
+            if (s=='1'):
+                cur_valve = "N/A (P1)"
+            elif(s=='2'):
+                cur_valve = "Air (P2)"
+            elif(s=='3'):
+                cur_valve = "DI Water (P3)"
+            elif(s=='4'):
+                cur_valve = "Detergent (P4)"
+            elif(s=='5'):
+                cur_valve = "MeOH (P5)"
+            elif(s=='6'):
+                cur_valve = "Waste (P6)"
+            else:
+                cur_valve = "error"
+            self.v9_cur_pos.config(text=cur_valve)
 
 
     #BUBBLE SENSOR SELECTION FOR PUMP 1
