@@ -424,25 +424,29 @@ class GUI:
         Label(
             self.tab1, text="Pickup mode", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + 11 * dY1)
-        self.b_pickupUntillbubble = Button(
+        self.b_pickupUntillbubble_p1 = Button(
             self.tab1,
             text="   start   ",
             bg=self.Color2,
             fg=self.Color3,
             font=("Arial", 10),
             command=self.p1_b_pickupUntillbubble,
-        ).place(x=XX1 + XX2, y=Y1 + 11 * dY1)
+        )
+        self.b_pickupUntillbubble_p1.pack()
+        self.b_pickupUntillbubble_p1.place(x=XX1 + XX2, y=Y1 + 11 * dY1)
         Label(
             self.tab1, text="Dispense mode", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + 12 * dY1)
-        self.b_dispenseUntillbubble = Button(
+        self.b_dispenseUntillbubble_p1 = Button(
             self.tab1,
             text="   start   ",
             bg=self.Color2,
             fg=self.Color3,
             font=("Arial", 10),
             command=self.p1_b_dispenseUntillbubble,
-        ).place(x=XX1 + XX2, y=Y1 + 12 * dY1)
+        )
+        self.b_dispenseUntillbubble_p1.pack()
+        self.b_dispenseUntillbubble_p1.place(x=XX1 + XX2, y=Y1 + 12 * dY1)
 
         self.b_terminatedP1 = Button(
             self.tab1,
@@ -615,22 +619,26 @@ class GUI:
         Label(
             self.tab1, text="Pickup mode", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + 11 * dY1)
-        self.b_pickupUntillbubble_2 = Button(
+        self.b_pickupUntillbubble_p2 = Button(
             self.tab1,
             text="   start   ",
             bg=self.Color2,
             fg=self.Color3,
             font=("Arial", 10),
             command=self.p2_b_pickupUntillbubble,
-        ).place(x=XX1 + XX2, y=Y1 + 11 * dY1)
-        self.b_dispenseUntillbubble = Button(
+        )
+        self.b_pickupUntillbubble_p2.pack()
+        self.b_pickupUntillbubble_p2.place(x=XX1 + XX2, y=Y1 + 11 * dY1)
+        self.b_dispenseUntillbubble_p2 = Button(
             self.tab1,
             text="   start   ",
             bg=self.Color2,
             fg=self.Color3,
             font=("Arial", 10),
             command=self.p2_b_dispenseUntillbubble,
-        ).place(x=XX1 + XX2, y=Y1 + 12 * dY1)
+        )
+        self.b_dispenseUntillbubble_p2.pack()
+        self.b_dispenseUntillbubble_p2.place(x=XX1 + XX2, y=Y1 + 12 * dY1)
         Label(
             self.tab1, text="Dispense mode", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + 12 * dY1)
@@ -1449,7 +1457,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.7.2)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.8)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800

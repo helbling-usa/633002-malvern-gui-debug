@@ -1761,3 +1761,443 @@ ERROR: invalid valve selection
 2024-03-06 14:43:35,710:config.Pump:exception happened in pump!!
 2024-03-06 14:44:14,137:config.Pump:Error reading pump!!!
 2024-03-06 14:44:14,137:config.Pump:exception happened in pump!!
+2024-03-07 08:16:39,461:config.Pump:Error reading pump!!!
+2024-03-07 08:16:39,462:config.Pump:exception happened in pump!!
+2024-03-07 08:16:43,484:config.Pump:Error reading pump!!!
+2024-03-07 08:16:43,485:config.Pump:exception happened in pump!!
+2024-03-07 08:17:39,944:config.Pump:Error reading pump!!!
+2024-03-07 08:17:39,944:config.Pump:exception happened in pump!!
+2024-03-07 08:17:43,969:config.Pump:Error reading pump!!!
+2024-03-07 08:17:43,970:config.Pump:exception happened in pump!!
+2024-03-07 08:18:04,292:config.Pump:Error reading pump!!!
+2024-03-07 08:18:04,293:config.Pump:exception happened in pump!!
+2024-03-07 08:24:32,386:config.Pump:Error reading pump!!!
+2024-03-07 08:24:32,386:config.Pump:exception happened in pump!!
+2024-03-07 08:29:40,084:config.Pump:Error reading pump!!!
+2024-03-07 08:29:40,085:config.Pump:exception happened in pump!!
+2024-03-07 08:30:06,196:config.Pump:Error reading pump!!!
+2024-03-07 08:30:06,196:config.Pump:exception happened in pump!!
+2024-03-07 08:30:11,600:config.Pump:Error reading pump!!!
+2024-03-07 08:30:11,600:config.Pump:exception happened in pump!!
+2024-03-07 08:30:15,773:config.Pump:Error reading pump!!!
+2024-03-07 08:30:15,773:config.Pump:exception happened in pump!!
+2024-03-07 08:31:06,285:config.Pump:Error reading pump!!!
+2024-03-07 08:31:06,285:config.Pump:exception happened in pump!!
+2024-03-07 08:31:45,700:config.Pump:Error reading pump!!!
+2024-03-07 08:31:45,701:config.Pump:exception happened in pump!!
+2024-03-07 08:31:57,181:config.Pump:Error reading pump!!!
+2024-03-07 08:31:57,182:config.Pump:exception happened in pump!!
+2024-03-07 08:32:49,161:config.Pump:Error reading pump!!!
+2024-03-07 08:32:49,162:config.Pump:exception happened in pump!!
+2024-03-07 08:34:55,269:config.Pump:Error reading pump!!!
+2024-03-07 08:34:55,269:config.Pump:exception happened in pump!!
+2024-03-07 08:35:24,961:config.Pump:Error reading pump!!!
+2024-03-07 08:35:24,962:config.Pump:exception happened in pump!!
+2024-03-07 08:35:32,161:config.Pump:Error reading pump!!!u-->b''
+2024-03-07 08:35:32,162:config.Pump:exception happened in pump!!
+2024-03-07 08:35:36,186:config.Pump:Error reading pump!!!u-->b''
+2024-03-07 08:35:36,186:config.Pump:exception happened in pump!!
+2024-03-07 08:39:15,635:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:39:15,637:config.Pump:exception happened in pump!!
+2024-03-07 08:39:19,659:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:39:19,659:config.Pump:exception happened in pump!!
+2024-03-07 08:43:42,076:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:43:42,077:config.Pump:exception happened in pump!!
+2024-03-07 08:44:35,174:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:44:35,174:config.Pump:exception happened in pump!!
+2024-03-07 08:45:17,227:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:45:17,228:config.Pump:exception happened in pump!!
+2024-03-07 08:49:02,162:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:49:02,162:config.Pump:exception happened in pump!!
+2024-03-07 08:49:35,563:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:49:35,564:config.Pump:exception happened in pump!!
+2024-03-07 08:49:54,366:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:49:54,367:config.Pump:exception happened in pump!!
+2024-03-07 08:51:43,395:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:51:43,396:config.Pump:exception happened in pump!!
+2024-03-07 08:55:46,495:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:55:46,495:config.Pump:exception happened in pump!!
+2024-03-07 08:56:55,439:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:56:55,440:config.Pump:exception happened in pump!!
+2024-03-07 08:58:12,251:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:58:12,251:config.Pump:exception happened in pump!!
+2024-03-07 08:58:44,532:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 08:58:44,533:config.Pump:exception happened in pump!!
+2024-03-07 09:02:43,008:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:02:43,008:config.Pump:exception happened in pump!!
+2024-03-07 09:07:49,485:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:07:49,485:config.Pump:exception happened in pump!!
+2024-03-07 09:08:14,382:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:08:14,382:config.Pump:exception happened in pump!!
+2024-03-07 09:09:38,820:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:09:38,820:config.Pump:exception happened in pump!!
+2024-03-07 09:10:41,386:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:10:41,386:config.Pump:exception happened in pump!!
+2024-03-07 09:11:11,403:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:11:11,404:config.Pump:exception happened in pump!!
+2024-03-07 09:11:15,428:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:11:15,429:config.Pump:exception happened in pump!!
+2024-03-07 09:11:45,771:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:11:45,771:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:11:45,771:config.Pump:exception happened in pump!!
+2024-03-07 09:11:45,771:config.Pump:exception happened in pump!!
+2024-03-07 09:12:05,901:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:05,902:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:05,903:config.Pump:exception happened in pump!!
+2024-03-07 09:12:05,903:config.Pump:exception happened in pump!!
+2024-03-07 09:12:10,098:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:10,098:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:10,099:config.Pump:exception happened in pump!!
+2024-03-07 09:12:10,100:config.Pump:exception happened in pump!!
+2024-03-07 09:12:29,125:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:29,126:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:29,127:config.Pump:exception happened in pump!!
+2024-03-07 09:12:29,127:config.Pump:exception happened in pump!!
+2024-03-07 09:12:35,359:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:35,359:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:35,359:config.Pump:exception happened in pump!!
+2024-03-07 09:12:35,359:config.Pump:exception happened in pump!!
+2024-03-07 09:12:39,547:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:39,547:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:12:39,548:config.Pump:exception happened in pump!!
+2024-03-07 09:12:39,549:config.Pump:exception happened in pump!!
+2024-03-07 09:17:37,854:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:17:37,855:config.Pump:exception happened in pump!!
+2024-03-07 09:17:41,879:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:17:41,880:config.Pump:exception happened in pump!!
+2024-03-07 09:18:03,473:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:03,474:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:03,475:config.Pump:exception happened in pump!!
+2024-03-07 09:18:03,476:config.Pump:exception happened in pump!!
+2024-03-07 09:18:07,694:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:07,695:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:07,695:config.Pump:exception happened in pump!!
+2024-03-07 09:18:07,696:config.Pump:exception happened in pump!!
+2024-03-07 09:18:12,393:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:12,393:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:12,393:config.Pump:exception happened in pump!!
+2024-03-07 09:18:12,393:config.Pump:exception happened in pump!!
+2024-03-07 09:18:48,145:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:48,147:config.Pump:exception happened in pump!!
+2024-03-07 09:18:59,610:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:18:59,611:config.Pump:exception happened in pump!!
+2024-03-07 09:19:29,335:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:19:29,335:config.Pump:exception happened in pump!!
+2024-03-07 09:20:00,386:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:20:00,387:config.Pump:exception happened in pump!!
+2024-03-07 09:20:27,775:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:20:27,775:config.Pump:exception happened in pump!!
+2024-03-07 09:21:07,238:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:21:07,239:config.Pump:exception happened in pump!!
+2024-03-07 09:22:05,088:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:22:05,089:config.Pump:exception happened in pump!!
+2024-03-07 09:22:15,416:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:22:15,416:config.Pump:exception happened in pump!!
+2024-03-07 09:23:30,118:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:23:30,118:config.Pump:exception happened in pump!!
+2024-03-07 09:23:50,894:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:23:50,895:config.Pump:exception happened in pump!!
+2024-03-07 09:23:54,919:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:23:54,920:config.Pump:exception happened in pump!!
+2024-03-07 09:24:35,406:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:24:35,406:config.Pump:exception happened in pump!!
+2024-03-07 09:25:04,248:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:04,249:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:04,250:config.Pump:exception happened in pump!!
+2024-03-07 09:25:04,251:config.Pump:exception happened in pump!!
+2024-03-07 09:25:08,465:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:08,466:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:08,467:config.Pump:exception happened in pump!!
+2024-03-07 09:25:08,468:config.Pump:exception happened in pump!!
+2024-03-07 09:25:12,682:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:12,682:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:12,682:config.Pump:exception happened in pump!!
+2024-03-07 09:25:12,682:config.Pump:exception happened in pump!!
+2024-03-07 09:25:19,328:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:19,328:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:19,329:config.Pump:exception happened in pump!!
+2024-03-07 09:25:19,330:config.Pump:exception happened in pump!!
+2024-03-07 09:25:23,605:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:23,605:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:23,606:config.Pump:exception happened in pump!!
+2024-03-07 09:25:23,607:config.Pump:exception happened in pump!!
+2024-03-07 09:25:42,756:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:42,757:config.Pump:exception happened in pump!!
+2024-03-07 09:25:50,681:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:50,682:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:50,683:config.Pump:exception happened in pump!!
+2024-03-07 09:25:50,684:config.Pump:exception happened in pump!!
+2024-03-07 09:25:54,878:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:54,879:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:25:54,880:config.Pump:exception happened in pump!!
+2024-03-07 09:25:54,881:config.Pump:exception happened in pump!!
+2024-03-07 09:26:18,093:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:26:18,094:config.Pump:exception happened in pump!!
+2024-03-07 09:27:58,447:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:27:58,448:config.Pump:exception happened in pump!!
+2024-03-07 09:28:02,474:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:02,475:config.Pump:exception happened in pump!!
+2024-03-07 09:28:23,648:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:23,648:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:23,649:config.Pump:exception happened in pump!!
+2024-03-07 09:28:23,650:config.Pump:exception happened in pump!!
+2024-03-07 09:28:37,670:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:37,670:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:37,671:config.Pump:exception happened in pump!!
+2024-03-07 09:28:37,672:config.Pump:exception happened in pump!!
+2024-03-07 09:28:41,896:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:41,897:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:41,898:config.Pump:exception happened in pump!!
+2024-03-07 09:28:41,899:config.Pump:exception happened in pump!!
+2024-03-07 09:28:47,365:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:47,365:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:47,365:config.Pump:exception happened in pump!!
+2024-03-07 09:28:47,365:config.Pump:exception happened in pump!!
+2024-03-07 09:28:52,337:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:52,337:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:28:52,337:config.Pump:exception happened in pump!!
+2024-03-07 09:28:52,338:config.Pump:exception happened in pump!!
+2024-03-07 09:29:33,600:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:33,601:config.Pump:exception happened in pump!!
+2024-03-07 09:29:46,386:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:46,386:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:46,387:config.Pump:exception happened in pump!!
+2024-03-07 09:29:46,387:config.Pump:exception happened in pump!!
+2024-03-07 09:29:50,625:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:50,625:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:50,630:config.Pump:exception happened in pump!!
+2024-03-07 09:29:50,631:config.Pump:exception happened in pump!!
+2024-03-07 09:29:54,842:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:54,843:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:29:54,844:config.Pump:exception happened in pump!!
+2024-03-07 09:29:54,845:config.Pump:exception happened in pump!!
+2024-03-07 09:30:01,516:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:01,517:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:01,518:config.Pump:exception happened in pump!!
+2024-03-07 09:30:01,519:config.Pump:exception happened in pump!!
+2024-03-07 09:30:10,081:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:10,082:config.Pump:exception happened in pump!!
+2024-03-07 09:30:15,557:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:15,557:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:15,557:config.Pump:exception happened in pump!!
+2024-03-07 09:30:15,558:config.Pump:exception happened in pump!!
+2024-03-07 09:30:20,024:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:20,024:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:20,024:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:20,025:config.Pump:exception happened in pump!!
+2024-03-07 09:30:20,025:config.Pump:exception happened in pump!!
+2024-03-07 09:30:20,026:config.Pump:exception happened in pump!!
+2024-03-07 09:30:31,550:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:30:31,551:config.Pump:exception happened in pump!!
+2024-03-07 09:31:27,774:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:31:27,775:config.Pump:exception happened in pump!!
+2024-03-07 09:31:31,798:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:31:31,798:config.Pump:exception happened in pump!!
+2024-03-07 09:32:33,963:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:32:33,964:config.Pump:exception happened in pump!!
+2024-03-07 09:32:37,987:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:32:37,987:config.Pump:exception happened in pump!!
+2024-03-07 09:33:07,168:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:07,169:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:07,170:config.Pump:exception happened in pump!!
+2024-03-07 09:33:07,171:config.Pump:exception happened in pump!!
+2024-03-07 09:33:11,389:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:11,389:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:11,389:config.Pump:exception happened in pump!!
+2024-03-07 09:33:11,389:config.Pump:exception happened in pump!!
+2024-03-07 09:33:20,861:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:20,862:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:20,862:config.Pump:exception happened in pump!!
+2024-03-07 09:33:20,863:config.Pump:exception happened in pump!!
+2024-03-07 09:33:26,896:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:26,896:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:26,898:config.Pump:exception happened in pump!!
+2024-03-07 09:33:26,899:config.Pump:exception happened in pump!!
+2024-03-07 09:33:47,410:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:33:47,411:config.Pump:exception happened in pump!!
+2024-03-07 09:36:05,746:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:36:05,747:config.Pump:exception happened in pump!!
+2024-03-07 09:36:20,967:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:36:20,968:config.Pump:exception happened in pump!!
+2024-03-07 09:37:37,043:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:37:37,044:config.Pump:exception happened in pump!!
+2024-03-07 09:38:21,348:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:38:21,348:config.Pump:exception happened in pump!!
+2024-03-07 09:38:47,347:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:38:47,348:config.Pump:exception happened in pump!!
+2024-03-07 09:39:26,871:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:39:26,872:config.Pump:exception happened in pump!!
+2024-03-07 09:40:34,622:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:40:34,622:config.Pump:exception happened in pump!!
+2024-03-07 09:40:38,647:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:40:38,648:config.Pump:exception happened in pump!!
+2024-03-07 09:41:55,926:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:41:55,927:config.Pump:exception happened in pump!!
+2024-03-07 09:41:59,952:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:41:59,953:config.Pump:exception happened in pump!!
+2024-03-07 09:42:09,454:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:42:09,456:config.Pump:exception happened in pump!!
+2024-03-07 09:43:19,565:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:43:19,567:config.Pump:exception happened in pump!!
+2024-03-07 09:43:23,592:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:43:23,593:config.Pump:exception happened in pump!!
+2024-03-07 09:44:09,657:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:44:09,658:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:44:09,658:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:44:09,659:config.Pump:exception happened in pump!!
+2024-03-07 09:44:09,660:config.Pump:exception happened in pump!!
+2024-03-07 09:44:09,661:config.Pump:exception happened in pump!!
+2024-03-07 09:44:57,643:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:44:57,645:config.Pump:exception happened in pump!!
+2024-03-07 09:45:01,667:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:45:01,668:config.Pump:exception happened in pump!!
+2024-03-07 09:50:06,437:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:50:06,437:config.Pump:exception happened in pump!!
+2024-03-07 09:50:10,461:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:50:10,462:config.Pump:exception happened in pump!!
+2024-03-07 09:50:25,274:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:50:25,274:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:50:25,274:config.Pump:exception happened in pump!!
+2024-03-07 09:50:25,276:config.Pump:exception happened in pump!!
+2024-03-07 09:50:39,137:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:50:39,138:config.Pump:exception happened in pump!!
+2024-03-07 09:53:41,385:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:53:41,386:config.Pump:exception happened in pump!!
+2024-03-07 09:54:27,020:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:54:27,021:config.Pump:exception happened in pump!!
+2024-03-07 09:55:07,765:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:55:07,767:config.Pump:exception happened in pump!!
+2024-03-07 09:55:11,790:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:55:11,791:config.Pump:exception happened in pump!!
+2024-03-07 09:56:19,944:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:56:19,944:config.Pump:exception happened in pump!!
+2024-03-07 09:56:23,967:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:56:23,968:config.Pump:exception happened in pump!!
+2024-03-07 09:56:39,046:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:56:39,046:config.Pump:exception happened in pump!!
+2024-03-07 09:57:57,890:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:57:57,892:config.Pump:exception happened in pump!!
+2024-03-07 09:58:01,915:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:58:01,916:config.Pump:exception happened in pump!!
+2024-03-07 09:58:20,791:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:58:20,791:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:58:20,791:config.Pump:exception happened in pump!!
+2024-03-07 09:58:20,791:config.Pump:exception happened in pump!!
+2024-03-07 09:58:31,170:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:58:31,170:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 09:58:31,170:config.Pump:exception happened in pump!!
+2024-03-07 09:58:31,170:config.Pump:exception happened in pump!!
+2024-03-07 10:00:26,101:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:00:26,101:config.Pump:exception happened in pump!!
+2024-03-07 10:00:42,378:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:00:42,378:config.Pump:exception happened in pump!!
+2024-03-07 10:11:53,333:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:11:53,333:config.Pump:exception happened in pump!!
+2024-03-07 10:14:40,992:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:14:40,993:config.Pump:exception happened in pump!!
+2024-03-07 10:15:23,011:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:15:23,011:config.Pump:exception happened in pump!!
+2024-03-07 10:17:12,327:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:17:12,327:config.Pump:exception happened in pump!!
+2024-03-07 10:18:58,011:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:18:58,012:config.Pump:exception happened in pump!!
+2024-03-07 10:19:02,037:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:19:02,037:config.Pump:exception happened in pump!!
+2024-03-07 10:19:50,367:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:19:50,367:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:19:50,368:config.Pump:exception happened in pump!!
+2024-03-07 10:19:50,368:config.Pump:exception happened in pump!!
+2024-03-07 10:20:00,659:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:20:00,659:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:20:00,659:config.Pump:exception happened in pump!!
+2024-03-07 10:20:00,660:config.Pump:exception happened in pump!!
+2024-03-07 10:21:26,094:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:21:26,095:config.Pump:exception happened in pump!!
+2024-03-07 10:21:30,119:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:21:30,119:config.Pump:exception happened in pump!!
+2024-03-07 10:21:38,997:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:21:38,997:config.Pump:exception happened in pump!!
+2024-03-07 10:22:06,579:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:22:06,580:config.Pump:exception happened in pump!!
+2024-03-07 10:22:10,603:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:22:10,604:config.Pump:exception happened in pump!!
+2024-03-07 10:22:29,253:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:22:29,253:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:22:29,254:config.Pump:exception happened in pump!!
+2024-03-07 10:22:29,254:config.Pump:exception happened in pump!!
+2024-03-07 10:23:19,939:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:23:19,939:config.Pump:exception happened in pump!!
+2024-03-07 10:23:56,462:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:23:56,462:config.Pump:exception happened in pump!!
+2024-03-07 10:24:00,489:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:24:00,490:config.Pump:exception happened in pump!!
+2024-03-07 10:24:25,304:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:24:25,304:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:24:25,305:config.Pump:exception happened in pump!!
+2024-03-07 10:24:25,305:config.Pump:exception happened in pump!!
+2024-03-07 10:24:53,513:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:24:53,515:config.Pump:exception happened in pump!!
+2024-03-07 10:24:57,536:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:24:57,536:config.Pump:exception happened in pump!!
+2024-03-07 10:25:16,308:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:16,308:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:16,308:config.Pump:exception happened in pump!!
+2024-03-07 10:25:16,309:config.Pump:exception happened in pump!!
+2024-03-07 10:25:28,811:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:28,811:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:28,811:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:28,811:config.Pump:exception happened in pump!!
+2024-03-07 10:25:28,812:config.Pump:exception happened in pump!!
+2024-03-07 10:25:28,812:config.Pump:exception happened in pump!!
+2024-03-07 10:25:44,721:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:44,722:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:44,723:config.Pump:exception happened in pump!!
+2024-03-07 10:25:44,724:config.Pump:exception happened in pump!!
+2024-03-07 10:25:53,288:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:53,289:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:53,289:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:25:53,290:config.Pump:exception happened in pump!!
+2024-03-07 10:25:53,291:config.Pump:exception happened in pump!!
+2024-03-07 10:25:53,292:config.Pump:exception happened in pump!!
+2024-03-07 10:26:00,501:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:00,501:config.Pump:exception happened in pump!!
+2024-03-07 10:26:20,685:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:20,685:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:20,686:config.Pump:exception happened in pump!!
+2024-03-07 10:26:20,687:config.Pump:exception happened in pump!!
+2024-03-07 10:26:48,378:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:48,378:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:48,378:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:48,379:config.Pump:exception happened in pump!!
+2024-03-07 10:26:48,379:config.Pump:exception happened in pump!!
+2024-03-07 10:26:48,380:config.Pump:exception happened in pump!!
+2024-03-07 10:26:48,390:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:26:48,390:config.Pump:exception happened in pump!!
+2024-03-07 10:28:41,608:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:28:41,610:config.Pump:exception happened in pump!!
+2024-03-07 10:28:45,633:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:28:45,634:config.Pump:exception happened in pump!!
+2024-03-07 10:29:12,985:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:12,985:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:12,985:config.Pump:exception happened in pump!!
+2024-03-07 10:29:12,985:config.Pump:exception happened in pump!!
+2024-03-07 10:29:18,507:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:18,507:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:18,507:config.Pump:exception happened in pump!!
+2024-03-07 10:29:18,507:config.Pump:exception happened in pump!!
+2024-03-07 10:29:27,591:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:27,592:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:29:27,593:config.Pump:exception happened in pump!!
+2024-03-07 10:29:27,594:config.Pump:exception happened in pump!!
+2024-03-07 10:30:46,212:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:30:46,212:config.Pump:exception happened in pump!!
+2024-03-07 10:30:50,237:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:30:50,237:config.Pump:exception happened in pump!!
+2024-03-07 10:31:26,236:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:31:26,236:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:31:26,237:config.Pump:exception happened in pump!!
+2024-03-07 10:31:26,238:config.Pump:exception happened in pump!!
+2024-03-07 10:32:16,762:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:32:16,762:config.Pump:exception happened in pump!!
+2024-03-07 10:32:34,318:config.Pump:Error reading pump!!!u-->b''<--
+2024-03-07 10:32:34,318:config.Pump:exception happened in pump!!

@@ -202,7 +202,7 @@ class Pump:
         """
         recv = self.ser.read(size=size)
         if len(recv) < size:
-            logger.error("Error reading pump!!!")
+            logger.error("Error reading pump!!!u-->{}<--".format(recv))
         else:
             return recv
 

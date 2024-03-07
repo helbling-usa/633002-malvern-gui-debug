@@ -42,6 +42,8 @@ PICKUP_UNTIL_BUBBLE_TARGET_TITRANT_VOLUME   = 500       # ul
 TITRANT_MAX_FULL_STEPS                      = 48000     # max tirtant  pump steps in full step
 SAMPLE_MAX_FULL_STEPS                       = 24000     # max sample pump steps in full step
 
+STOP_BUBBLE_DETECTION                       = False     # Global var used to stop bubble detection 
+                                                        #  on pressing 'Terminate' button
 #------------------ initialize logger -------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -906,7 +908,10 @@ class run_GUI(GUI.GUI):
 
     def p1_b_teminateP1(self):
         global TIRRANT_PUMP_ADDRESS
+        global STOP_BUBBLE_DETECTION
+        STOP_BUBBLE_DETECTION = True
         logger.info('Termnate pump1')
+        
         self.pump1.stop(TIRRANT_PUMP_ADDRESS)
 
 
@@ -926,32 +931,54 @@ class run_GUI(GUI.GUI):
             pump1_speed = int(BUBBLE_DETECTION_PUMP_SPEED_TITRANT * self.scalefactor_p1)
             titrant_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_TITRANT_VOLUME * self.scalefactor_p1)
 
+        logger.info("=====> titrant pump taraget position: {}".format(titrant_pump_fill_position))
         logger.info('pump 1 pickup speed: {}'.format(pump1_speed))
         logger.info("Pickup target position: {}".format(titrant_pump_fill_position))
         pump_address = TIRRANT_PUMP_ADDRESS
-        self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
+        # self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
+        self.t1 = threading.Thread(target=self.find_bubble, args=(pump1_speed, titrant_pump_fill_position, pump_address,))
+        self.b_pickupUntillbubble_p1["state"] = DISABLED
+        self.b_dispenseUntillbubble_p1["state"] = DISABLED
+        self.t1.start()
+        
 
 
     def find_bubble(self, pump_speed, pump_position, pump_address):
-        self.pump1.set_speed(pump_address, pump_speed)
-        time.sleep(1)        
-        self.pump1.set_pos_absolute(pump_address, pump_position)
+        global STOP_BUBBLE_DETECTION
         time.sleep(0.5)
+        self.pump1.set_speed(pump_address, pump_speed)
+        time.sleep(1)
+        self.pump1.set_pos_absolute(pump_address, pump_position)
+        time.sleep(0.25)
         input0 = (self.labjack.getAIN(self.BS - 1))
         #check if the bubble semsor detect air or liquid
         cur_state = self.air_or_liquid(input0)
         prev_state = cur_state
-        while (cur_state == prev_state):
+        counter = 0
+        while (cur_state == prev_state and STOP_BUBBLE_DETECTION == False)              :
             prev_state = cur_state
             input0 = (self.labjack.getAIN(self.BS - 1))
             cur_state = self.air_or_liquid(input0)
-            logger.info('        selcted BS:{}  , position:{}'.format(self.BS,self.pump1.get_plunger_position(pump_address)))
-            time.sleep(.05)
+            counter += 1
+            if counter == 50:
+                logger.info("\t\tBS{} -> {}\tposition= {}".format(self.BS, cur_state,
+                                                                  self.pump1.get_plunger_position(pump_address)))
+                counter = 0                      
+            time.sleep(.01)
+        
+        logger.info("\t\tBS{} -> {}\tposition= {}".format(self.BS, cur_state,
+                                                          self.pump1.get_plunger_position(pump_address)))
         self.pump1.stop(pump_address)
         logger.info('\t\tBubble detection terminated')
         time.sleep(.5)
+        STOP_BUBBLE_DETECTION = False
         self.pump1.set_speed(pump_address,DEFAULT_PUMP_SPEEED)
-
+        time.sleep(.5)
+        self.b_pickupUntillbubble_p1["state"] = NORMAL
+        self.b_dispenseUntillbubble_p1["state"] = NORMAL
+        self.b_pickupUntillbubble_p2["state"] = NORMAL
+        self.b_dispenseUntillbubble_p2["state"] = NORMAL        
+        
 
     def p1_b_dispenseUntillbubble(self):
         global TIRRANT_PUMP_ADDRESS
@@ -969,7 +996,12 @@ class run_GUI(GUI.GUI):
         titrant_pump_fill_position = 0
         logger.info("Dispemse target position: {}".format(titrant_pump_fill_position))
         pump_address = TIRRANT_PUMP_ADDRESS
-        self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
+        # self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
+        self.t1 = threading.Thread(target=self.find_bubble, args=(pump1_speed, titrant_pump_fill_position,
+                                                                  pump_address,))
+        self.b_pickupUntillbubble_p1["state"] = DISABLED
+        self.b_dispenseUntillbubble_p1["state"] = DISABLED
+        self.t1.start()
 
 
     def p2_b_pickupUntillbubble(self):
@@ -992,7 +1024,12 @@ class run_GUI(GUI.GUI):
         # sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
         logger.info("Pickup target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
-        self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
+        # self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
+        self.t1 = threading.Thread(target=self.find_bubble, args=(pump2_speed, sample_pump_fill_position,
+                                                                  pump_address,))
+        self.b_pickupUntillbubble_p2["state"] = DISABLED
+        self.b_dispenseUntillbubble_p2["state"] = DISABLED        
+        self.t1.start()        
 
 
     def p2_b_dispenseUntillbubble(self):
@@ -1012,7 +1049,12 @@ class run_GUI(GUI.GUI):
         sample_pump_fill_position =  0
         logger.info("Dispense target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
-        self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
+        # self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
+        self.t1 = threading.Thread(target=self.find_bubble, args=(pump2_speed, sample_pump_fill_position,
+                                                                  pump_address,))
+        self.b_pickupUntillbubble_p2["state"] = DISABLED
+        self.b_dispenseUntillbubble_p2["state"] = DISABLED
+        self.t1.start()        
 
 
     def air_or_liquid(self, voltage):
@@ -1024,7 +1066,9 @@ class run_GUI(GUI.GUI):
         
     def p2_b_teminateP2(self):
         global SAMPLE_PUMP_ADDRESS
-        logger.info('Termnate pump2')
+        global STOP_BUBBLE_DETECTION
+        STOP_BUBBLE_DETECTION = True        
+        logger.info('Terminate pump2')
         self.pump1.stop(SAMPLE_PUMP_ADDRESS)
 
 
