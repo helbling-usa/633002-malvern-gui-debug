@@ -142,15 +142,34 @@ class Pump:
         str1 = "/" + str(axis) + "?0R\r\n"
         # logger.info('get valve :',str1)
         self.ser.write(str1.encode())
-        str1 = self.read()
-        # logger.info("1==============>", str1)
-        # str1 = str1.decode()
-        # logger.info("2==============>", str1[4:])
-        if is_float(str1[4:-1]) == True:
-            # logger.info('the plunger position is:',str1[4:] , '-->', int(str1[4:-1] ))
-            return int(str1[4:-1])
-        else:
+        try:
+            str1 = self.read()
+            # print('str1 raw =-->{}<--'.format(str1))
+            str1 = str1.decode("ascii")
+            # print('str ascii:', str1)
+            str2 = str1.split('`')
+            if len(str2) < 2:
+                return 0
+            str3 = str2[1]        
+            str4 = str3.split("\x03")
+            str5 = str4[0]
+            # print('str2 = ', str2)
+            # print('str3 = ', str3)
+            # print('str4 = ', str4)
+            # logger.info("str1-->{}<--".format( str1))
+            # logger.info("str3-->{}<--".format( str3))
+
+            # str1 = str1.decode()
+            # logger.info("2==============>{}<--".format( str1[1:]))
+            if is_float(str5) == True:
+                # logger.info('the plunger position is:',str1[1:] , '-->', int(str1[4:-1] ))
+                # print("==>str4 = {}".format(str5))
+                return int(str5)            
+            else:
+                return 0
+        except:
             return 0
+        
 
     def set_microstep_position(self, axis, mode):
         if mode == 0:
@@ -176,17 +195,18 @@ class Pump:
     def read(self):
         try:
             cr = "\r".encode()
-            response_frame = b""
-            response_byte = self._read(
-                size=1
-            )  # read one byte at a time, timeout is set on instance level
+            response_frame = self.ser.readline()
+            # response_frame = b""
+            # response_byte = self._read(
+            #     size=1
+            # )  # read one byte at a time, timeout is set on instance level
 
-            # read until stop byte
-            while response_byte != cr:
-                response_frame += response_byte
+            # # read until stop byte
+            # while response_byte != cr:
+            #     response_frame += response_byte
 
-                response_byte = self._read(size=1)
-                # logger.info(response_byte)
+            #     response_byte = self._read(size=1)
+            #     # logger.info(response_byte)
         except:
             # logger.info(response_byte)
             logger.error("exception happened in pump!!")
