@@ -514,6 +514,15 @@ class motor_3axes():
         # logger.info("\t\ttt-->", tt)        
         logger.info('\t\tPOSOKLIM = {} '.format(p.value))
 
+
+    def stop_motor(self):
+        y = self.mydll1.TS_Stop
+        y.restype = c_bool
+        y.argtypes = []
+        p = c_int()
+        tt = y()
+
+        
     def set_speed(self, speed,acceleration):
         # speed = 300.
         x = self.mydll1.TS_MoveVelocity

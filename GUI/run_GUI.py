@@ -659,6 +659,20 @@ class run_GUI(GUI.GUI):
         self.motors.homing(self.AXIS_ID_02)
 
 
+    def gantry_horizontal_stop_click(self):
+        logger.debug("Stopping H gantry")
+        self.motors.select_axis(self.AXIS_ID_02)
+        self.motors.stop_motor()
+
+
+    def gantry_vertical_stop_click(self):
+        logger.debug("Stopping V gantry")
+        self.motors.select_axis(self.AXIS_ID_03)
+        self.motors.stop_motor()
+
+
+
+
     def gantry_horizontal_set_rel_click(self):
         global GANTRY_HOR_SPEED
         global GANTRY_HOR_ACCELERATION

@@ -1246,6 +1246,15 @@ class GUI:
             command=self.gantry_horizontal_homing_click,
         ).place(x=XX1 - 25 + delta, y=Y1 + 4 * dY1 - 2)
 
+        Button(
+            self.tab2,
+            bg="#fc9d9d",
+            fg="black",
+            text="  Stop  Gantry   ",
+            font=self.Font5,
+            command=self.gantry_horizontal_stop_click,
+        ).place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+
     def setup_GantryVertical(self):
         # --------------------- COLUMN 3: Gantry vertical ---------------------------------------
         dY1 = 50
@@ -1317,6 +1326,16 @@ class GUI:
             font=self.Font5,
             command=self.gantry_vertical_homing_click,
         ).place(x=XX1 - 25 + delta, y=Y1 + 4 * dY1 - 2)
+        
+        Button(
+            self.tab2,
+            bg="#fc9d9d",
+            fg="black",
+            text="  Stop  Gantry   ",
+            font=self.Font5,
+            command=self.gantry_vertical_stop_click,
+        ).place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+
 
     def setup_TecController(self):
         # --------------------- COLUMN 4: TEC controller ---------------------------------------
@@ -1457,7 +1476,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.8)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.9)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800
@@ -1676,9 +1695,14 @@ class GUI:
     def gantry_vertical_homing_click(self):
         logger.debug("parent-->V homing")
 
+    def gantry_vertical_stop_click(self):
+        logger.debug("parent-->V stop")
+
     def gantry_horizontal_homing_click(self):
         logger.debug("parent-->H homing")
 
+    def gantry_horizontal_stop_click(self):
+        logger.debug("parent-->H stop")
 
 if __name__ == "__main__":
     # main()
