@@ -1,5 +1,6 @@
 import serial
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -144,10 +145,11 @@ class Pump:
         self.ser.write(str1.encode())
         try:
             str1 = self.read()
-            # print('str1 raw =-->{}<--'.format(str1))
+            print('str1 raw =-->{}<--'.format(str1))
             str1 = str1.decode("ascii")
             # print('str ascii:', str1)
             str2 = str1.split('`')
+            str2 = re.split(r'`|@', str1)
             if len(str2) < 2:
                 return 0
             str3 = str2[1]        

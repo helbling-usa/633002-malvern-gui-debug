@@ -13,7 +13,7 @@ import  logging
 
 #------------------- CONSTANTS  -----------------------------------------
 BS_THRESHOLD                = 2.5       # Threshold value for bubble sensor 1
-BUBBLE_DETECTION_PUMP_SPEED = 50        # speed of pump during bubble detection
+# BUBBLE_DETECTION_PUMP_SPEED = 50        # speed of pump during bubble detection
 DEFAULT_PUMP_SPEEED         = 1000      # speed of pump at start up
 GANTRY_VER_SPEED            = 1.0      # vertical gantry speed
 GANTRY_HOR_SPEED            = 1.0      # horizontal gantry speed
@@ -62,7 +62,7 @@ logger.addHandler(stream_handler)
 
 
 class run_GUI(GUI.GUI):
-    global BUBBLE_DETECTION_PUMP_SPEED
+    # global BUBBLE_DETECTION_PUMP_SPEED
     global DEFAULT_PUMP_SPEEED
     def __init__(self,root):
         super().__init__( root)
@@ -112,7 +112,7 @@ class run_GUI(GUI.GUI):
         self.p1_cur_pos.config(text = str(p1_cur_pos))
         # logger.info('cur pos:', p1_cur_pos)
         #------------------------------- update pump 2 position
-        
+        time.sleep(.1)
         p2_cur_pos = self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)            
         p2_cur_pos = int(10.0 * p2_cur_pos / self.scalefactor_p2) / 10.0
         self.p2_cur_pos.config(text = str(p2_cur_pos))
