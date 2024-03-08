@@ -145,7 +145,7 @@ class Pump:
         self.ser.write(str1.encode())
         try:
             str1 = self.read()
-            print('str1 raw =-->{}<--'.format(str1))
+            # print('str1 raw =-->{}<--'.format(str1))
             str1 = str1.decode("ascii")
             # print('str ascii:', str1)
             str2 = str1.split('`')
