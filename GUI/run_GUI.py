@@ -763,7 +763,13 @@ class run_GUI(GUI.GUI):
 
     def checkComboCfg1(self, event):
         s = self.comboCfg1.get()
-        logger.info('\t\tpump1 config: :{}'.format( s))
+        logger.info('\t\tPump1 config: :{}\n\t\tPress set button to confirm'.format( s))
+            
+
+    def p1_b_config_set_click(self):
+        # logger.debug("p1_config_set is pressed")
+        s = self.comboCfg1.get()
+        logger.info('\t\tPump1 config is set to {}'.format( s))
         ss=s.partition(')')
         # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
@@ -771,12 +777,12 @@ class run_GUI(GUI.GUI):
         # logger.info("INDEX = ", index)
         self.pump1_scale_factor(int(index))
         if (self.microstep_p1 == False):
-            logger.info('pump 1 mircostep off')
+            logger.info('\t\tpump 1 mircostep off')
             self.set_step_mode_p1(False)            
         else:  #self.microstep_p1 = True
-            logger.info('pump 1 mircostep on')
+            logger.info('\t\tpump 1 mircostep on')
             self.set_step_mode_p1(True)
-            
+
 
 
 
@@ -784,7 +790,12 @@ class run_GUI(GUI.GUI):
         # def option_selected(event):
         # logger.info('child:{}'.format( self.comboCfg2.get()))
         s = self.comboCfg2.get()
-        logger.info('\t\tpump2 config: :{}'.format( s))
+        logger.info('\t\tPump2 config: :{}\n\t\tPress set button to confirm'.format( s))
+
+
+    def p2_b_config_set_click(self):
+        s = self.comboCfg2.get()
+        logger.info('\t\tPump2 config is set to {}'.format( s))        
         ss=s.partition(')')
         # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
@@ -792,13 +803,11 @@ class run_GUI(GUI.GUI):
         # logger.info("INDEX = ", index)
         self.pump2_scale_factor(int(index))
         if (self.microstep_p2 == False):
-            logger.info('pump 2 mircostep off')
+            logger.info('\t\tpump 2 mircostep off')
             self.set_step_mode_p2(False)            
         else:  #self.microstep_p1 = True
-            logger.info('pump 2 mircostep on')
+            logger.info('\t\tpump 2 mircostep on')
             self.set_step_mode_p2(True)
-
-
 
 
     def p2_b_top_spd_click(self):    
@@ -1033,7 +1042,7 @@ class run_GUI(GUI.GUI):
             pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * self.scalefactor_p2)
             sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
 
-        logger.info('pump 2 pickup speed: {}'.format(pump2_speed))
+        logger.info('\t\tpump 2 pickup speed: {}'.format(pump2_speed))
         # sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
         logger.info("\t\tPickup target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
@@ -1047,7 +1056,7 @@ class run_GUI(GUI.GUI):
 
     def p2_b_dispenseUntillbubble(self):
         global SAMPLE_PUMP_ADDRESS
-        logger.info('Pump 2: Dispense until bubble')
+        logger.info('\t\tpump 2: Dispense until bubble')
         logger.info("\t\tScale facotr  -->   sample pump: {}".format(self.scalefactor_p2))
         s = self.comboCfg2.get()
         print("=====================================",s)
@@ -1058,7 +1067,7 @@ class run_GUI(GUI.GUI):
         else:
             pump2_speed = int(BUBBLE_DETECTION_PUMP_SPEED_SAMPLE * self.scalefactor_p2)
 
-        logger.info('pump 2 pickup speed: {}'.format(pump2_speed))
+        logger.info('\t\tpump 2 pickup speed: {}'.format(pump2_speed))
         sample_pump_fill_position =  0
         logger.info("\t\tDispense target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
@@ -1471,7 +1480,7 @@ class run_GUI(GUI.GUI):
         s = self.combo0.get()        
         ss=s.partition('S')
         index = int(ss[2])
-        logger.info('pump 1: bubble sensor number:{}'.format(index))
+        logger.info('\t\tpump 1: bubble sensor number:{}'.format(index))
         X3 = 1050
         Y1 = 100
         dY1 = 40
@@ -1554,7 +1563,7 @@ class run_GUI(GUI.GUI):
         s = self.combob1.get()        
         ss=s.partition('S')
         index = int(ss[2])
-        logger.info('pump 2: bubble sensor number:{}'.format( index))
+        logger.info('\t\tpump 2: bubble sensor number:{}'.format( index))
         X3 = 1050
         Y1 = 100
         dY1 = 40
@@ -1780,10 +1789,10 @@ class run_GUI(GUI.GUI):
             VOLUME = 1
 
         if (self.microstep_p2 == False):
-            logger.info('pump 2 mircostep off')
+            logger.info('\t\tpump 2 mircostep off')
             self.set_step_mode_p2(False)            
         else: 
-            logger.info('pump 2 mircostep on')
+            logger.info('\t\tpump 2 mircostep on')
             self.set_step_mode_p2(True)
 
         self.scalefactor_p2 = STEP_RANGE / VOLUME

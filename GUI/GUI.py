@@ -313,14 +313,23 @@ class GUI:
         self.comboCfg1.current(0)
         self.comboCfg1.place(x=XX1 + 0, y=Y1 - 0)
         self.comboCfg1.bind("<<ComboboxSelected>>", self.checkComboCfg1)
-        Y_offset = 30
+
+        self.b_pump1_config_set = Button(
+            self.tab1,
+            text="   set pump config  ",
+            bg=self.Color2,
+            fg=self.Color3,
+            command=self.p1_b_config_set_click,
+        ).place(x=XX1 +  60, y=Y1 + 25)
+
+        Y_offset = 50
         Label(
             self.tab1,
             text="Position",
             font=self.Font3,
             bg=self.Color1,
             fg=self.Title_mid,
-        ).place(x=XX1 + 70, y=Y1 + Y_offset)
+        ).place(x=XX1 + 70, y=Y1+5+Y_offset)
         Label(
             self.tab1, text="Current Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y1 + dY1 + Y_offset)
@@ -504,14 +513,24 @@ class GUI:
         self.comboCfg2.current(0)
         self.comboCfg2.place(x=XX1 + 0, y=Y1 - 0)
         self.comboCfg2.bind("<<ComboboxSelected>>", self.checkComboCfg2)
-        Y_offset = 30
+        
+        self.b_pump2_config_set = Button(
+            self.tab1,
+            text="   set pump config  ",
+            bg=self.Color2,
+            fg=self.Color3,
+            command=self.p2_b_config_set_click,
+        ).place(x=XX1 +  60, y=Y1 + 25)
+
+
+        Y_offset = 50
         Label(
             self.tab1,
             text="Position",
             font=self.Font3,
             bg=self.Color1,
             fg=self.Title_mid,
-        ).place(x=XX1 + 70, y=Y10 + Y_offset)
+        ).place(x=XX1 + 70, y=Y10+5+Y_offset)
         Label(
             self.tab1, text="Current Pos", font=self.Font1, bg=self.Color1, fg="black"
         ).place(x=XX1, y=Y10 + dY1 + Y_offset)
@@ -1476,7 +1495,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.11)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.12)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800
@@ -1534,14 +1553,12 @@ class GUI:
     # --------------------------------------------------------------------------
     # --------------------------------------------------------------------------
     def checkComboCfg2(self, event):
-        # def option_selected(event):
         logger.debug(self.comboCfg2.get())
 
-    # def p1_b_Zinit_click(self):
-    #      logger.debug("p1 Z initialized")
-
-    # def p1_b_Yinit_click(self):
-    #      logger.debug("p1 Y initialized")
+    def p2_b_config_set_click(self):
+        logger.debug("p2_config_set is pressed")
+        s = self.comboCfg2.get()
+        logger.debug(s)
 
     def p2_b_Zinit_click(self):
         logger.debug("p2 Z initialized")
@@ -1553,7 +1570,11 @@ class GUI:
         logger.debug("p1_abs pos")
         s = self.ent_abs_pos.get()
         logger.debug(s)
-        # self.p1_cur_pos["text"]=  s
+
+    def p1_b_config_set_click(self):
+        logger.debug("p1_config_set is pressed")
+        s = self.comboCfg1.get()
+        logger.debug(s)
 
     def p1_b_init_pump1(self):
         logger.debug("parent:init pump 1")
