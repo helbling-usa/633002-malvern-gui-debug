@@ -33,15 +33,12 @@ SAMPLE_LOOP_ADDRESS         = 4         # pump 2 loop valve
 TITRANT_PORT_ADDRESS        = 6         # sample line: titrant port valve
 DEGASSER_ADDRESS            = 7         # sample line: degasser valve
 SAMPLE_CLEANING_ADDRESS     = 8         # sample line: cleaning valve
-
-
 BUBBLE_DETECTION_PUMP_SPEED_TITRANT         = 20         # ????step/sec
 BUBBLE_DETECTION_PUMP_SPEED_SAMPLE          = 20         # ????setp/sec
 PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME    = 2500      # ul
 PICKUP_UNTIL_BUBBLE_TARGET_TITRANT_VOLUME   = 500       # ul
 TITRANT_MAX_FULL_STEPS                      = 48000     # max tirtant  pump steps in full step
 SAMPLE_MAX_FULL_STEPS                       = 24000     # max sample pump steps in full step
-
 STOP_BUBBLE_DETECTION                       = False     # Global var used to stop bubble detection 
                                                         #  on pressing 'Terminate' button
 #------------------ initialize logger -------------------------------------
@@ -57,10 +54,6 @@ logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
 
 
-
-
-
-
 class run_GUI(GUI.GUI):
     # global BUBBLE_DETECTION_PUMP_SPEED
     global DEFAULT_PUMP_SPEEED
@@ -69,7 +62,6 @@ class run_GUI(GUI.GUI):
         self.root = root
         logger.info("Initializing hardware -------------------------------------")
         self.PortAssignment()
-        # self.InitMixerMotor()
         self.Init_Pumps_Valves()
         self.Init__motors_all_axes()            
         self.InitLabjack()
@@ -78,27 +70,16 @@ class run_GUI(GUI.GUI):
         logger.info("Hardware initialiation done")        
 
         #------------ Setting the inital states/values of the hardware ----------------------
-        # self.scalefactor_p1 = 1
         self.microstep_p1 = False         
         self.pump1_scale_factor(9)
         logger.info('\t\tpump 1 mircostep off')
         self.set_step_mode_p1(False)
-
         self.microstep_p2 = False         
         self.pump2_scale_factor(9)
         logger.info('\t\tpump 2 mircostep off')
         self.set_step_mode_p2(False)
-        
         # default bubble sensor = sensor 1
         self.BS= 1        
-        
-        # logger.info(self.mc.set_temp(35.3))
-        # logger.info("----------------------------------------------")
-        # #-------- set the motor1 speed to 0
-        # self.m1_cur_spd.config(text="0")        
-        # self.stop_vertical_gantry["state"] = DISABLED
-        # self.stop_horizontal_gantry["state"] = DISABLED
-
         logger.info("------------------------------------------------------------------")
         logger.info('System started successfully.')
         logger.info("Please use the GUI to enter a commamnd ...")
@@ -107,18 +88,15 @@ class run_GUI(GUI.GUI):
     def timerCallback_1(self):  
         global TIRRANT_PUMP_ADDRESS
         global SAMPLE_PUMP_ADDRESS
-        # logger.info('--->timer tick')
         #------------------------------- update pump 1 position
         p1_cur_pos = self.pump1.get_plunger_position(TIRRANT_PUMP_ADDRESS)            
         p1_cur_pos =  int(10.0 * p1_cur_pos / self.scalefactor_p1) / 10.0
         self.p1_cur_pos.config(text = str(p1_cur_pos))
-        # logger.info('cur pos:', p1_cur_pos)
         #------------------------------- update pump 2 position
         time.sleep(.1)
         p2_cur_pos = self.pump1.get_plunger_position(SAMPLE_PUMP_ADDRESS)            
         p2_cur_pos = int(10.0 * p2_cur_pos / self.scalefactor_p2) / 10.0
         self.p2_cur_pos.config(text = str(p2_cur_pos))
-        # logger.info('p2 cur pos:{}'.format( p2_cur_pos))
         # #------------------------------- update  of TEC controller parameters
         self.updateGUI_TectController()
         #-------- update Gantry vertical motor position on GUI ------------------
@@ -136,21 +114,16 @@ class run_GUI(GUI.GUI):
         #-------- read bubble sensor and update the GUI -------------------------
         self.read_BubbleSensors()
         self.updateGUI_BubbleSensorLEDs()
-
         #-------- repeat the timer ----------------------------------------------
         self.timer = threading.Timer(1.0, self.timerCallback_1)
         self.timer.start()
 
-        
-
 
     def updateGUI_TectController(self):
-        # # logger.info(self.mc.get_data())
         tec_dic =  self.mc.get_data()
         obj_temp = round(tec_dic['object temperature'][0], 1)
         target_temp = round(tec_dic['target object temperature'][0], 1)
         TEC_cur_status = tec_dic['loop status'][0]        
-        # logger.info('--->obj temp:{} , target temp:{}    status:{}'.format(obj_temp,  target_temp,TEC_cur_status))        
         if (TEC_cur_status== 1):    # 1: ON, 0:OFF, 
             self.t_status.config(text = "ON")                        
         else:
@@ -164,32 +137,17 @@ class run_GUI(GUI.GUI):
         global TITRANT_PIPETTE_ADDRESS, SAMPLE_PUMP_ADDRESS, SAMPLE_LOOP_ADDRESS 
         global TITRANT_PORT_ADDRESS, DEGASSER_ADDRESS, SAMPLE_CLEANING_ADDRESS 
         # # #------ init. Pump 1
-        # logger.info("Initializing Pumps/Valves.....")
         com_port = self.PUMP1_PORT
         self.pump1 = P.Pump(com_port)
-        
-        # self.pump1.pump_Zinit(1)
-        # logger.info("\t\tPump1 initialized")
-        # time.sleep(3)
-        
-        # self.pump1.pump_Zinit(5)
-        # logger.info("\t\tPump2 initialized")
-        # time.sleep(3)
-
         #init. pumps speeds
         self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
         logger.info("\t\tPump1 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
         self.p1_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
-
         self.p1_top_spd = DEFAULT_PUMP_SPEEED
-
         self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,DEFAULT_PUMP_SPEEED)
         logger.info("\t\tPump2 speed is set to {}".format(DEFAULT_PUMP_SPEEED))
         self.p2_cur_spd.config(text = str(DEFAULT_PUMP_SPEEED))
-
         self.p2_top_spd = DEFAULT_PUMP_SPEEED
-
-
 
         logger.info("\t\tSetting valves to default positions")
 
@@ -313,8 +271,6 @@ class run_GUI(GUI.GUI):
     def config_valve6(self):
         time.sleep(0.5)
         s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
-        # logger.info("----->{}".format(s))
-        # print(type(s))
         cur_valve = "----"
         if (s=='i'):
             cur_valve = "N/A (P1)"
@@ -346,7 +302,6 @@ class run_GUI(GUI.GUI):
         else:
             cur_valve = "error"
         self.v7_cur_pos.config(text=cur_valve)
-
 
 
     def config_valve8(self):
@@ -397,7 +352,6 @@ class run_GUI(GUI.GUI):
         self.labjack = u6.U6()
         self.labjack.writeRegister(50590, 15)        
         logger.info('\t\tlabjack initialized')
-        # pass
 
 
     def InitTimer(self):
@@ -406,15 +360,12 @@ class run_GUI(GUI.GUI):
         self.timer = threading.Timer(1.0, self.timerCallback_1)
         self.timer.start()
         logger.info('\t\tInternal timer started')
-        #pass
 
 
     def InitTecController(self):
         # ------create object of TEC5 
         logger.info("Initialzing TEC Temperature Controller---------------------")
-        # self.mc = TEC.MeerstetterTEC("COM5")
         self.mc = TEC.MeerstetterTEC(self.TEC_PORT)
-        # logger.info(self.mc.get_data())
         logger.info("\t\tTEC controller initialized ")
 
 
@@ -438,7 +389,6 @@ class run_GUI(GUI.GUI):
 
     def updateGUI_BubbleSensorLEDs(self):
         global BS_THRESHOLD
-        
         # Update The GUI with current value of bubble sensors
         X3 = 1050
         Y1 = 100
@@ -548,8 +498,6 @@ class run_GUI(GUI.GUI):
             self.led_on_14.place(x = X3+50,y = Y1 + 13*dY1)  
 
 
-
-
     def PortAssignment(self):
         global TIRRANT_PUMP_ADDRESS, TITRANT_LOOP_ADDRESS, TITRANT_CLEANING_ADDRESS
         global TITRANT_PIPETTE_ADDRESS, SAMPLE_PUMP_ADDRESS ,SAMPLE_LOOP_ADDRESS 
@@ -596,33 +544,24 @@ class run_GUI(GUI.GUI):
         self.Lvalv7_id.config(text=str(DEGASSER_ADDRESS))
         self.Lvalv8_id.config(text=str(SAMPLE_CLEANING_ADDRESS))
 
-        
-
-
 
     def p1_b_init_pump1(self):
-        # logger.debug("child:init pump 1")
         self.pump1.pump_Zinit(TIRRANT_PUMP_ADDRESS)
         logger.info("\t\tPump1 initialized")
         time.sleep(3)
 
 
     def p2_b_init_pump2(self):
-        # logger.debug("child:init pump 2")        
         self.pump1.pump_Zinit(SAMPLE_PUMP_ADDRESS)
         logger.info("\t\tPump2 initialized")
         time.sleep(3)
-
 
 
     def gantry_vertical_set_rel_click(self):
         global GANTRY_VER_SPEED
         global GANTRY_VER_ACCELERATION
         s = self.ent_gnt_ver_rel.get()
-        # logger.info('child-->'+s)
         if (is_float(s) == True):
-            # self.stop_vertical_gantry["state"] = NORMAL
-            #logger.info("----------MOVE Relative-----------------")
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
@@ -631,7 +570,6 @@ class run_GUI(GUI.GUI):
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
-            # self.stop_vertical_gantry["state"] = DISABLED
         else:
             logger.warning("Not a number. Please enter an integer for VG rel. position")
 
@@ -642,7 +580,6 @@ class run_GUI(GUI.GUI):
         global GANTRY_VER_ACCELERATION
         s = self.ent_gnt_ver_abs.get()
         if (is_float(s) == True):
-            #logger.info("----------MOVE Absolute-----------------")
             abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
             self.motors.set_POSOKLIM(1)
@@ -653,17 +590,13 @@ class run_GUI(GUI.GUI):
         
 
     def gantry_vertical_homing_click(self):
-        self.stop_vertical_gantry["state"] = DISABLED
         logger.info('\t\tHoming Gantry Vertical')
         self.motors.homing(self.AXIS_ID_03)
-        self.stop_vertical_gantry["state"] = NORMAL
         
         
     def gantry_horizontal_homing_click(self):
-        self.stop_horizontal_gantry["state"] = DISABLED
         logger.info('\t\tHoming Gantry Horizontal')
         self.motors.homing(self.AXIS_ID_02)
-        self.stop_horizontal_gantry["state"] = NORMAL
 
 
     def gantry_horizontal_stop_click(self):
@@ -678,15 +611,12 @@ class run_GUI(GUI.GUI):
         self.motors.stop_motor()
 
 
-
-
     def gantry_horizontal_set_rel_click(self):
         global GANTRY_HOR_SPEED
         global GANTRY_HOR_ACCELERATION
         s = self.ent_gnt_hor_rel.get()
         if (is_float(s) == True):
-            # self.stop_horizontal_gantry["state"] = NORMAL
-            #logger.info("----------MOVE Relative-----------------")
+            logger.info("----------MOVE Relative-----------------")
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
@@ -695,7 +625,6 @@ class run_GUI(GUI.GUI):
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
-            # self.stop_horizontal_gantry["state"] = DISABLED
         else:
             logger.warning("Not a number. Please enter an integer for VG rel. position")
 
@@ -707,7 +636,6 @@ class run_GUI(GUI.GUI):
         global GANTRY_HOR_ACCELERATION
         s = self.ent_gnt_hor_abs.get()
         if (is_float(s) == True):
-            #logger.info("----------MOVE Absolute-----------------")
             abs_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
             self.motors.set_POSOKLIM(1)
@@ -727,28 +655,10 @@ class run_GUI(GUI.GUI):
         if (self.motors.InitAxis()==False):
             logger.error("Failed to start up the Technosoft drive")    
         logger.info("\t\tMotors are Initialized")        
-
-
         self.motors.select_axis(self.AXIS_ID_02)
-
-            # print("---------get FM VER -------------------")
         self.motors.get_firmware_version()
-
-        # print("----------set position-----------------")
         self.motors.set_position()
-
-        # print("------------set int var ------------------------------")
         self.motors.set_POSOKLIM(2)
-
-
-    def InitMixerMotor(self):
-        # # #------ init. motor 1
-        # # logger.info("Initializing Motors.....")
-        # # self.motor1 = Motor1.motor_1(0,1.5)
-        # # logger.info("\t\tMotors Initialized")
-
-        # #------ init. motors: Gantry vertical 
-        pass
 
 
     def tec_b_tmpset_click(self):        
@@ -776,14 +686,10 @@ class run_GUI(GUI.GUI):
             
 
     def p1_b_config_set_click(self):
-        # logger.debug("p1_config_set is pressed")
         s = self.comboCfg1.get()
         logger.info('\t\tPump1 config is set to {}'.format( s))
         ss=s.partition(')')
-        # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
-        # logger.info('int number:{}'.format( int(index)))        
-        # logger.info("INDEX = ", index)
         self.pump1_scale_factor(int(index))
         if (self.microstep_p1 == False):
             logger.info('\t\tpump 1 mircostep off')
@@ -796,8 +702,6 @@ class run_GUI(GUI.GUI):
 
 
     def checkComboCfg2(self, event):
-        # def option_selected(event):
-        # logger.info('child:{}'.format( self.comboCfg2.get()))
         s = self.comboCfg2.get()
         logger.info('\t\tPump2 config: :{}\n\t\tPress set button to confirm'.format( s))
 
@@ -806,10 +710,7 @@ class run_GUI(GUI.GUI):
         s = self.comboCfg2.get()
         logger.info('\t\tPump2 config is set to {}'.format( s))        
         ss=s.partition(')')
-        # index = self.comboCfg1.get(0, "end") 
         index = ss[0]
-        # logger.info('int number:{}'.format( int(index)))        
-        # logger.info("INDEX = ", index)
         self.pump2_scale_factor(int(index))
         if (self.microstep_p2 == False):
             logger.info('\t\tpump 2 mircostep off')
@@ -841,7 +742,6 @@ class run_GUI(GUI.GUI):
     def p2_b_abs_pos_click(self):
         global SAMPLE_PUMP_ADDRESS
         s =   self.ent_abs_pos2.get()
-        # print("=========================")
         logger.info(s)
         if (is_float(s) == True):
             val = float(s)            
@@ -871,7 +771,6 @@ class run_GUI(GUI.GUI):
             rel_pos = int(val * self.scalefactor_p2)            
             self.pump1.set_dispense(SAMPLE_PUMP_ADDRESS, rel_pos)
 
-
                 
     def m1_b_stop_click(self):
         global MIXING_ACCELERATION
@@ -885,9 +784,7 @@ class run_GUI(GUI.GUI):
     def m1_b_SetSpeed(self):
         global MIXING_ACCELERATION
         global RPM_2_TML_SPEED
-        # logger.info("child: m1_new_spd")
         s =   self.ent_m1_spd_.get()
-        # logger.info(s)
         if (is_float(s) == True):            
             self.motors.select_axis(self.AXIS_ID_01)
             speed =float(s)
@@ -901,7 +798,6 @@ class run_GUI(GUI.GUI):
             logger.warning("Not a number. Plaese enter an integer for speed.")
             
 
-
     def p1_b_abs_pos_click(self):
         global TIRRANT_PUMP_ADDRESS        
         s =   self.ent_abs_pos.get()
@@ -912,7 +808,6 @@ class run_GUI(GUI.GUI):
             self.pump1.set_pos_absolute(TIRRANT_PUMP_ADDRESS, abs_pos)
 
 
-
     def p1_b_pickup_pos_click(self):
         global TIRRANT_PUMP_ADDRESS
         logger.info("P1_pickup ")
@@ -920,7 +815,6 @@ class run_GUI(GUI.GUI):
         if (is_float(s) == True):
             val = float(s)
             logger.info("\t\tpump1: set pickup pos:{}".format(s))
-            # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
             self.pump1.set_pickup(TIRRANT_PUMP_ADDRESS, rel_pos)
 
@@ -932,7 +826,6 @@ class run_GUI(GUI.GUI):
         if (is_float(s) == True):
             val = float(s)
             logger.info("\t\tpump1: set dispense pos:{}".format(s))
-            # logger.info(int(s))
             rel_pos = int(val * self.scalefactor_p1)            
             self.pump1.set_dispense(TIRRANT_PUMP_ADDRESS,rel_pos)
 
@@ -941,8 +834,7 @@ class run_GUI(GUI.GUI):
         global TIRRANT_PUMP_ADDRESS
         global STOP_BUBBLE_DETECTION
         STOP_BUBBLE_DETECTION = True
-        logger.info('Termnate pump1')
-        
+        logger.info('Termnate pump1')        
         self.pump1.stop(TIRRANT_PUMP_ADDRESS)
 
 
@@ -966,7 +858,6 @@ class run_GUI(GUI.GUI):
         logger.info('\t\tpump 1 pickup speed: {}'.format(pump1_speed))
         logger.info("\t\tPickup target position: {}".format(titrant_pump_fill_position))
         pump_address = TIRRANT_PUMP_ADDRESS
-        # self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
         self.t1 = threading.Thread(target=self.find_bubble, args=(pump1_speed, titrant_pump_fill_position, pump_address,))
         self.b_pickupUntillbubble_p1["state"] = DISABLED
         self.b_dispenseUntillbubble_p1["state"] = DISABLED
@@ -1027,7 +918,6 @@ class run_GUI(GUI.GUI):
         titrant_pump_fill_position = 0
         logger.info("Dispemse target position: {}".format(titrant_pump_fill_position))
         pump_address = TIRRANT_PUMP_ADDRESS
-        # self.find_bubble(pump1_speed, titrant_pump_fill_position, pump_address)
         self.t1 = threading.Thread(target=self.find_bubble, args=(pump1_speed, titrant_pump_fill_position,
                                                                   pump_address,))
         self.b_pickupUntillbubble_p1["state"] = DISABLED
@@ -1052,10 +942,8 @@ class run_GUI(GUI.GUI):
             sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
 
         logger.info('\t\tpump 2 pickup speed: {}'.format(pump2_speed))
-        # sample_pump_fill_position =  int(PICKUP_UNTIL_BUBBLE_TARGET_SAMPLE_VOLUME * self.scalefactor_p2)
         logger.info("\t\tPickup target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
-        # self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
         self.t1 = threading.Thread(target=self.find_bubble, args=(pump2_speed, sample_pump_fill_position,
                                                                   pump_address,))
         self.b_pickupUntillbubble_p2["state"] = DISABLED
@@ -1080,7 +968,6 @@ class run_GUI(GUI.GUI):
         sample_pump_fill_position =  0
         logger.info("\t\tDispense target position: {}".format(sample_pump_fill_position))
         pump_address = SAMPLE_PUMP_ADDRESS
-        # self.find_bubble(pump2_speed, sample_pump_fill_position, pump_address)
         self.t1 = threading.Thread(target=self.find_bubble, args=(pump2_speed, sample_pump_fill_position,
                                                                   pump_address,))
         self.b_pickupUntillbubble_p2["state"] = DISABLED
@@ -1106,7 +993,6 @@ class run_GUI(GUI.GUI):
     def p1_b_top_spd_click(self):   
         global TIRRANT_PUMP_ADDRESS     
         s =   self.ent_top_spd.get()
-        # logger.info("p1_top speed: {}".format(s))
         if (is_float(s) == True):
             physical_speed = float(s)
             self.p1_top_spd = int(physical_speed * self.scalefactor_p1)
@@ -1129,42 +1015,31 @@ class run_GUI(GUI.GUI):
         global TIRRANT_PUMP_ADDRESS
         valve_is_valid = True
         s = self.combo1.get()
-        # logger.info('child -->'+s)
         if (s == "Gas to Line (P1)"):
-            # logger.info(" P1   --- E ")
             new_valve_pos = 'E'
         elif (s == "Pump to Line (P2)"):
-            # logger.info(" P2 ---- O")
             new_valve_pos = 'O'
         elif (s == "Pump to Air (P3)"):
-            # logger.info(" P3 --- I")
             new_valve_pos = 'I'
         elif (s == "Gas to Air (P4)"):
-            # logger.info(" P4 ---- B ")
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = 'I'
             valve_is_valid = False
         
         if valve_is_valid:
             self.pump1.set_valve(TIRRANT_PUMP_ADDRESS, new_valve_pos)
             time.sleep(1)
             s = self.pump1.get_valve(TIRRANT_PUMP_ADDRESS)
-            # logger.info("-----> ",s)
             cur_valve = "----"
             if (s=='e'):
                 cur_valve = "Gas to Line (P1)"
-                # logger.info('EEEE')
             elif(s=='o'):
                 cur_valve = "Pump to Line (P2)"
-                # logger.info('OOOO')
             elif(s=='i'):
                 cur_valve = "Pump to Air (P3)"
-                # logger.info("IIII")
             elif(s=='b'):
                 cur_valve = "Gas to Air (P4)"
-                # logger.info("BBBB")
             else:
                 cur_valve = "error"
             self.v1_cur_pos.config(text=cur_valve)
@@ -1185,7 +1060,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = 'O'
             valve_is_valid = False
         
         if valve_is_valid:
@@ -1221,7 +1095,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = 'E'
             valve_is_valid = False
 
         if valve_is_valid:
@@ -1257,7 +1130,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = 'B'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = 'E'
             valve_is_valid = False
         
         if valve_is_valid:
@@ -1292,15 +1164,12 @@ class run_GUI(GUI.GUI):
             vlv = 'O'
         else:
             logger.info(' invalid valve selection')
-            # vlv = 'I'
             valve_is_valid = False
 
         if valve_is_valid:
-            # self.pump1.set_multiwayvalve(TITRANT_PIPETTE_ADDRESS,vlv)
             self.pump1.set_valve(TITRANT_PIPETTE_ADDRESS,vlv)
             time.sleep(1)
             s = self.pump1.get_valve(TITRANT_PIPETTE_ADDRESS)
-            # logger.info("----->{}".format(s))
             cur_valve = "----"
             if (s=='i'):
                 cur_valve = "Titrant Cannula (P1)"
@@ -1327,26 +1196,19 @@ class run_GUI(GUI.GUI):
             vlv = 'O'
         else:
             logger.error(' invalid valve selection')
-            # vlv = 'E'
             valve_is_valid = False
 
         if valve_is_valid:
-            # self.pump1.set_multiwayvalve(TITRANT_PORT_ADDRESS,vlv)
             self.pump1.set_valve(TITRANT_PORT_ADDRESS,vlv)
             time.sleep(1)
             s = self.pump1.get_valve(TITRANT_PORT_ADDRESS)
-            # logger.info("----->{}".format(s))
-            # print(type(s))
             cur_valve = "----"
             if (s=='i'):
                 cur_valve = "N/A (P1)"
-                # logger.info('IIII')
             elif(s=='e'):
                 cur_valve = "Titrant Line (P2)"
-                # logger.info('EEEE')
             elif(s=='o'):
                 cur_valve = "Sample Line (P3)"
-                # logger.info("OOOO")
             else:
                 cur_valve = "error"
             self.v6_cur_pos.config(text=cur_valve)
@@ -1371,7 +1233,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.error(' invalid valve selection')
-            # new_valve_pos = '1'
             valve_is_valid = False
 
         if valve_is_valid:
@@ -1415,7 +1276,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = '1'
             valve_is_valid = False
 
         if valve_is_valid:
@@ -1459,7 +1319,6 @@ class run_GUI(GUI.GUI):
             new_valve_pos = '6'
         else:
             logger.info(' invalid valve selection')
-            # new_valve_pos = '1'
             valve_is_valid = False
 
         if valve_is_valid:
@@ -1493,7 +1352,6 @@ class run_GUI(GUI.GUI):
         X3 = 1050
         Y1 = 100
         dY1 = 40
-        # Label(self.tab1, text = "     ",font=("Arial", 15) , bg='#D9D9D9',fg='red').place(x = X3-40,y = Y1 + 0*dY1)         
         self.lbs1.place_forget()
         self.lbs2.place_forget()
         self.lbs3.place_forget()
@@ -1576,7 +1434,6 @@ class run_GUI(GUI.GUI):
         X3 = 1050
         Y1 = 100
         dY1 = 40
-        # Label(self.tab1, text = "     ",font=("Arial", 15) , bg='#D9D9D9',fg='red').place(x = X3-40,y = Y1 + 0*dY1)         
         self.lbs1.place_forget()
         self.lbs2.place_forget()
         self.lbs3.place_forget()
@@ -1671,7 +1528,6 @@ class run_GUI(GUI.GUI):
             self.pump1.set_microstep_position(SAMPLE_PUMP_ADDRESS,2)
 
 
-
     def pump1_scale_factor(self, N):        
         if (N == 1):
             STEP_RANGE = 48000.
@@ -1724,13 +1580,12 @@ class run_GUI(GUI.GUI):
         if (self.microstep_p1 == False):
             logger.info('\t\tpump 1 mircostep off')
             self.set_step_mode_p1(False)            
-        else:  #self.microstep_p1 = True
+        else:  
             logger.info('\t\tpump 1 mircostep on')
             self.set_step_mode_p1(True)
 
         self.scalefactor_p1 = STEP_RANGE / VOLUME    
         logger.info('\t\tpump 1 scale factor:{}'.format( self.scalefactor_p1))
-        # self.p1_top_spd = DEFAULT_PUMP_SPEEED
         if self.microstep_p1 == False:
             self.pump1.set_speed(TIRRANT_PUMP_ADDRESS,self.p1_top_spd)
             time.sleep(.25)
@@ -1745,9 +1600,6 @@ class run_GUI(GUI.GUI):
             self.p1_cur_spd.config(text = str1) 
             logger.info("\t\tPump1 speed is set to {} logical  = {} physical".format(new_speed, str1))
               
-        
-        
-
 
     def pump2_scale_factor(self, N):        
         if (N == 1):
@@ -1806,7 +1658,6 @@ class run_GUI(GUI.GUI):
 
         self.scalefactor_p2 = STEP_RANGE / VOLUME
         logger.info('\t\tpump2 scale factor:{}'.format( self.scalefactor_p2))
-        # self.p2_top_spd = DEFAULT_PUMP_SPEEED
         if self.microstep_p2 == False:
             self.pump1.set_speed(SAMPLE_PUMP_ADDRESS,self.p2_top_spd)
             time.sleep(.25)
@@ -1820,12 +1671,6 @@ class run_GUI(GUI.GUI):
             str1 =  "{:.2f}".format(new_speed / self.scalefactor_p2)
             self.p2_cur_spd.config(text = str1)            
             logger.info("\t\tPump2 speed is set to {} logical  = {} physical".format(new_speed, str1))
-
-            # logger.info("\t\tPump2 speed is set to {}".format(new_speed))
-            # self.p2_cur_spd.config(text = str(new_speed))
-
-
-
 
 
     ###------------------- END OF CLASS DEFINITION ------------------------------------------------------

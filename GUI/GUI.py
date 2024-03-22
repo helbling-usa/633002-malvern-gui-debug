@@ -26,7 +26,6 @@ logger.addHandler(stream_handler)
 
 
 class GUI:
-
     def __init__(self, root):
 
         self.set_fonts()
@@ -1501,7 +1500,7 @@ class GUI:
 
     def set_main_window(self, root):
         # root.geometry("1200x800+50+50")
-        root.title("DEBUG / MANUAL MODE GUI (v 1.12)")
+        root.title("DEBUG / MANUAL MODE GUI (v 1.12.2)")
         root.resizable(False, False)
         # root.overrideredirect(True)
         window_height = 800
