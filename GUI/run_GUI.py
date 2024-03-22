@@ -96,7 +96,9 @@ class run_GUI(GUI.GUI):
         # logger.info("----------------------------------------------")
         # #-------- set the motor1 speed to 0
         # self.m1_cur_spd.config(text="0")        
-        
+        # self.stop_vertical_gantry["state"] = DISABLED
+        # self.stop_horizontal_gantry["state"] = DISABLED
+
         logger.info("------------------------------------------------------------------")
         logger.info('System started successfully.')
         logger.info("Please use the GUI to enter a commamnd ...")
@@ -619,6 +621,7 @@ class run_GUI(GUI.GUI):
         s = self.ent_gnt_ver_rel.get()
         # logger.info('child-->'+s)
         if (is_float(s) == True):
+            # self.stop_vertical_gantry["state"] = NORMAL
             #logger.info("----------MOVE Relative-----------------")
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_03)
@@ -628,6 +631,7 @@ class run_GUI(GUI.GUI):
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
+            # self.stop_vertical_gantry["state"] = DISABLED
         else:
             logger.warning("Not a number. Please enter an integer for VG rel. position")
 
@@ -649,13 +653,17 @@ class run_GUI(GUI.GUI):
         
 
     def gantry_vertical_homing_click(self):
+        self.stop_vertical_gantry["state"] = DISABLED
         logger.info('\t\tHoming Gantry Vertical')
         self.motors.homing(self.AXIS_ID_03)
+        self.stop_vertical_gantry["state"] = NORMAL
         
         
     def gantry_horizontal_homing_click(self):
+        self.stop_horizontal_gantry["state"] = DISABLED
         logger.info('\t\tHoming Gantry Horizontal')
         self.motors.homing(self.AXIS_ID_02)
+        self.stop_horizontal_gantry["state"] = NORMAL
 
 
     def gantry_horizontal_stop_click(self):
@@ -677,6 +685,7 @@ class run_GUI(GUI.GUI):
         global GANTRY_HOR_ACCELERATION
         s = self.ent_gnt_hor_rel.get()
         if (is_float(s) == True):
+            # self.stop_horizontal_gantry["state"] = NORMAL
             #logger.info("----------MOVE Relative-----------------")
             rel_pos_mm =float(s)
             self.motors.select_axis(self.AXIS_ID_02)
@@ -686,7 +695,7 @@ class run_GUI(GUI.GUI):
             if val == -2:
                 tkinter.messagebox.showwarning("WARNING!!!",  "The actuator has reached its POSITIVE LIMIT."
                                 "\nPlease move thea actuator within the limit") 
-
+            # self.stop_horizontal_gantry["state"] = DISABLED
         else:
             logger.warning("Not a number. Please enter an integer for VG rel. position")
 

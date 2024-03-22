@@ -1265,14 +1265,17 @@ class GUI:
             command=self.gantry_horizontal_homing_click,
         ).place(x=XX1 - 25 + delta, y=Y1 + 4 * dY1 - 2)
 
-        Button(
+        self.stop_horizontal_gantry = Button(
             self.tab2,
             bg="#fc9d9d",
             fg="black",
             text="  Stop  Gantry   ",
             font=self.Font5,
             command=self.gantry_horizontal_stop_click,
-        ).place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+        )
+        self.stop_horizontal_gantry.pack()
+        self.stop_horizontal_gantry.place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+        
 
     def setup_GantryVertical(self):
         # --------------------- COLUMN 3: Gantry vertical ---------------------------------------
@@ -1346,14 +1349,17 @@ class GUI:
             command=self.gantry_vertical_homing_click,
         ).place(x=XX1 - 25 + delta, y=Y1 + 4 * dY1 - 2)
         
-        Button(
+        self.stop_vertical_gantry = Button(
             self.tab2,
             bg="#fc9d9d",
             fg="black",
             text="  Stop  Gantry   ",
             font=self.Font5,
             command=self.gantry_vertical_stop_click,
-        ).place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+        )
+        self.stop_vertical_gantry.pack()
+        self.stop_vertical_gantry.place(x=XX1 - 25 + delta, y=Y1 + 5 * dY1 - 2)
+        
 
 
     def setup_TecController(self):
